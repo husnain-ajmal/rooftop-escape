@@ -1,0 +1,43 @@
+{
+  "id": "/",
+  "name": "Rooftop Escape",
+  "short_name": "RooftopEscape",
+  "description": "High-octane endless 2D runner with dynamic physics-based web-swinging, rooftop obstacles, and villain pursuit.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "fullscreen",
+  "orientation": "any",
+  "theme_color": "#080612",
+  "background_color": "#080612",
+  "categories": [
+    "games",
+    "arcade",
+    "action"
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
