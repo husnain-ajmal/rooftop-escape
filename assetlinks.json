@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.rooftopescape.game",
+      "sha256_cert_fingerprints": [
+        "14:6D:E9:01:C8:27:4F:DE:21:5C:A1:EC:53:78:F7:9E:B6:A8:B1:EE:FE:84:53:67:F5:28:CE:F6:4B:FB:23:0A"
+      ]
+    }
+  }
+]
