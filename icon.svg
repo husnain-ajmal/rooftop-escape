@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="skyGrad" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#1e1038" />
+      <stop offset="55%" stop-color="#0e071c" />
+      <stop offset="100%" stop-color="#05030a" />
+    </radialGradient>
+    <linearGradient id="neonMoon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe600" />
+      <stop offset="60%" stop-color="#ff2a6d" />
+      <stop offset="100%" stop-color="#9b00e8" />
+    </linearGradient>
+    <linearGradient id="glowWeb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f0ff" />
+      <stop offset="100%" stop-color="#ffffff" />
+    </linearGradient>
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="512" height="512" rx="100" fill="url(#skyGrad)" />
+
+  <!-- Stars -->
+  <circle cx="80" cy="110" r="2" fill="#ffffff" opacity="0.8" />
+  <circle cx="160" cy="80" r="1.5" fill="#00f0ff" opacity="0.7" />
+  <circle cx="240" cy="130" r="2" fill="#ffffff" opacity="0.6" />
+  <circle cx="390" cy="90" r="2.5" fill="#ffe600" opacity="0.8" />
+  <circle cx="440" cy="150" r="1.5" fill="#ffffff" opacity="0.7" />
+  <circle cx="110" cy="210" r="1.8" fill="#ffffff" opacity="0.5" />
+
+  <!-- Glowing Neon Moon -->
+  <circle cx="370" cy="170" r="85" fill="none" stroke="url(#neonMoon)" stroke-width="12" filter="url(#neonGlow)" opacity="0.9" />
+  <circle cx="370" cy="170" r="65" fill="#ff2a6d" opacity="0.15" />
+
+  <!-- Distant Skyline Silhouettes -->
+  <rect x="30" y="260" width="85" height="252" fill="#130c24" />
+  <rect x="95" y="210" width="90" height="302" fill="#180f2e" />
+  <rect x="165" y="270" width="110" height="242" fill="#150d26" />
+  <rect x="260" y="230" width="95" height="282" fill="#191132" />
+  <rect x="340" y="280" width="130" height="232" fill="#140d28" />
+
+  <!-- Window Lights -->
+  <rect x="115" y="240" width="10" height="15" fill="#00f0ff" opacity="0.6" />
+  <rect x="145" y="240" width="10" height="15" fill="#00f0ff" opacity="0.4" />
+  <rect x="115" y="280" width="10" height="15" fill="#ffe600" opacity="0.5" />
+  <rect x="280" y="260" width="12" height="16" fill="#ff2a6d" opacity="0.6" />
+  <rect x="310" y="260" width="12" height="16" fill="#00f0ff" opacity="0.5" />
+  <rect x="280" y="300" width="12" height="16" fill="#00f0ff" opacity="0.4" />
+
+  <!-- Foreground Rooftop Edge -->
+  <rect x="0" y="380" width="512" height="132" fill="#090514" />
+  <rect x="0" y="380" width="512" height="6" fill="#ff2a6d" filter="url(#neonGlow)" />
+  <rect x="0" y="386" width="512" height="12" fill="#241740" />
+
+  <!-- Anchor Crane & Point -->
+  <path d="M 450 60 L 410 130 L 490 130 Z" fill="none" stroke="#ff5500" stroke-width="4" />
+  <circle cx="410" cy="130" r="10" fill="#00f0ff" filter="url(#neonGlow)" />
+
+  <!-- Curved Dynamic Web Line -->
+  <path d="M 235 245 Q 330 190 410 130" fill="none" stroke="url(#glowWeb)" stroke-width="6" stroke-linecap="round" filter="url(#neonGlow)" />
+  <path d="M 235 245 Q 330 190 410 130" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
+
+  <!-- Hero Web Slinger Silhouette -->
+  <g transform="translate(190, 220) rotate(-18)">
+    <rect x="18" y="20" width="30" height="42" rx="8" fill="#d60036" />
+    <rect x="24" y="26" width="18" height="28" rx="4" fill="#0055bb" />
+    <circle cx="33" cy="10" r="15" fill="#d60036" />
+    <path d="M 37 6 L 46 9 L 38 14 Z" fill="#ffffff" filter="url(#neonGlow)" />
+    <rect x="36" y="8" width="28" height="10" rx="4" transform="rotate(-40 36 8)" fill="#d60036" />
+    <rect x="6" y="24" width="20" height="9" rx="4" transform="rotate(30 6 24)" fill="#0055bb" />
+    <rect x="16" y="58" width="13" height="32" rx="5" transform="rotate(25 16 58)" fill="#0055bb" />
+    <rect x="30" y="58" width="13" height="28" rx="5" transform="rotate(-15 30 58)" fill="#0055bb" />
+  </g>
+</svg>
