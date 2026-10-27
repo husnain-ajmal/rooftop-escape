@@ -41,13 +41,14 @@
       h1 { font-size: 2.5rem; color: #00f3ff; text-shadow: 0 0 15px rgba(0,243,255,0.6); margin-bottom: 8px; font-weight: 900; letter-spacing: 1px; }
       p.subtitle { color: #b8b2cb; font-size: 1rem; margin-bottom: 24px; max-width: 400px; line-height: 1.4; }
       
-      .btn-primary { background: linear-gradient(135deg, #00f3ff 0%, #0066ff 100%); color: #05030a; border: none; padding: 14px 36px; font-size: 18px; font-weight: 800; border-radius: 30px; cursor: pointer; box-shadow: 0 0 20px rgba(0,243,255,0.4); transition: transform 0.1s, box-shadow 0.2s; margin: 8px; }
+      .btn-primary { background: linear-gradient(135deg, #00f3ff 0%, #0066ff 100%); color: #05030a; border: none; padding: 14px 36px; font-size: 18px; font-weight: 800; border-radius: 30px; cursor: pointer; box-shadow: 0 0 20px rgba(0,243,255,0.4); transition: transform 0.1s, box-shadow 0.2s; margin: 8px; pointer-events: auto; }
       .btn-primary:active { transform: scale(0.95); }
-      .btn-secondary { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 12px 28px; font-size: 16px; font-weight: 600; border-radius: 30px; cursor: pointer; margin: 8px; backdrop-filter: blur(4px); }
+      .btn-secondary { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 12px 28px; font-size: 16px; font-weight: 600; border-radius: 30px; cursor: pointer; margin: 8px; backdrop-filter: blur(4px); pointer-events: auto; }
 
       /* Shop Modal Grid */
       .shop-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 440px; background: rgba(12, 9, 22, 0.95); border: 1px solid rgba(0,243,255,0.3); border-radius: 16px; padding: 20px; z-index: 100; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
-      .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; max-height: 250px; overflow-y: auto; padding-right: 4px; }
+      .shop-modal.hidden { display: none !important; }
+      .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; max-height: 220px; overflow-y: auto; padding-right: 4px; }
       .shop-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: all 0.2s; }
       .shop-item.owned { border-color: rgba(0,243,255,0.4); }
       .shop-item.selected { border-color: #00f3ff; background: rgba(0,243,255,0.1); box-shadow: 0 0 10px rgba(0,243,255,0.2); }
@@ -172,8 +173,8 @@
             osc.stop(now + 0.2);
           } else if (type === 'coin') {
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(987.77, now); // B5
-            osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+            osc.frequency.setValueAtTime(987.77, now);
+            osc.frequency.setValueAtTime(1318.51, now + 0.08);
             gain.gain.setValueAtTime(0.25, now);
             gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
             osc.start(now);
@@ -284,7 +285,7 @@
       }
 
       // Game State Variables
-      let gameState = 'START'; // START, PLAYING, PAUSED, GAMEOVER
+      let gameState = 'START';
       let distance = 0;
       let runCoins = 0;
       let score = 0;
@@ -298,7 +299,7 @@
 
       let roofs = [];
       let coins = [];
-      let nemesis = { x: -100, speed: 3.5, strikeCooldown: 0 };
+      let nemesis = { x: -100, speed: 3.5 };
       let currentZone = { name: 'Neon Core', color: '#00f3ff', bg: '#080612', speed: 5 };
 
       function getSuitColor() {
@@ -316,6 +317,7 @@
         document.getElementById('startScreen').classList.add('hidden');
         document.getElementById('pauseScreen').classList.add('hidden');
         document.getElementById('gameOverScreen').classList.add('hidden');
+        document.getElementById('shopModal').classList.add('hidden');
         document.getElementById('hudLayer').style.display = 'flex';
         
         distance = 0;
@@ -337,7 +339,6 @@
         roofs = [];
         coins = [];
         
-        // Generate initial platforms
         let cursorX = 0;
         for (let i = 0; i < 6; i++) {
           let w = 300 + Math.random() * 200;
@@ -368,6 +369,7 @@
         document.getElementById('hudLayer').style.display = 'none';
         document.getElementById('pauseScreen').classList.add('hidden');
         document.getElementById('gameOverScreen').classList.add('hidden');
+        document.getElementById('shopModal').classList.add('hidden');
         document.getElementById('startScreen').classList.remove('hidden');
       }
 
@@ -376,7 +378,6 @@
         if (gameState !== 'PLAYING') return;
         initAudio();
         
-        // Find closest roof anchor ahead for swinging
         let bestRoof = null;
         let minDist = Infinity;
         roofs.forEach(r => {
@@ -406,14 +407,12 @@
       window.addEventListener('pointerup', () => {
         if (player.isSwinging) {
           player.isSwinging = false;
-          player.vy -= 4; // Boost on release
+          player.vy -= 4;
         }
       });
 
-      // Ad SDK Placeholders (CrazyGames & GameDistribution support)
       function triggerRewardedAd(type) {
         initAudio();
-        // Portal SDK Integration check
         if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.ad) {
           window.CrazyGames.SDK.ad.requestRewarded({
             reward: () => grantAdReward(type),
@@ -427,7 +426,6 @@
       }
 
       function simulatedAdFallback(type) {
-        // Fallback simulation overlay for offline/standalone testing
         let adDiv = document.createElement('div');
         adDiv.style.cssText = "position:absolute; top:0; left:0; width:100%; height:100%; background:#000; z-index:999; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#fff;";
         adDiv.innerHTML = `<h2>Simulated Portal Ad</h2><p style="margin:10px 0;">Playing reward ad...</p><div id='adTimer' style="font-size:2rem; color:#00f3ff; font-weight:bold;">3</div>`;
@@ -461,11 +459,9 @@
         }
       }
 
-      // Main Game Loop Update & Render
       function update() {
         if (gameState !== 'PLAYING') return;
 
-        // Zone Progression Scaling
         if (distance >= 800) {
           currentZone = { name: 'Orbital Spires', color: '#ffd700', bg: '#120c04', speed: 7.2 };
         } else if (distance >= 350) {
@@ -474,7 +470,6 @@
           currentZone = { name: 'Neon Core', color: '#00f3ff', bg: '#080612', speed: 5.2 };
         }
 
-        // Physics & Movement
         player.vx = currentZone.speed;
         distance += player.vx * 0.05;
         score = Math.floor(distance) + (runCoins * 15);
@@ -483,19 +478,15 @@
           let dx = player.x - player.ropeAnchor.x;
           let dy = player.y - player.ropeAnchor.y;
           let angle = Math.atan2(dy, dx);
-          let currentDist = Math.hypot(dx, dy);
-          
-          // Pendulum constraint pull
           player.x = player.ropeAnchor.x + Math.cos(angle) * player.ropeLength;
           player.y = player.ropeAnchor.y + Math.sin(angle) * player.ropeLength;
           player.vx *= 1.01;
         } else {
-          player.vy += 0.5; // Gravity
+          player.vy += 0.5;
           player.x += player.vx;
           player.y += player.vy;
         }
 
-        // Roof Collision Detection
         player.isGrounded = false;
         roofs.forEach(r => {
           if (player.x >= r.x && player.x <= r.x + r.w) {
@@ -508,12 +499,10 @@
           }
         });
 
-        // Fall into pit check
         if (player.y > height + 50) {
           handleDeath();
         }
 
-        // Procedural Roof Generator
         let lastRoof = roofs[roofs.length - 1];
         if (lastRoof.x + lastRoof.w < player.x + width * 1.5) {
           let gap = 90 + Math.random() * (distance > 350 ? 90 : 50);
@@ -527,11 +516,9 @@
           }
         }
 
-        // Clean offscreen items
         roofs = roofs.filter(r => r.x + r.w > player.x - 300);
         coins = coins.filter(c => c.x > player.x - 300 && !c.collected);
 
-        // Coin Collection
         coins.forEach(c => {
           let dist = Math.hypot(player.x - c.x, player.y - c.y);
           if (dist < player.radius + 15) {
@@ -541,12 +528,11 @@
           }
         });
 
-        // Nemesis AI Pursuit
         nemesis.x += (player.x - 180 - nemesis.x) * 0.05;
         if (player.x - nemesis.x < 110) {
           if (invincibilityTimer <= 0) {
             strikeCount++;
-            invincibilityTimer = 90; // 1.5s invincibility frames
+            invincibilityTimer = 90;
             playSound('hit');
             nemesis.x -= 80;
             if (strikeCount >= 3) {
@@ -557,7 +543,6 @@
 
         if (invincibilityTimer > 0) invincibilityTimer--;
 
-        // HUD Updates
         document.getElementById('hudDistance').innerText = Math.floor(distance) + 'm';
         document.getElementById('hudCoins').innerText = '🪙 ' + runCoins;
         document.getElementById('hudZone').innerText = currentZone.name;
@@ -597,7 +582,6 @@
         ctx.save();
         ctx.translate(-player.x + width * 0.3, 0);
 
-        // Render Roofs
         roofs.forEach(r => {
           ctx.fillStyle = '#151026';
           ctx.fillRect(r.x, r.y, r.w, r.h);
@@ -606,7 +590,6 @@
           ctx.strokeRect(r.x, r.y, r.w, r.h);
         });
 
-        // Render Coins
         coins.forEach(c => {
           if (!c.collected) {
             ctx.fillStyle = '#ffd700';
@@ -619,7 +602,6 @@
           }
         });
 
-        // Render Web Rope
         if (player.isSwinging && player.ropeAnchor) {
           ctx.strokeStyle = getRopeColor();
           ctx.lineWidth = 3;
@@ -629,7 +611,6 @@
           ctx.stroke();
         }
 
-        // Render Player
         ctx.fillStyle = invincibilityTimer > 0 && Math.floor(Date.now() / 50) % 2 === 0 ? '#fff' : getSuitColor();
         ctx.beginPath();
         ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
@@ -638,7 +619,6 @@
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Render Nemesis
         ctx.fillStyle = '#ff0055';
         ctx.beginPath();
         ctx.arc(nemesis.x, player.y, 18, 0, Math.PI * 2);
@@ -658,4 +638,4 @@
       requestAnimationFrame(loop);
     </script>
   </body>
-</html>
+  </html>
