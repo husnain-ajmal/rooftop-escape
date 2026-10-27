@@ -6,518 +6,55 @@
     <title>Rooftop Escape</title>
     <meta name="description" content="Endless 2D runner with dynamic physics-based web-swinging, rooftop obstacles, villain pursuit, and high score tracking." />
     <meta name="theme-color" content="#080612" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Rooftop Escape" />
+    
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="./icons/icon.svg" />
+    <link rel="apple-touch-icon" sizes="192x192" href="./icons/icon-192.png" />
 
-    <!-- Web App Manifest & Icons -->
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
-    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
-    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png" />
-
-    <!-- Social / OpenGraph Meta -->
-    <meta property="og:title" content="Rooftop Escape" />
-    <meta property="og:description" content="Endless 2D runner with dynamic physics-based web-swinging, rooftop obstacles, villain pursuit, and high score tracking." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/icons/icon-512.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Rooftop Escape" />
-    <meta name="twitter:description" content="Endless 2D runner with dynamic physics-based web-swinging, rooftop obstacles, villain pursuit, and high score tracking." />
-    <meta name="twitter:image" content="/icons/icon-512.png" />
-
-    <!-- Service Worker Registration for PWA / TWA -->
+    <!-- Service Worker Registration -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-              console.log('[Rooftop Escape] ServiceWorker registered with scope:', registration.scope);
-            })
-            .catch((error) => {
-              console.warn('[Rooftop Escape] ServiceWorker registration failed:', error);
-            });
+          navigator.serviceWorker.register('./sw.js');
         });
       }
     </script>
+    
     <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        user-select: none;
-        -webkit-user-select: none;
-        -webkit-touch-callout: none;
-      }
-      body, html {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background-color: #080612;
-        font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-        color: #fff;
-        touch-action: none;
-      }
-      #game-wrapper {
-        position: relative;
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: radial-gradient(circle at center, #130924 0%, #05030a 100%);
-        touch-action: none;
-        overflow: hidden;
-      }
-      canvas {
-        display: block;
-        box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
-        touch-action: none;
-        cursor: crosshair;
-        background: #0d091a;
-      }
-      /* UI Overlay Layer */
-      .ui-layer {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: env(safe-area-inset-top, 12px) env(safe-area-inset-right, 14px) env(safe-area-inset-bottom, 12px) env(safe-area-inset-left, 14px);
-        z-index: 10;
-      }
-      /* HUD Header */
-      .hud-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        width: 100%;
-        gap: 8px;
-        pointer-events: auto;
-      }
-      .hud-card {
-        background: rgba(15, 10, 30, 0.8);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
-        padding: 6px 12px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-      }
-      .stat-label {
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #9d8ec2;
-        font-weight: 700;
-        margin-bottom: 1px;
-      }
-      .stat-value {
-        font-size: 18px;
-        font-weight: 900;
-        font-family: 'Courier New', Courier, monospace;
-        color: #00f0ff;
-        text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
-      }
-      .stat-value.score-val {
-        color: #ffe600;
-        text-shadow: 0 0 8px rgba(255, 230, 0, 0.5);
-      }
-      /* Threat Meter (Villain tracker) */
-      .threat-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex: 1;
-        max-width: 260px;
-        margin: 0 4px;
-      }
-      .threat-bar-wrap {
-        width: 100%;
-        height: 10px;
-        background: rgba(20, 10, 30, 0.85);
-        border: 1px solid rgba(255, 50, 80, 0.4);
-        border-radius: 5px;
-        overflow: hidden;
-        position: relative;
-        margin-top: 3px;
-      }
-      .threat-bar-fill {
-        height: 100%;
-        width: 50%;
-        background: linear-gradient(90deg, #ff0055, #ff5500);
-        box-shadow: 0 0 10px #ff0055;
-        transition: width 0.15s ease-out, background 0.3s;
-      }
-      .threat-status {
-        font-size: 9px;
-        font-weight: 800;
-        letter-spacing: 0.8px;
-        color: #ff3366;
-        text-shadow: 0 0 6px rgba(255, 51, 102, 0.8);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin-top: 2px;
-      }
-      /* Top Right buttons */
-      .controls-top {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-      }
-      .icon-btn {
-        background: rgba(20, 15, 35, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
-        padding: 6px 10px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: bold;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        touch-action: manipulation;
-      }
-      .icon-btn:hover, .icon-btn:active {
-        background: rgba(255, 42, 109, 0.3);
-        border-color: #ff2a6d;
-      }
-      /* Danger Vignette for Villain Threat */
-      #danger-vignette {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        box-shadow: inset 60px 0 90px -20px rgba(255, 0, 60, 0);
-        transition: box-shadow 0.2s ease-out;
-        z-index: 5;
-      }
-      /* Floating notification on game screen */
-      #combo-popup {
-        position: absolute;
-        left: 50%;
-        top: 26%;
-        transform: translate(-50%, -50%) scale(0.5);
-        color: #ffea00;
-        font-size: 26px;
-        font-weight: 900;
-        font-style: italic;
-        text-shadow: 0 0 15px #ff5500, 2px 2px 0 #000;
-        pointer-events: none;
-        opacity: 0;
-        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
-        z-index: 20;
-        white-space: nowrap;
-      }
-      #combo-popup.show {
-        transform: translate(-50%, -50%) scale(1.1);
-        opacity: 1;
-      }
-      /* Floating Screen Tap Hint */
-      .screen-tap-hint {
-        position: absolute;
-        bottom: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(10, 6, 25, 0.7);
-        border: 1px solid rgba(0, 240, 255, 0.3);
-        border-radius: 20px;
-        padding: 5px 14px;
-        font-size: 11px;
-        font-weight: 800;
-        color: #00f0ff;
-        letter-spacing: 0.8px;
-        pointer-events: none;
-        animation: pulseHint 2s infinite ease-in-out;
-        white-space: nowrap;
-        z-index: 15;
-      }
-      @keyframes pulseHint {
-        0%, 100% { opacity: 0.45; transform: translateX(-50%) translateY(0); }
-        50% { opacity: 0.9; transform: translateX(-50%) translateY(-4px); }
-      }
-      /* Mobile On-Screen Touch Controls */
-      .mobile-touch-bar {
-        position: absolute;
-        bottom: 16px;
-        left: 0;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        padding: 0 16px;
-        pointer-events: none;
-        z-index: 40;
-      }
-      .touch-ctrl-group {
-        display: flex;
-        gap: 12px;
-        align-items: flex-end;
-        pointer-events: auto;
-      }
-      .touch-btn {
-        width: 76px;
-        height: 76px;
-        border-radius: 50%;
-        background: rgba(18, 11, 35, 0.75);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 2.5px solid rgba(0, 240, 255, 0.6);
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 0 12px rgba(0, 240, 255, 0.2);
-        cursor: pointer;
-        touch-action: none;
-        user-select: none;
-        transition: transform 0.1s, background-color 0.1s, border-color 0.1s;
-      }
-      .touch-btn .touch-icon {
-        font-size: 26px;
-        line-height: 1;
-      }
-      .touch-btn .touch-label {
-        font-size: 10px;
-        font-weight: 900;
-        letter-spacing: 1px;
-        margin-top: 2px;
-      }
-      .touch-btn .touch-sub {
-        font-size: 8px;
-        opacity: 0.7;
-        font-weight: 700;
-      }
-      /* Slide Button Styling */
-      .touch-btn.slide-btn {
-        border-color: rgba(255, 230, 0, 0.7);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 0 12px rgba(255, 230, 0, 0.2);
-      }
-      .touch-btn.slide-btn .touch-label {
-        color: #ffe600;
-      }
-      .touch-btn.slide-btn:active, .touch-btn.slide-btn.active {
-        background: rgba(255, 200, 0, 0.65);
-        border-color: #fff;
-        transform: scale(0.92);
-      }
-      /* Jump Button Styling */
-      .touch-btn.jump-btn {
-        border-color: rgba(0, 240, 255, 0.75);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 0 12px rgba(0, 240, 255, 0.25);
-      }
-      .touch-btn.jump-btn .touch-label {
-        color: #00f0ff;
-      }
-      .touch-btn.jump-btn:active, .touch-btn.jump-btn.active {
-        background: rgba(0, 240, 255, 0.65);
-        border-color: #fff;
-        transform: scale(0.92);
-      }
-      /* Dedicated Swing Button */
-      .touch-btn.swing-btn {
-        border-color: rgba(255, 42, 109, 0.8);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 0 12px rgba(255, 42, 109, 0.3);
-      }
-      .touch-btn.swing-btn .touch-label {
-        color: #ff2a6d;
-      }
-      .touch-btn.swing-btn:active, .touch-btn.swing-btn.active {
-        background: rgba(255, 42, 109, 0.7);
-        border-color: #fff;
-        transform: scale(0.92);
-      }
-      /* Modals & Overlays */
-      .modal-backdrop {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(5, 3, 10, 0.88);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        pointer-events: auto;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s;
-        z-index: 100;
-        padding: 16px;
-      }
-      .modal-backdrop.active {
-        opacity: 1;
-        visibility: visible;
-      }
-      .game-modal {
-        background: linear-gradient(145deg, #180e2e, #0e071c);
-        border: 2px solid #ff2a6d;
-        box-shadow: 0 0 40px rgba(255, 42, 109, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.1);
-        border-radius: 18px;
-        padding: 24px 28px;
-        max-width: 490px;
-        width: 100%;
-        max-height: 90vh;
-        overflow-y: auto;
-        text-align: center;
-        transform: scale(0.95);
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      }
-      .modal-backdrop.active .game-modal {
-        transform: scale(1);
-      }
-      .modal-title {
-        font-size: 32px;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        background: linear-gradient(180deg, #ffffff 20%, #ff2a6d 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 4px;
-      }
-      .modal-subtitle {
-        color: #05d9e8;
-        font-size: 13px;
-        font-weight: 700;
-        margin-bottom: 16px;
-      }
-      .stats-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-bottom: 18px;
-      }
-      .stat-box {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 8px;
-        padding: 10px;
-      }
-      .stat-box .num {
-        font-size: 20px;
-        font-weight: 800;
-        color: #ffea00;
-        font-family: 'Courier New', monospace;
-      }
-      .stat-box .lbl {
-        font-size: 9px;
-        color: #9d8ec2;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        margin-top: 3px;
-      }
-      .btn-primary {
-        background: linear-gradient(135deg, #ff2a6d 0%, #9b00e8 100%);
-        color: #ffffff;
-        font-size: 16px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        border: none;
-        border-radius: 10px;
-        padding: 14px 28px;
-        cursor: pointer;
-        width: 100%;
-        box-shadow: 0 6px 20px rgba(255, 42, 109, 0.5);
-        transition: all 0.2s ease;
-        touch-action: manipulation;
-      }
-      .btn-primary:active {
-        transform: scale(0.97);
-        filter: brightness(1.1);
-      }
-      /* Instructions cards */
-      .instruction-section {
-        margin: 12px 0;
-        text-align: left;
-      }
-      .instruction-box {
-        background: rgba(10, 6, 25, 0.7);
-        border: 1px solid rgba(0, 240, 255, 0.25);
-        border-radius: 10px;
-        padding: 10px 12px;
-        margin-bottom: 8px;
-      }
-      .instruction-box.mobile-box {
-        border-color: rgba(255, 42, 109, 0.4);
-        background: rgba(255, 42, 109, 0.05);
-      }
-      .instruction-heading {
-        font-size: 11px;
-        font-weight: 900;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        margin-bottom: 6px;
-      }
-      .instruction-row {
-        font-size: 12px;
-        color: #d8cdec;
-        line-height: 1.5;
-        margin-bottom: 4px;
-        display: flex;
-        align-items: baseline;
-        gap: 6px;
-      }
-      .key-tag {
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 4px;
-        padding: 0 5px;
-        font-size: 10px;
-        font-weight: bold;
-        color: #00f0ff;
-        white-space: nowrap;
-      }
-      .key-tag.pink {
-        color: #ff2a6d;
-        border-color: rgba(255, 42, 109, 0.4);
-      }
-      .key-tag.gold {
-        color: #ffe600;
-        border-color: rgba(255, 230, 0, 0.4);
-      }
-      @media (max-width: 600px) {
-        .hud-card {
-          padding: 4px 8px;
-        }
-        .stat-value {
-          font-size: 15px;
-        }
-        .threat-container {
-          max-width: 150px;
-        }
-        .touch-btn {
-          width: 68px;
-          height: 68px;
-        }
-        .touch-btn .touch-icon {
-          font-size: 22px;
-        }
-        .game-modal {
-          padding: 18px 20px;
-        }
-        .modal-title {
-          font-size: 26px;
-        }
-      }
+      * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+      body, html { width: 100%; height: 100%; overflow: hidden; background: #080612; font-family: system-ui, -apple-system, sans-serif; color: #fff; }
+      #game-wrapper { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: #080612; }
+      canvas { display: block; width: 100%; height: 100%; touch-action: none; background: linear-gradient(135deg, #0f0c1b 0%, #05030a 100%); }
+      
+      /* UI Overlays & HUD */
+      .hud-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 16px; box-sizing: border-box; z-index: 10; }
+      .hud-top { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+      .hud-group { display: flex; gap: 12px; align-items: center; pointer-events: auto; }
+      .hud-badge { background: rgba(15, 12, 27, 0.85); border: 1px solid rgba(0, 243, 255, 0.4); border-radius: 8px; padding: 8px 14px; font-size: 14px; font-weight: bold; color: #00f3ff; text-shadow: 0 0 8px rgba(0,243,255,0.5); backdrop-filter: blur(4px); }
+      .hud-btn { background: rgba(15, 12, 27, 0.85); border: 1px solid rgba(255, 0, 85, 0.5); color: #ff0055; width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 18px; cursor: pointer; pointer-events: auto; box-shadow: 0 0 10px rgba(255,0,85,0.3); transition: transform 0.1s; }
+      .hud-btn:active { transform: scale(0.92); }
+
+      /* Modals & Screens */
+      .screen-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 3, 10, 0.88); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 50; padding: 20px; text-align: center; }
+      .screen-overlay.hidden { display: none !important; }
+      h1 { font-size: 2.5rem; color: #00f3ff; text-shadow: 0 0 15px rgba(0,243,255,0.6); margin-bottom: 8px; font-weight: 900; letter-spacing: 1px; }
+      p.subtitle { color: #b8b2cb; font-size: 1rem; margin-bottom: 24px; max-width: 400px; line-height: 1.4; }
+      
+      .btn-primary { background: linear-gradient(135deg, #00f3ff 0%, #0066ff 100%); color: #05030a; border: none; padding: 14px 36px; font-size: 18px; font-weight: 800; border-radius: 30px; cursor: pointer; box-shadow: 0 0 20px rgba(0,243,255,0.4); transition: transform 0.1s, box-shadow 0.2s; margin: 8px; }
+      .btn-primary:active { transform: scale(0.95); }
+      .btn-secondary { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 12px 28px; font-size: 16px; font-weight: 600; border-radius: 30px; cursor: pointer; margin: 8px; backdrop-filter: blur(4px); }
+
+      /* Shop Modal Grid */
+      .shop-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 440px; background: rgba(12, 9, 22, 0.95); border: 1px solid rgba(0,243,255,0.3); border-radius: 16px; padding: 20px; z-index: 100; box-shadow: 0 0 30px rgba(0,0,0,0.8); }
+      .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 15px 0; max-height: 250px; overflow-y: auto; padding-right: 4px; }
+      .shop-item { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; transition: all 0.2s; }
+      .shop-item.owned { border-color: rgba(0,243,255,0.4); }
+      .shop-item.selected { border-color: #00f3ff; background: rgba(0,243,255,0.1); box-shadow: 0 0 10px rgba(0,243,255,0.2); }
+      
+      /* Danger Vignette */
+      #danger-vignette { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; box-shadow: inset 0 0 80px rgba(255,0,85,0); transition: box-shadow 0.3s; z-index: 5; }
+      #danger-vignette.active { box-shadow: inset 0 0 100px rgba(255, 0, 85, 0.65); }
     </style>
   </head>
   <body>
@@ -525,1713 +62,600 @@
       <canvas id="gameCanvas"></canvas>
       <div id="danger-vignette"></div>
 
-      <!-- Live Floating Comic Popups -->
-      <div id="combo-popup">PERFECT SWING!</div>
-
-      <!-- Hint for Tap Anywhere -->
-      <div class="screen-tap-hint" id="screen-tap-hint">👆 TAP &amp; HOLD ANYWHERE TO SWING</div>
-
-      <!-- HUD UI Layer -->
-      <div class="ui-layer">
-        <div class="hud-header">
-          <!-- Distance and Score -->
-          <div class="hud-card">
-            <div class="stat-label">DISTANCE</div>
-            <div class="stat-value" id="hud-distance">0 m</div>
-            <div class="stat-label" style="margin-top: 3px;">SCORE</div>
-            <div class="stat-value score-val" id="hud-score">0</div>
+      <!-- HUD Layer -->
+      <div class="hud-layer" id="hudLayer" style="display: none;">
+        <div class="hud-top">
+          <div class="hud-group">
+            <div class="hud-badge" id="hudDistance">0m</div>
+            <div class="hud-badge" id="hudCoins">🪙 0</div>
           </div>
-
-          <!-- Threat Meter (Villain tracker) -->
-          <div class="hud-card threat-container">
-            <div class="stat-label" style="display: flex; justify-content: space-between; width: 100%;">
-              <span>NEMESIS</span>
-              <span id="hud-strikes" style="color: #00ff88; font-weight: 900; letter-spacing: 2px;">⚡⚡⚡</span>
-            </div>
-            <div class="threat-bar-wrap">
-              <div class="threat-bar-fill" id="threat-bar"></div>
-            </div>
-            <div class="threat-status" id="threat-status-msg">3 LIVES (SAFE)</div>
-          </div>
-
-          <!-- High Score, Sound & Pause Controls -->
-          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
-            <div class="hud-card" style="text-align: right;">
-              <div class="stat-label">RECORD</div>
-              <div class="stat-value" id="hud-highscore" style="color: #ff00ff; font-size: 15px;">0 m</div>
-              <div class="stat-label" style="margin-top: 2px;">ORBS: <span id="hud-tokens" style="color: #00f0ff;">0</span></div>
-            </div>
-            <div class="controls-top">
-              <button class="icon-btn" id="btn-install" title="Install Rooftop Escape" style="display: none;">
-                <span>📥</span> <span>APP</span>
-              </button>
-              <button class="icon-btn" id="btn-sound" title="Toggle Sound">
-                <span id="sound-icon">🔊</span>
-              </button>
-              <button class="icon-btn" id="btn-pause" title="Pause Game (P / Esc)" aria-label="Pause Game">
-                <span id="pause-icon">⏸️</span>
-              </button>
-            </div>
+          <div class="hud-group">
+            <button class="hud-btn" id="btnMute" onclick="toggleAudio()">🔊</button>
+            <button class="hud-btn" id="btnPause" onclick="togglePause()">⏸</button>
           </div>
         </div>
-
-        <!-- Mobile Touch Controls Bar -->
-        <div class="mobile-touch-bar">
-          <!-- Left: SLIDE / DUCK button -->
-          <div class="touch-ctrl-group">
-            <button class="touch-btn slide-btn" id="btn-slide" aria-label="Slide or Duck">
-              <div class="touch-icon">⬇️</div>
-              <div class="touch-label">SLIDE</div>
-              <div class="touch-sub">DUCK</div>
-            </button>
-          </div>
-
-          <!-- Right: SWING & JUMP buttons -->
-          <div class="touch-ctrl-group">
-            <button class="touch-btn swing-btn" id="btn-swing" aria-label="Hold to Swing">
-              <div class="touch-icon">🕸️</div>
-              <div class="touch-label">SWING</div>
-              <div class="touch-sub">HOLD</div>
-            </button>
-            <button class="touch-btn jump-btn" id="btn-jump" aria-label="Jump">
-              <div class="touch-icon">⬆️</div>
-              <div class="touch-label">JUMP</div>
-              <div class="touch-sub">LEAP</div>
-            </button>
-          </div>
+        <div class="hud-bottom" style="display:flex; justify-content:space-between; align-items:flex-end;">
+          <div class="hud-badge" id="hudZone">Neon Core</div>
+          <div class="hud-badge" id="hudThreat" style="border-color: #ff0055; color: #ff0055;">Threat: Safe</div>
         </div>
       </div>
 
-      <!-- Start Screen Modal -->
-      <div class="modal-backdrop active" id="modal-start">
-        <div class="game-modal">
-          <div class="modal-title">ROOFTOP ESCAPE</div>
-          <div class="modal-subtitle">ESCAPE THE NEMESIS</div>
-
-          <div class="instruction-section">
-            <!-- Mobile Touch Controls Card -->
-            <div class="instruction-box mobile-box">
-              <div class="instruction-heading" style="color: #ff2a6d;">
-                <span>📱</span> TOUCHSCREEN CONTROLS
-              </div>
-              <div class="instruction-row">
-                <span class="key-tag pink">TAP &amp; HOLD</span>
-                <span><strong>Hold anywhere</strong> on screen or tap <strong>SWING</strong> (🕸️) to shoot web. Release to fling!</span>
-              </div>
-              <div class="instruction-row">
-                <span class="key-tag" style="color: #00f0ff;">⬆️ JUMP</span>
-                <span>Tap bottom-right <strong>JUMP</strong> button to leap over low obstacles &amp; gaps.</span>
-              </div>
-              <div class="instruction-row">
-                <span class="key-tag gold">⬇️ SLIDE</span>
-                <span>Hold bottom-left <strong>SLIDE</strong> button to duck beneath overhead neon signs.</span>
-              </div>
-            </div>
-
-            <!-- Desktop Controls Card -->
-            <div class="instruction-box">
-              <div class="instruction-heading" style="color: #00f0ff;">
-                <span>⌨️</span> KEYBOARD &amp; MOUSE
-              </div>
-              <div class="instruction-row">
-                <span class="key-tag">SPACE / CLICK</span>
-                <span>Hold to Swing &bull; <span class="key-tag">W / UP</span> Jump &bull; <span class="key-tag">S / DOWN</span> Slide &bull; <span class="key-tag">P / ESC</span> Pause</span>
-              </div>
-            </div>
-          </div>
-
-          <div style="font-size: 11px; color: #ff3366; margin-bottom: 16px; background: rgba(255, 0, 85, 0.1); border: 1px solid rgba(255, 0, 85, 0.3); border-radius: 8px; padding: 8px 12px; line-height: 1.5; text-align: left;">
-            ⚡ <strong>3-STRIKE NEMESIS SYSTEM:</strong><br>
-            &bull; <strong>Crash 1:</strong> Nemesis moves closer to warn you.<br>
-            &bull; <strong>Crash 2:</strong> Nemesis moves right behind you in high alert.<br>
-            &bull; <strong>Crash 3 (or falling below rooftop level):</strong> Game Over!<br>
-            &bull; You receive <strong>1.5 seconds of invincibility</strong> after hitting an obstacle.
-          </div>
-
-          <button class="btn-primary" id="btn-start-game">START RUN</button>
-        </div>
+      <!-- Start Screen -->
+      <div class="screen-overlay" id="startScreen">
+        <h1>Rooftop Escape</h1>
+        <p class="subtitle">Physics web-swinging runner. Outrun the nemesis across cyber skylines!</p>
+        <button class="btn-primary" onclick="startGame()">START RUN</button>
+        <button class="btn-secondary" onclick="openShop()">CYBER ARMORY 🛍️</button>
       </div>
 
-      <!-- Game Over Modal -->
-      <div class="modal-backdrop" id="modal-gameover">
-        <div class="game-modal">
-          <div class="modal-title" style="color: #ff0055;" id="gameover-title">CAUGHT!</div>
-          <div class="modal-subtitle" id="gameover-reason">The Nemesis overtook you on the skyline.</div>
-
-          <div class="stats-grid">
-            <div class="stat-box">
-              <div class="num" id="go-distance">0 m</div>
-              <div class="lbl">DISTANCE TRAVELED</div>
-            </div>
-            <div class="stat-box">
-              <div class="num" id="go-score">0</div>
-              <div class="lbl">TOTAL SCORE</div>
-            </div>
-            <div class="stat-box">
-              <div class="num" id="go-tokens">0</div>
-              <div class="lbl">ENERGY ORBS</div>
-            </div>
-            <div class="stat-box">
-              <div class="num" id="go-best">0 m</div>
-              <div class="lbl">BEST RECORD</div>
-            </div>
-          </div>
-
-          <button class="btn-primary" id="btn-restart-game">PLAY AGAIN</button>
-        </div>
+      <!-- Pause Screen -->
+      <div class="screen-overlay hidden" id="pauseScreen">
+        <h1>PAUSED</h1>
+        <button class="btn-primary" onclick="togglePause()">RESUME</button>
+        <button class="btn-secondary" onclick="openShop()">CYBER ARMORY 🛍️</button>
+        <button class="btn-secondary" onclick="returnToMenu()">MAIN MENU</button>
       </div>
 
-      <!-- Pause Menu Modal Overlay -->
-      <div class="modal-backdrop" id="modal-pause">
-        <div class="game-modal" style="border-color: #00f0ff; box-shadow: 0 0 40px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.1);">
-          <div class="modal-title" style="background: linear-gradient(180deg, #ffffff 20%, #00f0ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">GAME PAUSED</div>
-          <div class="modal-subtitle" style="color: #00f0ff;">SYSTEM SUSPENDED &bull; TAKE A BREATHER</div>
+      <!-- Game Over Screen -->
+      <div class="screen-overlay hidden" id="gameOverScreen">
+        <h1>CAUGHT!</h1>
+        <p class="subtitle" id="finalStats">Distance: 0m | Coins: 0</p>
+        <button class="btn-primary" id="btnRevive" onclick="triggerRewardedAd('revive')">REVIVE ONCE (AD)</button>
+        <button class="btn-primary" onclick="triggerRewardedAd('doubleCoins')">DOUBLE COINS (AD)</button>
+        <button class="btn-secondary" onclick="startGame()">TRY AGAIN</button>
+        <button class="btn-secondary" onclick="returnToMenu()">MAIN MENU</button>
+      </div>
 
-          <div class="stats-grid" style="margin-bottom: 20px;">
-            <div class="stat-box">
-              <div class="num" id="pause-distance">0 m</div>
-              <div class="lbl">CURRENT DISTANCE</div>
-            </div>
-            <div class="stat-box">
-              <div class="num" id="pause-score">0</div>
-              <div class="lbl">CURRENT SCORE</div>
-            </div>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <button class="btn-primary" id="btn-resume-game" style="background: linear-gradient(135deg, #00f0ff 0%, #0066ff 100%); box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4);">RESUME</button>
-            <button class="btn-primary" id="btn-pause-restart" style="background: linear-gradient(135deg, #ff2a6d 0%, #9b00e8 100%); box-shadow: 0 6px 20px rgba(255, 42, 109, 0.4);">RESTART</button>
-          </div>
-        </div>
+      <!-- Shop Modal -->
+      <div class="shop-modal hidden" id="shopModal">
+        <h2 style="color:#00f3ff; margin-bottom:10px; font-size:1.4rem;">Cyber Armory</h2>
+        <p style="font-size:13px; color:#b8b2cb; margin-bottom:10px;">Bank Balance: <span id="shopBankCoins" style="color:#ffd700; font-weight:bold;">0</span> 🪙</p>
+        <div style="font-size:12px; color:#00f3ff; margin-bottom:4px; font-weight:bold;">HERO SUITS</div>
+        <div class="shop-grid" id="suitShopGrid"></div>
+        <div style="font-size:12px; color:#00f3ff; margin-top:10px; margin-bottom:4px; font-weight:bold;">WEB ROPES</div>
+        <div class="shop-grid" id="ropeShopGrid"></div>
+        <button class="btn-primary" style="width:100%; margin-top:15px; padding:10px;" onclick="closeShop()">CLOSE SHOP</button>
       </div>
     </div>
 
-    <!-- Self-Contained Complete Game Engine -->
+    <!-- Complete Self-Contained JavaScript Engine -->
     <script>
-      (function() {
-        // --- Synthesized Web Audio Sound Manager ---
-        class SoundEngine {
-          constructor() {
-            this.ctx = null;
-            this.muted = false;
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+      function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * window.devicePixelRatio;
+        canvas.height = height * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      // Audio Engine (Web Audio API)
+      let audioCtx = null;
+      let isMuted = localStorage.getItem('rooftop_mute') === 'true';
+      document.getElementById('btnMute').innerText = isMuted ? '🔇' : '🔊';
+
+      function initAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+      }
+
+      function playSound(type) {
+        if (isMuted || !audioCtx) return;
+        try {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          const now = audioCtx.currentTime;
+
+          if (type === 'jump') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(200, now);
+            osc.frequency.exponentialRampToValueAtTime(600, now + 0.15);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+            osc.start(now);
+            osc.stop(now + 0.15);
+          } else if (type === 'swing') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.linearRampToValueAtTime(250, now + 0.2);
+            gain.gain.setValueAtTime(0.15, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+            osc.start(now);
+            osc.stop(now + 0.2);
+          } else if (type === 'coin') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(987.77, now); // B5
+            osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+            gain.gain.setValueAtTime(0.25, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+            osc.start(now);
+            osc.stop(now + 0.25);
+          } else if (type === 'hit') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(120, now);
+            osc.frequency.linearRampToValueAtTime(40, now + 0.3);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now);
+            osc.stop(now + 0.3);
           }
-          init() {
-            if (!this.ctx) {
-              const AudioContext = window.AudioContext || window.webkitAudioContext;
-              if (AudioContext) {
-                this.ctx = new AudioContext();
-              }
-            }
-            if (this.ctx && this.ctx.state === 'suspended') {
-              this.ctx.resume();
-            }
+        } catch(e) {}
+      }
+
+      function toggleAudio() {
+        isMuted = !isMuted;
+        localStorage.setItem('rooftop_mute', isMuted);
+        document.getElementById('btnMute').innerText = isMuted ? '🔇' : '🔊';
+      }
+
+      // Shop Catalog & Persistent Storage
+      let bankCoins = parseInt(localStorage.getItem('rooftop_bankCoins') || '0');
+      let highDistance = parseInt(localStorage.getItem('rooftop_highDistance') || '0');
+      let ownedSuits = JSON.parse(localStorage.getItem('rooftop_suits') || '["classic"]');
+      let currentSuit = localStorage.getItem('rooftop_activeSuit') || 'classic';
+      let ownedRopes = JSON.parse(localStorage.getItem('rooftop_ropes') || '["electric"]');
+      let currentRope = localStorage.getItem('rooftop_activeRope') || 'electric';
+
+      const suitsDef = [
+        { id: 'classic', name: 'Classic Crimson', price: 0, color: '#ff0055' },
+        { id: 'cyber', name: 'Cyber Neon', price: 150, color: '#00f3ff' },
+        { id: 'gold', name: 'Golden Champion', price: 350, color: '#ffd700' },
+        { id: 'shadow', name: 'Shadow Ops', price: 600, color: '#9900ff' }
+      ];
+
+      const ropesDef = [
+        { id: 'electric', name: 'Electric Web', price: 0, color: '#00f3ff' },
+        { id: 'laser', name: 'Laser Beam', price: 120, color: '#ff0055' },
+        { id: 'solar', name: 'Solar Thread', price: 300, color: '#ffd700' },
+        { id: 'plasma', name: 'Plasma Violet', price: 450, color: '#aa00ff' }
+      ];
+
+      function openShop() {
+        initAudio();
+        document.getElementById('shopBankCoins').innerText = bankCoins;
+        
+        let suitHtml = '';
+        suitsDef.forEach(s => {
+          let owned = ownedSuits.includes(s.id);
+          let active = currentSuit === s.id;
+          suitHtml += `<div class="shop-item ${active ? 'selected' : (owned ? 'owned' : '')}" onclick="buyOrSelectSuit('${s.id}', ${s.price})">
+            <div style="font-weight:bold; color:${s.color}; font-size:13px;">${s.name}</div>
+            <div style="font-size:11px; color:#b8b2cb; margin-top:4px;">${active ? 'EQUIPPED' : (owned ? 'OWNED' : '🪙 ' + s.price)}</div>
+          </div>`;
+        });
+        document.getElementById('suitShopGrid').innerHTML = suitHtml;
+
+        let ropeHtml = '';
+        ropesDef.forEach(r => {
+          let owned = ownedRopes.includes(r.id);
+          let active = currentRope === r.id;
+          ropeHtml += `<div class="shop-item ${active ? 'selected' : (owned ? 'owned' : '')}" onclick="buyOrSelectRope('${r.id}', ${r.price})">
+            <div style="font-weight:bold; color:${r.color}; font-size:13px;">${r.name}</div>
+            <div style="font-size:11px; color:#b8b2cb; margin-top:4px;">${active ? 'EQUIPPED' : (owned ? 'OWNED' : '🪙 ' + r.price)}</div>
+          </div>`;
+        });
+        document.getElementById('ropeShopGrid').innerHTML = ropeHtml;
+
+        document.getElementById('shopModal').classList.remove('hidden');
+      }
+
+      function closeShop() {
+        document.getElementById('shopModal').classList.add('hidden');
+      }
+
+      function buyOrSelectSuit(id, price) {
+        if (ownedSuits.includes(id)) {
+          currentSuit = id;
+          localStorage.setItem('rooftop_activeSuit', id);
+        } else if (bankCoins >= price) {
+          bankCoins -= price;
+          localStorage.setItem('rooftop_bankCoins', bankCoins);
+          ownedSuits.push(id);
+          localStorage.setItem('rooftop_suits', JSON.stringify(ownedSuits));
+          currentSuit = id;
+          localStorage.setItem('rooftop_activeSuit', id);
+          playSound('coin');
+        }
+        openShop();
+      }
+
+      function buyOrSelectRope(id, price) {
+        if (ownedRopes.includes(id)) {
+          currentRope = id;
+          localStorage.setItem('rooftop_activeRope', id);
+        } else if (bankCoins >= price) {
+          bankCoins -= price;
+          localStorage.setItem('rooftop_bankCoins', bankCoins);
+          ownedRopes.push(id);
+          localStorage.setItem('rooftop_ropes', JSON.stringify(ownedRopes));
+          currentRope = id;
+          localStorage.setItem('rooftop_activeRope', id);
+          playSound('coin');
+        }
+        openShop();
+      }
+
+      // Game State Variables
+      let gameState = 'START'; // START, PLAYING, PAUSED, GAMEOVER
+      let distance = 0;
+      let runCoins = 0;
+      let score = 0;
+      let strikeCount = 0;
+      let invincibilityTimer = 0;
+      
+      let player = {
+        x: 150, y: 300, vx: 0, vy: 0, radius: 18,
+        isGrounded: false, isSwinging: false, ropeAnchor: null, ropeLength: 0
+      };
+
+      let roofs = [];
+      let coins = [];
+      let nemesis = { x: -100, speed: 3.5, strikeCooldown: 0 };
+      let currentZone = { name: 'Neon Core', color: '#00f3ff', bg: '#080612', speed: 5 };
+
+      function getSuitColor() {
+        let s = suitsDef.find(x => x.id === currentSuit);
+        return s ? s.color : '#ff0055';
+      }
+
+      function getRopeColor() {
+        let r = ropesDef.find(x => x.id === currentRope);
+        return r ? r.color : '#00f3ff';
+      }
+
+      function startGame() {
+        initAudio();
+        document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('pauseScreen').classList.add('hidden');
+        document.getElementById('gameOverScreen').classList.add('hidden');
+        document.getElementById('hudLayer').style.display = 'flex';
+        
+        distance = 0;
+        runCoins = 0;
+        score = 0;
+        strikeCount = 0;
+        invincibilityTimer = 0;
+        
+        player.x = 150;
+        player.y = 200;
+        player.vx = 5;
+        player.vy = 0;
+        player.isSwinging = false;
+        player.ropeAnchor = null;
+        
+        nemesis.x = -150;
+        nemesis.speed = 4.2;
+
+        roofs = [];
+        coins = [];
+        
+        // Generate initial platforms
+        let cursorX = 0;
+        for (let i = 0; i < 6; i++) {
+          let w = 300 + Math.random() * 200;
+          let h = 250 + Math.random() * 100;
+          roofs.push({ x: cursorX, y: height - h, w: w, h: h });
+          
+          if (i > 0 && Math.random() > 0.3) {
+            coins.push({ x: cursorX + 50 + Math.random() * (w - 100), y: height - h - 60, collected: false });
           }
-          toggleMute() {
-            this.muted = !this.muted;
-            return this.muted;
-          }
-          playThwip() {
-            if (this.muted || !this.ctx) return;
-            try {
-              const osc = this.ctx.createOscillator();
-              const gain = this.ctx.createGain();
-              osc.type = 'triangle';
-              osc.frequency.setValueAtTime(450, this.ctx.currentTime);
-              osc.frequency.exponentialRampToValueAtTime(1400, this.ctx.currentTime + 0.1);
-              gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-              gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.12);
-              osc.connect(gain);
-              gain.connect(this.ctx.destination);
-              osc.start();
-              osc.stop(this.ctx.currentTime + 0.13);
-            } catch(e) {}
-          }
-          playRelease() {
-            if (this.muted || !this.ctx) return;
-            try {
-              const osc = this.ctx.createOscillator();
-              const gain = this.ctx.createGain();
-              osc.type = 'sine';
-              osc.frequency.setValueAtTime(800, this.ctx.currentTime);
-              osc.frequency.exponentialRampToValueAtTime(250, this.ctx.currentTime + 0.15);
-              gain.gain.setValueAtTime(0.22, this.ctx.currentTime);
-              gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.16);
-              osc.connect(gain);
-              gain.connect(this.ctx.destination);
-              osc.start();
-              osc.stop(this.ctx.currentTime + 0.17);
-            } catch(e) {}
-          }
-          playJump() {
-            if (this.muted || !this.ctx) return;
-            try {
-              const osc = this.ctx.createOscillator();
-              const gain = this.ctx.createGain();
-              osc.type = 'sine';
-              osc.frequency.setValueAtTime(260, this.ctx.currentTime);
-              osc.frequency.exponentialRampToValueAtTime(620, this.ctx.currentTime + 0.18);
-              gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
-              gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.19);
-              osc.connect(gain);
-              gain.connect(this.ctx.destination);
-              osc.start();
-              osc.stop(this.ctx.currentTime + 0.2);
-            } catch(e) {}
-          }
-          playSlide() {
-            if (this.muted || !this.ctx) return;
-            try {
-              const bufferSize = this.ctx.sampleRate * 0.14;
-              const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-              const data = buffer.getChannelData(0);
-              for (let i = 0; i < bufferSize; i++) {
-                data[i] = Math.random() * 2 - 1;
-              }
-              const noise = this.ctx.createBufferSource();
-              noise.buffer = buffer;
-              const filter = this.ctx.createBiquadFilter();
-              filter.type = 'lowpass';
-              filter.frequency.setValueAtTime(800, this.ctx.currentTime);
-              filter.frequency.linearRampToValueAtTime(300, this.ctx.currentTime + 0.14);
-              const gain = this.ctx.createGain();
-              gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
-              gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.14);
-              noise.connect(filter);
-              filter.connect(gain);
-              gain.connect(this.ctx.destination);
-              noise.start();
-            } catch(e) {}
-          }
-          playCoin() {
-            if (this.muted || !this.ctx) return;
-            try {
-              const notes = [987.77, 1318.51];
-              notes.forEach((freq, idx) => {
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.07);
-                gain.gain.setValueAtTime(0.18, this.ctx.currentTime + idx * 0.07);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + idx * 0.07 + 0.16);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start(this.ctx.currentTime + idx * 0.07);
-                osc.stop(this.ctx.currentTime + idx * 0.07 + 0.18);
-              });
-            } catch(e) {}
-          }
-          playHit() {
-            if (this.muted || !this.ctx) return;
-            try {
-              const osc = this.ctx.createOscillator();
-              const gain = this.ctx.createGain();
-              osc.type = 'sawtooth';
-              osc.frequency.setValueAtTime(150, this.ctx.currentTime);
-              osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.22);
-              gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-              gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
-              osc.connect(gain);
-              gain.connect(this.ctx.destination);
-              osc.start();
-              osc.stop(this.ctx.currentTime + 0.26);
-            } catch(e) {}
-          }
-          playDangerPulse() {
-            if (this.muted || !this.ctx) return;
-            try {
-              const osc = this.ctx.createOscillator();
-              const gain = this.ctx.createGain();
-              osc.type = 'triangle';
-              osc.frequency.setValueAtTime(90, this.ctx.currentTime);
-              osc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.2);
-              gain.gain.setValueAtTime(0.16, this.ctx.currentTime);
-              gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.22);
-              osc.connect(gain);
-              gain.connect(this.ctx.destination);
-              osc.start();
-              osc.stop(this.ctx.currentTime + 0.23);
-            } catch(e) {}
-          }
-          playGameOver() {
-            if (this.muted || !this.ctx) return;
-            try {
-              const chord = [320, 280, 240, 180];
-              chord.forEach((freq, i) => {
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.1);
-                gain.gain.setValueAtTime(0.22, this.ctx.currentTime + i * 0.1);
-                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + i * 0.1 + 0.32);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start(this.ctx.currentTime + i * 0.1);
-                osc.stop(this.ctx.currentTime + i * 0.1 + 0.35);
-              });
-            } catch(e) {}
-          }
+          cursorX += w + (80 + Math.random() * 70);
         }
 
-        const sound = new SoundEngine();
+        gameState = 'PLAYING';
+      }
 
-        // --- DOM Elements ---
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const hudDistance = document.getElementById('hud-distance');
-        const hudScore = document.getElementById('hud-score');
-        const hudHighscore = document.getElementById('hud-highscore');
-        const hudTokens = document.getElementById('hud-tokens');
-        const threatBar = document.getElementById('threat-bar');
-        const threatStatusMsg = document.getElementById('threat-status-msg');
-        const dangerVignette = document.getElementById('danger-vignette');
-        const comboPopup = document.getElementById('combo-popup');
-        const modalStart = document.getElementById('modal-start');
-        const modalGameOver = document.getElementById('modal-gameover');
-        const modalPause = document.getElementById('modal-pause');
-        const btnStart = document.getElementById('btn-start-game');
-        const btnRestart = document.getElementById('btn-restart-game');
-        const btnResume = document.getElementById('btn-resume-game');
-        const btnPauseRestart = document.getElementById('btn-pause-restart');
-        const pauseDistance = document.getElementById('pause-distance');
-        const pauseScore = document.getElementById('pause-score');
-        const btnSound = document.getElementById('btn-sound');
-        const soundIcon = document.getElementById('sound-icon');
-        const btnPause = document.getElementById('btn-pause');
-        const pauseIcon = document.getElementById('pause-icon');
-        const btnJump = document.getElementById('btn-jump');
-        const btnSlide = document.getElementById('btn-slide');
-        const btnSwing = document.getElementById('btn-swing');
-        const hudStrikes = document.getElementById('hud-strikes');
-
-        // Game Over fields
-        const goDistance = document.getElementById('go-distance');
-        const goScore = document.getElementById('go-score');
-        const goTokens = document.getElementById('go-tokens');
-        const goBest = document.getElementById('go-best');
-        const goTitle = document.getElementById('gameover-title');
-        const goReason = document.getElementById('gameover-reason');
-
-        // High Score
-        let highDistance = parseInt(localStorage.getItem('rooftopEscape_highDist') || localStorage.getItem('webSlinger_highDist') || '0', 10);
-        hudHighscore.textContent = highDistance + ' m';
-
-        // Dynamic Virtual Viewport Dimensions
-        let V_WIDTH = 1280;
-        let V_HEIGHT = 720;
-        let isPortrait = false;
-        const GRAVITY = 0.42;
-        const BASE_RUN_SPEED = 6.2;
-
-        function getGroundYBase() {
-          return isPortrait ? Math.round(V_HEIGHT * 0.64) : 480;
+      function togglePause() {
+        if (gameState === 'PLAYING') {
+          gameState = 'PAUSED';
+          document.getElementById('pauseScreen').classList.remove('hidden');
+        } else if (gameState === 'PAUSED') {
+          document.getElementById('pauseScreen').classList.add('hidden');
+          gameState = 'PLAYING';
         }
+      }
 
-        const keys = {
-          swing: false,
-          slide: false,
-          jump: false
-        };
+      function returnToMenu() {
+        gameState = 'START';
+        document.getElementById('hudLayer').style.display = 'none';
+        document.getElementById('pauseScreen').classList.add('hidden');
+        document.getElementById('gameOverScreen').classList.add('hidden');
+        document.getElementById('startScreen').classList.remove('hidden');
+      }
 
-        let jumpBuffer = 0;
-        let coyoteTime = 0;
-        const touchActionMap = new Map();
-        let screenShake = 0;
-
-        let popupTimer = null;
-        function showPopup(text, color = '#ffea00') {
-          comboPopup.textContent = text;
-          comboPopup.style.color = color;
-          comboPopup.classList.add('show');
-          if (popupTimer) clearTimeout(popupTimer);
-          popupTimer = setTimeout(() => {
-            comboPopup.classList.remove('show');
-          }, 800);
-        }
-
-        // --- Particle System ---
-        class Particle {
-          constructor(x, y, vx, vy, color, size, life, shape = 'rect') {
-            this.x = x;
-            this.y = y;
-            this.vx = vx;
-            this.vy = vy;
-            this.color = color;
-            this.size = size;
-            this.maxLife = life;
-            this.life = life;
-            this.shape = shape;
-          }
-          update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.life--;
-          }
-          draw(ctx, camX, camY) {
-            const alpha = Math.max(0, this.life / this.maxLife);
-            ctx.save();
-            ctx.globalAlpha = alpha;
-            ctx.fillStyle = this.color;
-            if (this.shape === 'circle') {
-              ctx.beginPath();
-              ctx.arc(this.x - camX, this.y - camY, this.size, 0, Math.PI * 2);
-              ctx.fill();
-            } else {
-              ctx.fillRect(this.x - camX, this.y - camY, this.size, this.size);
-            }
-            ctx.restore();
-          }
-        }
-
-        // --- Game State ---
-        let gameState = 'START';
-        let lastTime = performance.now();
-        let dangerPulseTimer = 0;
-
-        let player = {
-          x: 200,
-          y: 450,
-          vx: BASE_RUN_SPEED,
-          vy: 0,
-          width: 32,
-          height: 52,
-          grounded: true,
-          sliding: false,
-          webAttached: false,
-          anchor: { x: 0, y: 0, length: 0 },
-          animTimer: 0,
-          comboCount: 0,
-          invincibleTimer: 0
-        };
-
-        let villain = {
-          distance: 65,
-          targetDistance: 65,
-          y: 450,
-          animFloat: 0
-        };
-
-        let playerStrikes = 0;
-
-        let gameStats = {
-          distance: 0,
-          score: 0,
-          tokens: 0
-        };
-
-        let buildings = [];
-        let anchors = [];
-        let obstacles = [];
-        let collectibles = [];
-        let particles = [];
-        let stars = [];
-
-        function initStars() {
-          stars = [];
-          for (let i = 0; i < 90; i++) {
-            stars.push({
-              x: Math.random() * 1600,
-              y: Math.random() * (V_HEIGHT * 0.7),
-              size: Math.random() * 2 + 0.5,
-              alpha: Math.random() * 0.8 + 0.2
-            });
-          }
-        }
-
-        let nextSpawnX = 0;
-
-        function resetGame() {
-          const baseY = getGroundYBase();
-          player.x = isPortrait ? 140 : 200;
-          player.y = baseY - 52;
-          player.vx = BASE_RUN_SPEED;
-          player.vy = 0;
-          player.width = 32;
-          player.height = 52;
-          player.grounded = true;
-          player.sliding = false;
-          player.webAttached = false;
-          player.anchor = { x: 0, y: 0, length: 0 };
-          player.animTimer = 0;
-          player.comboCount = 0;
-          player.invincibleTimer = 0;
-
-          playerStrikes = 0;
-          villain.distance = 65;
-          villain.targetDistance = 65;
-          villain.y = baseY - 52;
-
-          gameStats.distance = 0;
-          gameStats.score = 0;
-          gameStats.tokens = 0;
-
-          jumpBuffer = 0;
-          coyoteTime = 0;
-          screenShake = 0;
-          buildings = [];
-          anchors = [];
-          obstacles = [];
-          collectibles = [];
-          particles = [];
-
-          nextSpawnX = -100;
-          spawnBuilding(650, baseY);
-          spawnBuilding(600, baseY);
-          spawnBuilding(580, baseY);
-
-          for (let i = 0; i < 8; i++) {
-            generateNextSection();
-          }
-
-          dangerVignette.style.boxShadow = 'inset 60px 0 90px -20px rgba(255, 0, 60, 0)';
-          updateHUD();
-        }
-
-        function spawnBuilding(width, topY) {
-          const b = {
-            x: nextSpawnX,
-            y: topY,
-            width: width,
-            height: Math.max(500, V_HEIGHT - topY + 600),
-            color: '#15102a',
-            trimColor: '#ff2a6d',
-            windows: []
-          };
-
-          const rows = Math.floor((b.height - 30) / 36);
-          const cols = Math.floor((b.width - 40) / 32);
-          for (let r = 0; r < Math.min(rows, 20); r++) {
-            for (let c = 0; c < cols; c++) {
-              if (Math.random() > 0.45) {
-                b.windows.push({
-                  rx: 20 + c * 32,
-                  ry: 30 + r * 36,
-                  color: Math.random() > 0.3 ? 'rgba(0, 240, 255, 0.35)' : 'rgba(255, 230, 0, 0.3)'
-                });
-              }
+      // Input Controls
+      window.addEventListener('pointerdown', (e) => {
+        if (gameState !== 'PLAYING') return;
+        initAudio();
+        
+        // Find closest roof anchor ahead for swinging
+        let bestRoof = null;
+        let minDist = Infinity;
+        roofs.forEach(r => {
+          if (r.x > player.x && r.x < player.x + 400) {
+            let d = Math.abs(r.x - player.x);
+            if (d < minDist) {
+              minDist = d;
+              bestRoof = r;
             }
           }
+        });
 
-          buildings.push(b);
-          nextSpawnX += width;
-          return b;
+        if (bestRoof) {
+          player.isSwinging = true;
+          player.ropeAnchor = { x: bestRoof.x + 40, y: bestRoof.y - 40 };
+          let dx = player.ropeAnchor.x - player.x;
+          let dy = player.ropeAnchor.y - player.y;
+          player.ropeLength = Math.hypot(dx, dy);
+          playSound('swing');
+        } else if (player.isGrounded) {
+          player.vy = -12;
+          player.isGrounded = false;
+          playSound('jump');
         }
+      });
 
-        function generateNextSection() {
-          const runDist = gameStats.distance;
-          const gapGrowth = Math.min(80, (runDist / 1000) * 80);
-          const gap = 85 + Math.random() * (55 + gapGrowth);
-          nextSpawnX += gap;
+      window.addEventListener('pointerup', () => {
+        if (player.isSwinging) {
+          player.isSwinging = false;
+          player.vy -= 4; // Boost on release
+        }
+      });
 
-          const width = Math.max(380, 520 - Math.min(100, runDist / 12));
-          const baseY = getGroundYBase();
-          const heightVar = Math.min(60, 25 + (runDist / 800) * 35);
-          const topY = Math.max(baseY - 120, Math.min(baseY + 60, baseY + (Math.random() * heightVar * 2 - heightVar)));
-          const building = spawnBuilding(width, topY);
-
-          const anchorX = building.x - gap * 0.5 + (Math.random() * 40 - 20);
-          const minAnchorY = isPortrait ? 120 : 80;
-          const maxAnchorY = isPortrait ? (baseY - 260) : (baseY - 220);
-          const anchorY = minAnchorY + Math.random() * Math.max(50, maxAnchorY - minAnchorY);
-
-          anchors.push({
-            x: anchorX,
-            y: anchorY,
-            type: Math.random() > 0.5 ? 'crane' : 'blimp',
-            pulse: 0
+      // Ad SDK Placeholders (CrazyGames & GameDistribution support)
+      function triggerRewardedAd(type) {
+        initAudio();
+        // Portal SDK Integration check
+        if (window.CrazyGames && window.CrazyGames.SDK && window.CrazyGames.SDK.ad) {
+          window.CrazyGames.SDK.ad.requestRewarded({
+            reward: () => grantAdReward(type),
+            error: () => simulatedAdFallback(type)
           });
+        } else if (typeof gdsdk !== 'undefined' && gdsdk.showAd) {
+          gdsdk.showAd(GDSDK_REWARDED).then(() => grantAdReward(type)).catch(() => simulatedAdFallback(type));
+        } else {
+          simulatedAdFallback(type);
+        }
+      }
 
-          if (width > 460) {
-            anchors.push({
-              x: building.x + width * 0.55,
-              y: anchorY + (Math.random() * 30 - 15),
-              type: 'spire',
-              pulse: 0
-            });
+      function simulatedAdFallback(type) {
+        // Fallback simulation overlay for offline/standalone testing
+        let adDiv = document.createElement('div');
+        adDiv.style.cssText = "position:absolute; top:0; left:0; width:100%; height:100%; background:#000; z-index:999; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#fff;";
+        adDiv.innerHTML = `<h2>Simulated Portal Ad</h2><p style="margin:10px 0;">Playing reward ad...</p><div id='adTimer' style="font-size:2rem; color:#00f3ff; font-weight:bold;">3</div>`;
+        document.body.appendChild(adDiv);
+        
+        let t = 3;
+        let timerInterval = setInterval(() => {
+          t--;
+          if (document.getElementById('adTimer')) document.getElementById('adTimer').innerText = t;
+          if (t <= 0) {
+            clearInterval(timerInterval);
+            document.body.removeChild(adDiv);
+            grantAdReward(type);
           }
+        }, 1000);
+      }
 
-          if (nextSpawnX > 2200) {
-            const obstacleChance = Math.min(0.55, 0.2 + (runDist / 1400) * 0.35);
-            if (Math.random() < obstacleChance && building.width > 380) {
-              const isHigh = Math.random() > 0.5;
-              const obsX = building.x + building.width * 0.48;
-              if (!isHigh) {
-                obstacles.push({
-                  x: obsX,
-                  y: building.y - 30,
-                  width: 36,
-                  height: 30,
-                  type: 'low'
-                });
-              } else {
-                obstacles.push({
-                  x: obsX,
-                  y: building.y - 72,
-                  width: 44,
-                  height: 46,
-                  type: 'high'
-                });
-              }
-            }
-          }
+      function grantAdReward(type) {
+        if (type === 'revive') {
+          strikeCount = 1;
+          invincibilityTimer = 120;
+          nemesis.x = player.x - 220;
+          document.getElementById('gameOverScreen').classList.add('hidden');
+          gameState = 'PLAYING';
+        } else if (type === 'doubleCoins') {
+          runCoins *= 2;
+          bankCoins += runCoins;
+          localStorage.setItem('rooftop_bankCoins', bankCoins);
+          document.getElementById('gameOverScreen').classList.add('hidden');
+          returnToMenu();
+        }
+      }
 
-          const orbCount = 2 + Math.floor(Math.random() * 3);
-          for (let i = 0; i < orbCount; i++) {
-            collectibles.push({
-              x: building.x + 60 + i * 45,
-              y: building.y - 45 - Math.sin((i / (orbCount - 1 || 1)) * Math.PI) * 50,
-              collected: false,
-              pulse: Math.random() * Math.PI * 2
-            });
-          }
+      // Main Game Loop Update & Render
+      function update() {
+        if (gameState !== 'PLAYING') return;
+
+        // Zone Progression Scaling
+        if (distance >= 800) {
+          currentZone = { name: 'Orbital Spires', color: '#ffd700', bg: '#120c04', speed: 7.2 };
+        } else if (distance >= 350) {
+          currentZone = { name: 'Cyber Slums', color: '#00f3ff', bg: '#070f1a', speed: 6.2 };
+        } else {
+          currentZone = { name: 'Neon Core', color: '#00f3ff', bg: '#080612', speed: 5.2 };
         }
 
-        function isBelowRooftopLevel() {
-          let thresholdY = getGroundYBase();
-          const localBuildings = buildings.filter(b => b.x + b.width > player.x - 220 && b.x < player.x + 350);
-          if (localBuildings.length > 0) {
-            thresholdY = Math.max(...localBuildings.map(b => b.y));
-          }
-          return player.y > thresholdY + 12;
-        }
+        // Physics & Movement
+        player.vx = currentZone.speed;
+        distance += player.vx * 0.05;
+        score = Math.floor(distance) + (runCoins * 15);
 
-        // --- Web Swinging Physics ---
-        function attemptWebShoot() {
-          if (player.webAttached) return;
-          if (isBelowRooftopLevel()) return;
-
-          let bestAnchor = null;
-          let bestDist = 999999;
-
-          for (let a of anchors) {
-            const dx = a.x - player.x;
-            const dy = a.y - player.y;
-            if (dx > -30 && dx < 460 && dy < -50) {
-              const d = Math.hypot(dx, dy);
-              if (d < bestDist && d > 100 && d < 620) {
-                bestDist = d;
-                bestAnchor = a;
-              }
-            }
-          }
-
-          if (!bestAnchor) {
-            const dynamicX = player.x + (isPortrait ? 150 : 190);
-            const dynamicY = Math.max(60, player.y - (isPortrait ? 300 : 280));
-            bestAnchor = { x: dynamicX, y: dynamicY, type: 'dynamic', pulse: 0 };
-            anchors.push(bestAnchor);
-          }
-
-          player.webAttached = true;
-          player.anchor = {
-            x: bestAnchor.x,
-            y: bestAnchor.y,
-            length: Math.hypot(bestAnchor.x - player.x, bestAnchor.y - player.y)
-          };
-          sound.playThwip();
-
-          for (let i = 0; i < 8; i++) {
-            particles.push(new Particle(
-              bestAnchor.x, bestAnchor.y,
-              (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 6,
-              '#00f0ff', 3, 20, 'circle'
-            ));
-          }
-        }
-
-        function releaseWeb() {
-          if (!player.webAttached) return;
-          player.webAttached = false;
-          sound.playRelease();
-
-          for (let i = 0; i < 8; i++) {
-            particles.push(new Particle(
-              player.x, player.y,
-              (Math.random() - 0.5) * 5, (Math.random() - 0.5) * 5,
-              '#ffffff', 2.5, 18, 'circle'
-            ));
-          }
-
-          if (player.vy < -3 && player.vx > BASE_RUN_SPEED * 1.05) {
-            player.vx += 2.2;
-            player.comboCount++;
-            villain.targetDistance = Math.min(80, villain.targetDistance + 6);
-            gameStats.score += 150 * player.comboCount;
-            showPopup(`PERFECT RELEASE! +${150 * player.comboCount}`, '#00f0ff');
-          }
-        }
-
-        // --- Main Update Loop ---
-        function update(dt) {
-          if (gameState !== 'PLAYING') return;
-
-          gameStats.distance += (player.vx * 0.04);
-          gameStats.score += Math.round(player.vx * 0.2);
-
-          const speedBonus = Math.min(3.5, Math.max(0, gameStats.distance - 120) / 480);
-          const currentMaxRunSpeed = BASE_RUN_SPEED + speedBonus;
-
-          if (keys.swing) {
-            attemptWebShoot();
-          } else {
-            releaseWeb();
-          }
-
-          player.sliding = keys.slide && player.grounded;
-
-          if (player.grounded) {
-            coyoteTime = 8;
-          } else if (coyoteTime > 0) {
-            coyoteTime--;
-          }
-
-          if (keys.jump) {
-            jumpBuffer = 10;
-            keys.jump = false;
-          }
-          if (jumpBuffer > 0) jumpBuffer--;
-
-          const canJump = (player.grounded || coyoteTime > 0) && !player.sliding && !player.webAttached;
-          if (jumpBuffer > 0 && canJump) {
-            player.vy = -11.6;
-            player.grounded = false;
-            coyoteTime = 0;
-            jumpBuffer = 0;
-            sound.playJump();
-            for (let i = 0; i < 6; i++) {
-              particles.push(new Particle(player.x, player.y + player.height, (Math.random() - 0.8) * 3, -Math.random() * 2, '#9d8ec2', 3, 15));
-            }
-          }
-
-          player.height = player.sliding ? 24 : 52;
-
-          if (player.webAttached) {
-            player.grounded = false;
-            const ax = player.anchor.x;
-            const ay = player.anchor.y;
-            const dx = player.x - ax;
-            const dy = player.y - ay;
-            const currentDist = Math.hypot(dx, dy);
-
-            player.vy += GRAVITY;
-
-            if (currentDist > player.anchor.length) {
-              const nx = dx / currentDist;
-              const ny = dy / currentDist;
-              const tx = -ny;
-              const ty = nx;
-
-              const vDotT = player.vx * tx + player.vy * ty;
-              const swingBoost = Math.max(0, -ny) * 0.36;
-
-              player.vx = tx * (vDotT + swingBoost);
-              player.vy = ty * (vDotT + swingBoost);
-
-              player.x = ax + nx * player.anchor.length;
-              player.y = ay + ny * player.anchor.length;
-            }
-
-            player.vx *= 0.996;
-            player.vy *= 0.996;
-          } else {
-            if (!player.grounded) {
-              player.vy += GRAVITY;
-              if (player.vy > 17) player.vy = 17;
-            } else {
-              if (player.vx < currentMaxRunSpeed) {
-                player.vx += 0.32;
-              } else if (player.vx > currentMaxRunSpeed) {
-                player.vx *= 0.985;
-              }
-            }
-          }
-
+        if (player.isSwinging && player.ropeAnchor) {
+          let dx = player.x - player.ropeAnchor.x;
+          let dy = player.y - player.ropeAnchor.y;
+          let angle = Math.atan2(dy, dx);
+          let currentDist = Math.hypot(dx, dy);
+          
+          // Pendulum constraint pull
+          player.x = player.ropeAnchor.x + Math.cos(angle) * player.ropeLength;
+          player.y = player.ropeAnchor.y + Math.sin(angle) * player.ropeLength;
+          player.vx *= 1.01;
+        } else {
+          player.vy += 0.5; // Gravity
           player.x += player.vx;
           player.y += player.vy;
-
-          if (player.sliding && player.grounded) {
-            if (Math.random() > 0.3) {
-              particles.push(new Particle(
-                player.x, player.y + player.height,
-                -player.vx * 0.6 + (Math.random() - 0.5) * 2,
-                -Math.random() * 3,
-                '#ffe600', 3, 14
-              ));
-            }
-          }
-
-          let wasGrounded = player.grounded;
-          player.grounded = false;
-
-          for (let b of buildings) {
-            if (player.x + player.width > b.x && player.x < b.x + b.width) {
-              const currentBottom = player.y + player.height;
-              const prevBottom = (player.y - player.vy) + player.height;
-
-              if (prevBottom <= b.y + 18 && currentBottom >= b.y && player.vy >= 0) {
-                player.y = b.y - player.height;
-                player.vy = 0;
-                player.grounded = true;
-                if (!wasGrounded) {
-                  player.comboCount = 0;
-                  for (let i = 0; i < 5; i++) {
-                    particles.push(new Particle(player.x + player.width * 0.5, b.y, (Math.random() - 0.5) * 4, -Math.random() * 2, '#fff', 2, 10));
-                  }
-                }
-                break;
-              } else if (currentBottom >= b.y && currentBottom <= b.y + 26 && player.vy >= -3) {
-                player.y = b.y - player.height;
-                player.vy = 0;
-                player.grounded = true;
-                break;
-              } else if (currentBottom > b.y + 26 && player.x + player.width > b.x && player.x < b.x + 18) {
-                player.x = b.x - player.width;
-                player.vx = Math.max(BASE_RUN_SPEED * 0.7, player.vx * 0.75);
-              }
-            }
-          }
-
-          if (isBelowRooftopLevel() || player.y > V_HEIGHT + 80) {
-            if (player.webAttached) {
-              player.webAttached = false;
-              sound.playRelease();
-              for (let i = 0; i < 8; i++) {
-                particles.push(new Particle(player.x, player.y, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 6, '#ffffff', 2.5, 16));
-              }
-            }
-            triggerGameOver('FALL', 'Fell below the rooftops into the city gap!');
-            return;
-          }
-
-          if (player.invincibleTimer > 0) {
-            player.invincibleTimer--;
-          } else {
-            for (let obs of obstacles) {
-              if (
-                player.x + player.width > obs.x &&
-                player.x < obs.x + obs.width &&
-                player.y + player.height > obs.y &&
-                player.y < obs.y + obs.height
-              ) {
-                sound.playHit();
-                screenShake = 14;
-                player.invincibleTimer = 90;
-
-                player.vy = -3.8;
-                player.x = obs.x + obs.width + 6;
-                player.vx = Math.max(BASE_RUN_SPEED * 0.8, player.vx * 0.85);
-
-                playerStrikes++;
-
-                for (let i = 0; i < 15; i++) {
-                  particles.push(new Particle(
-                    obs.x + obs.width * 0.5, obs.y + obs.height * 0.5,
-                    (Math.random() - 0.5) * 7, (Math.random() - 0.5) * 7,
-                    '#ff0055', 4, 25
-                  ));
-                }
-
-                if (playerStrikes === 1) {
-                  villain.targetDistance = 32;
-                  sound.playDangerPulse();
-                  showPopup('CRASH 1! NEMESIS CLOSING IN (STRIKE 1/3)', '#ffaa00');
-                } else if (playerStrikes === 2) {
-                  villain.targetDistance = 14;
-                  sound.playDangerPulse();
-                  showPopup('CRASH 2! NEMESIS ON YOUR TAIL! (STRIKE 2/3)', '#ff0055');
-                } else if (playerStrikes >= 3) {
-                  villain.distance = 0;
-                  villain.targetDistance = 0;
-                  triggerGameOver('CAUGHT', '3 Strikes! The Nemesis overtook and captured you.');
-                  return;
-                }
-
-                break;
-              }
-            }
-          }
-
-          for (let orb of collectibles) {
-            if (!orb.collected) {
-              const dx = (player.x + player.width * 0.5) - orb.x;
-              const dy = (player.y + player.height * 0.5) - orb.y;
-              if (Math.hypot(dx, dy) < 38) {
-                orb.collected = true;
-                sound.playCoin();
-                gameStats.tokens++;
-                gameStats.score += 100;
-                player.vx += 1.0;
-                for (let i = 0; i < 10; i++) {
-                  particles.push(new Particle(
-                    orb.x, orb.y,
-                    (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 6,
-                    '#00f0ff', 3.5, 20, 'circle'
-                  ));
-                }
-              }
-            }
-          }
-
-          villain.distance += (villain.targetDistance - villain.distance) * 0.06;
-          villain.y += (player.y - villain.y) * 0.05;
-          villain.animFloat += 0.08;
-
-          if (villain.distance < 20 || playerStrikes >= 2) {
-            dangerPulseTimer++;
-            if (dangerPulseTimer % 35 === 0) {
-              sound.playDangerPulse();
-            }
-            dangerVignette.style.boxShadow = 'inset 70px 0 100px -20px rgba(255, 0, 60, 0.75)';
-          } else if (playerStrikes === 1) {
-            dangerVignette.style.boxShadow = 'inset 50px 0 80px -20px rgba(255, 120, 0, 0.4)';
-          } else {
-            dangerVignette.style.boxShadow = 'inset 60px 0 90px -20px rgba(255, 0, 60, 0)';
-          }
-
-          if (villain.distance <= 2 && playerStrikes >= 3) {
-            triggerGameOver('CAUGHT', 'The Shadow Nemesis intercepted and captured you!');
-            return;
-          }
-
-          const camX = player.x - (isPortrait ? 140 : 220);
-          if (nextSpawnX < camX + V_WIDTH + 600) {
-            generateNextSection();
-          }
-
-          buildings = buildings.filter(b => b.x + b.width > camX - 400);
-          obstacles = obstacles.filter(o => o.x + o.width > camX - 400);
-          anchors = anchors.filter(a => a.x > camX - 500);
-          collectibles = collectibles.filter(c => c.x > camX - 300);
-
-          particles.forEach(p => p.update());
-          particles = particles.filter(p => p.life > 0);
-
-          updateHUD();
         }
 
-        function updateHUD() {
-          hudDistance.textContent = Math.floor(gameStats.distance) + ' m';
-          hudScore.textContent = gameStats.score;
-          hudTokens.textContent = gameStats.tokens;
-
-          if (playerStrikes === 0) {
-            if (hudStrikes) {
-              hudStrikes.textContent = '⚡⚡⚡';
-              hudStrikes.style.color = '#00ff88';
+        // Roof Collision Detection
+        player.isGrounded = false;
+        roofs.forEach(r => {
+          if (player.x >= r.x && player.x <= r.x + r.w) {
+            if (player.y + player.radius >= r.y && player.y - player.radius <= r.y + 20 && player.vy >= 0) {
+              player.y = r.y - player.radius;
+              player.vy = 0;
+              player.isGrounded = true;
+              player.isSwinging = false;
             }
-            threatBar.style.width = '100%';
-            threatBar.style.background = 'linear-gradient(90deg, #00f0ff, #00ff88)';
-            threatStatusMsg.textContent = '3 LIVES (SAFE)';
-            threatStatusMsg.style.color = '#00f0ff';
-          } else if (playerStrikes === 1) {
-            if (hudStrikes) {
-              hudStrikes.textContent = '⚡⚡⚠️';
-              hudStrikes.style.color = '#ffaa00';
-            }
-            threatBar.style.width = '55%';
-            threatBar.style.background = 'linear-gradient(90deg, #ffaa00, #ff7700)';
-            threatStatusMsg.textContent = 'STRIKE 1 / 3: NEMESIS CLOSING IN!';
-            threatStatusMsg.style.color = '#ffaa00';
-          } else if (playerStrikes === 2) {
-            if (hudStrikes) {
-              hudStrikes.textContent = '⚡⚠️⚠️';
-              hudStrikes.style.color = '#ff0055';
-            }
-            threatBar.style.width = '20%';
-            threatBar.style.background = 'linear-gradient(90deg, #ff0000, #ff0055)';
-            threatStatusMsg.textContent = 'STRIKE 2 / 3: HIGH ALERT - BEHIND YOU!';
-            threatStatusMsg.style.color = '#ff0055';
-          } else {
-            if (hudStrikes) {
-              hudStrikes.textContent = '💀💀💀';
-              hudStrikes.style.color = '#ff0000';
-            }
-            threatBar.style.width = '0%';
-            threatStatusMsg.textContent = 'STRIKE 3: CAPTURED!';
-            threatStatusMsg.style.color = '#ff0000';
           }
+        });
+
+        // Fall into pit check
+        if (player.y > height + 50) {
+          handleDeath();
         }
 
-        function triggerGameOver(type, reason) {
-          gameState = 'GAMEOVER';
-          sound.playGameOver();
-          screenShake = 20;
+        // Procedural Roof Generator
+        let lastRoof = roofs[roofs.length - 1];
+        if (lastRoof.x + lastRoof.w < player.x + width * 1.5) {
+          let gap = 90 + Math.random() * (distance > 350 ? 90 : 50);
+          let w = 250 + Math.random() * 250;
+          let h = 200 + Math.random() * 150;
+          let newX = lastRoof.x + lastRoof.w + gap;
+          roofs.push({ x: newX, y: height - h, w: w, h: h });
 
-          if (type === 'CAUGHT') {
-            goTitle.textContent = 'CAPTURED!';
-            goTitle.style.color = '#ff0055';
-          } else {
-            goTitle.textContent = 'PLUMMETED!';
-            goTitle.style.color = '#00f0ff';
-          }
-          goReason.textContent = reason;
-
-          const finalDist = Math.floor(gameStats.distance);
-          goDistance.textContent = finalDist + ' m';
-          goScore.textContent = gameStats.score;
-          goTokens.textContent = gameStats.tokens;
-
-          if (finalDist > highDistance) {
-            highDistance = finalDist;
-            localStorage.setItem('rooftopEscape_highDist', highDistance);
-            hudHighscore.textContent = highDistance + ' m';
-          }
-          goBest.textContent = highDistance + ' m';
-
-          modalPause.classList.remove('active');
-          modalGameOver.classList.add('active');
-        }
-
-        // --- Render System ---
-        function render() {
-          const camX = player.x - (isPortrait ? 150 : 220);
-          let camY = 0;
-          if (isPortrait) {
-            const desiredCamY = player.y - V_HEIGHT * 0.55;
-            camY = Math.max(-100, Math.min(200, desiredCamY));
-          } else {
-            if (player.y < 180) {
-              camY = (player.y - 180) * 0.6;
-            }
-          }
-
-          ctx.save();
-
-          if (screenShake > 0) {
-            ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
-            screenShake *= 0.88;
-            if (screenShake < 0.5) screenShake = 0;
-          }
-
-          // Sky gradient
-          const skyGrad = ctx.createLinearGradient(0, 0, 0, V_HEIGHT);
-          skyGrad.addColorStop(0, '#0c0720');
-          skyGrad.addColorStop(0.5, '#190e38');
-          skyGrad.addColorStop(1, '#05020a');
-          ctx.fillStyle = skyGrad;
-          ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
-
-          // Neon Moon
-          ctx.save();
-          const moonX = isPortrait ? V_WIDTH * 0.75 : V_WIDTH * 0.82;
-          const moonY = isPortrait ? 140 : 160;
-          ctx.beginPath();
-          ctx.arc(moonX, moonY, 70, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(255, 42, 109, 0.12)';
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(moonX, moonY, 58, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(255, 230, 0, 0.22)';
-          ctx.fill();
-          ctx.restore();
-
-          // Starfield
-          ctx.fillStyle = '#ffffff';
-          for (let s of stars) {
-            ctx.globalAlpha = s.alpha;
-            ctx.fillRect((s.x - camX * 0.05) % V_WIDTH, s.y, s.size, s.size);
-          }
-          ctx.globalAlpha = 1;
-
-          // Parallax 1
-          ctx.fillStyle = '#0f0a21';
-          const p1Offset = camX * 0.12;
-          for (let i = -1; i < 16; i++) {
-            const bx = i * 160 - (p1Offset % 160);
-            const bh = (isPortrait ? 400 : 280) + Math.sin(i * 99) * 80;
-            ctx.fillRect(bx, V_HEIGHT - bh - camY * 0.1, 140, bh + 400);
-            ctx.fillStyle = '#ff0055';
-            ctx.fillRect(bx + 68, V_HEIGHT - bh - 8 - camY * 0.1, 4, 8);
-            ctx.fillStyle = '#0f0a21';
-          }
-
-          // Parallax 2
-          ctx.fillStyle = '#171030';
-          const p2Offset = camX * 0.35;
-          for (let i = -1; i < 14; i++) {
-            const bx = i * 220 - (p2Offset % 220);
-            const bh = (isPortrait ? 460 : 340) + Math.sin(i * 47) * 110;
-            ctx.fillRect(bx, V_HEIGHT - bh - camY * 0.3, 190, bh + 400);
-            ctx.fillStyle = 'rgba(0, 240, 255, 0.2)';
-            for (let wy = V_HEIGHT - bh + 40 - camY * 0.3; wy < V_HEIGHT - 60; wy += 28) {
-              ctx.fillRect(bx + 20, wy, 8, 12);
-              ctx.fillRect(bx + 60, wy, 8, 12);
-              ctx.fillRect(bx + 110, wy, 8, 12);
-            }
-            ctx.fillStyle = '#171030';
-          }
-
-          // Buildings
-          for (let b of buildings) {
-            const screenBX = b.x - camX;
-            const screenBY = b.y - camY;
-            if (screenBX + b.width < -100 || screenBX > V_WIDTH + 100) continue;
-
-            ctx.fillStyle = b.color;
-            ctx.fillRect(screenBX, screenBY, b.width, b.height);
-
-            ctx.fillStyle = b.trimColor;
-            ctx.fillRect(screenBX, screenBY, b.width, 5);
-
-            ctx.fillStyle = '#2c1e4a';
-            ctx.fillRect(screenBX, screenBY + 5, b.width, 14);
-
-            for (let w of b.windows) {
-              ctx.fillStyle = w.color;
-              ctx.fillRect(screenBX + w.rx, screenBY + w.ry, 14, 18);
-            }
-          }
-
-          // Anchors
-          for (let a of anchors) {
-            const screenAX = a.x - camX;
-            const screenAY = a.y - camY;
-            if (screenAX < -100 || screenAX > V_WIDTH + 100) continue;
-
-            a.pulse += 0.05;
-            const glow = Math.sin(a.pulse) * 4 + 8;
-
-            if (a.type === 'crane') {
-              ctx.strokeStyle = '#ff5500';
-              ctx.lineWidth = 4;
-              ctx.beginPath();
-              ctx.moveTo(screenAX - 40, screenAY - 30);
-              ctx.lineTo(screenAX + 40, screenAY - 30);
-              ctx.moveTo(screenAX, screenAY - 30);
-              ctx.lineTo(screenAX, screenAY);
-              ctx.stroke();
-
-              ctx.strokeStyle = '#00f0ff';
-              ctx.lineWidth = 3;
-              ctx.beginPath();
-              ctx.arc(screenAX, screenAY, glow, 0, Math.PI * 2);
-              ctx.stroke();
-            } else if (a.type === 'blimp') {
-              ctx.fillStyle = '#221538';
-              ctx.beginPath();
-              ctx.ellipse(screenAX, screenAY - 25, 56, 20, 0, 0, Math.PI * 2);
-              ctx.fill();
-              ctx.fillStyle = '#00f0ff';
-              ctx.font = 'bold 9px monospace';
-              ctx.fillText('N-CORP', screenAX - 16, screenAY - 22);
-
-              ctx.strokeStyle = '#ffe600';
-              ctx.lineWidth = 2;
-              ctx.beginPath();
-              ctx.moveTo(screenAX, screenAY - 3);
-              ctx.lineTo(screenAX, screenAY);
-              ctx.arc(screenAX, screenAY + 6, 6, 0, Math.PI * 2);
-              ctx.stroke();
-            } else {
-              ctx.strokeStyle = '#00f0ff';
-              ctx.lineWidth = 3;
-              ctx.beginPath();
-              ctx.arc(screenAX, screenAY, glow, 0, Math.PI * 2);
-              ctx.stroke();
-            }
-          }
-
-          // Obstacles
-          for (let obs of obstacles) {
-            const screenOX = obs.x - camX;
-            const screenOY = obs.y - camY;
-            if (screenOX < -60 || screenOX > V_WIDTH + 60) continue;
-
-            if (obs.type === 'low') {
-              ctx.fillStyle = '#443266';
-              ctx.fillRect(screenOX, screenOY, obs.width, obs.height);
-              ctx.fillStyle = '#ff0055';
-              ctx.fillRect(screenOX + 4, screenOY + 4, obs.width - 8, 6);
-              ctx.strokeStyle = '#665088';
-              ctx.lineWidth = 2;
-              ctx.beginPath();
-              ctx.arc(screenOX + obs.width * 0.5, screenOY + 20, 9, 0, Math.PI * 2);
-              ctx.stroke();
-            } else {
-              ctx.strokeStyle = '#554477';
-              ctx.lineWidth = 3;
-              ctx.beginPath();
-              ctx.moveTo(screenOX + 10, screenOY - 80);
-              ctx.lineTo(screenOX + 10, screenOY);
-              ctx.moveTo(screenOX + obs.width - 10, screenOY - 80);
-              ctx.lineTo(screenOX + obs.width - 10, screenOY);
-              ctx.stroke();
-
-              ctx.fillStyle = '#100a20';
-              ctx.fillRect(screenOX, screenOY, obs.width, obs.height);
-              ctx.strokeStyle = '#ff0055';
-              ctx.lineWidth = 2;
-              ctx.strokeRect(screenOX, screenOY, obs.width, obs.height);
-
-              ctx.fillStyle = '#ff2a6d';
-              ctx.font = 'bold 10px sans-serif';
-              ctx.fillText('DANGER', screenOX + 2, screenOY + 28);
-            }
-          }
-
-          // Collectibles
-          for (let orb of collectibles) {
-            if (orb.collected) continue;
-            const screenOrbX = orb.x - camX;
-            const screenOrbY = orb.y - camY;
-            if (screenOrbX < -40 || screenOrbX > V_WIDTH + 40) continue;
-
-            orb.pulse += 0.08;
-            const pulseSize = Math.sin(orb.pulse) * 3 + 10;
-
-            ctx.fillStyle = 'rgba(0, 240, 255, 0.35)';
-            ctx.beginPath();
-            ctx.arc(screenOrbX, screenOrbY, pulseSize + 6, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = '#00f0ff';
-            ctx.beginPath();
-            ctx.arc(screenOrbX, screenOrbY, pulseSize, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(screenOrbX - 2, screenOrbY - 2, pulseSize * 0.45, 0, Math.PI * 2);
-            ctx.fill();
-          }
-
-          for (let p of particles) {
-            p.draw(ctx, camX, camY);
-          }
-
-          if (player.webAttached) {
-            const screenPX = player.x - camX + player.width * 0.5;
-            const screenPY = player.y - camY + 12;
-            const screenAX = player.anchor.x - camX;
-            const screenAY = player.anchor.y - camY;
-
-            ctx.save();
-            ctx.strokeStyle = 'rgba(0, 240, 255, 0.45)';
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            ctx.moveTo(screenPX, screenPY);
-            const midX = (screenPX + screenAX) * 0.5 + (player.vx * 1.5);
-            const midY = (screenPY + screenAY) * 0.5;
-            ctx.quadraticCurveTo(midX, midY, screenAX, screenAY);
-            ctx.stroke();
-
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2.5;
-            ctx.beginPath();
-            ctx.moveTo(screenPX, screenPY);
-            ctx.quadraticCurveTo(midX, midY, screenAX, screenAY);
-            ctx.stroke();
-            ctx.restore();
-          }
-
-          // Hero
-          const screenHeroX = player.x - camX;
-          const screenHeroY = player.y - camY;
-
-          ctx.save();
-          if (player.invincibleTimer > 0 && Math.floor(player.invincibleTimer / 4) % 2 === 0) {
-            ctx.globalAlpha = 0.4;
-          }
-
-          if (player.sliding) {
-            ctx.fillStyle = '#d60036';
-            ctx.fillRect(screenHeroX - 8, screenHeroY + 4, 48, 16);
-            ctx.fillStyle = '#0066cc';
-            ctx.fillRect(screenHeroX + 28, screenHeroY + 8, 16, 12);
-            ctx.fillStyle = '#d60036';
-            ctx.beginPath();
-            ctx.arc(screenHeroX + 38, screenHeroY + 8, 10, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(screenHeroX + 40, screenHeroY + 6, 6, 3);
-          } else if (player.webAttached) {
-            const swingAngle = Math.atan2(player.vy, player.vx);
-            ctx.translate(screenHeroX + player.width * 0.5, screenHeroY + player.height * 0.5);
-            ctx.rotate(swingAngle * 0.6);
-
-            ctx.fillStyle = '#d60036';
-            ctx.fillRect(-12, -18, 24, 28);
-            ctx.fillStyle = '#0055bb';
-            ctx.fillRect(-12, -8, 6, 18);
-            ctx.fillRect(6, -8, 6, 18);
-            ctx.fillStyle = '#d60036';
-            ctx.fillRect(4, -22, 18, 6);
-            ctx.beginPath();
-            ctx.arc(0, -24, 11, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.moveTo(2, -26);
-            ctx.lineTo(9, -24);
-            ctx.lineTo(3, -22);
-            ctx.fill();
-            ctx.fillStyle = '#0055bb';
-            ctx.fillRect(-16, 10, 10, 22);
-            ctx.fillRect(-6, 12, 10, 18);
-          } else if (!player.grounded) {
-            ctx.translate(screenHeroX + player.width * 0.5, screenHeroY + player.height * 0.5);
-            const airAngle = Math.min(0.5, Math.max(-0.5, player.vy * 0.04));
-            ctx.rotate(airAngle);
-
-            ctx.fillStyle = '#d60036';
-            ctx.fillRect(-12, -18, 24, 28);
-            ctx.fillStyle = '#0055bb';
-            ctx.fillRect(-12, -8, 6, 18);
-            ctx.fillRect(6, -8, 6, 18);
-            ctx.beginPath();
-            ctx.arc(0, -24, 11, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(3, -26, 7, 4);
-            ctx.fillStyle = '#0055bb';
-            ctx.fillRect(-10, 10, 8, 16);
-            ctx.fillRect(2, 10, 8, 16);
-          } else {
-            player.animTimer += 0.28;
-            const legOffset = Math.sin(player.animTimer) * 14;
-
-            ctx.fillStyle = '#d60036';
-            ctx.beginPath();
-            ctx.arc(screenHeroX + 16, screenHeroY + 11, 11, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(screenHeroX + 20, screenHeroY + 8, 6, 4);
-
-            ctx.fillStyle = '#d60036';
-            ctx.fillRect(screenHeroX + 4, screenHeroY + 20, 24, 20);
-            ctx.fillStyle = '#0055bb';
-            ctx.fillRect(screenHeroX + 4, screenHeroY + 26, 6, 14);
-            ctx.fillRect(screenHeroX + 22, screenHeroY + 26, 6, 14);
-
-            ctx.fillStyle = '#0055bb';
-            ctx.fillRect(screenHeroX + 6 + legOffset * 0.5, screenHeroY + 40, 8, 14);
-            ctx.fillRect(screenHeroX + 16 - legOffset * 0.5, screenHeroY + 40, 8, 14);
-          }
-          ctx.restore();
-
-          // Villain
-          const villainScreenX = screenHeroX - (villain.distance * (isPortrait ? 6.5 : 8));
-          const villainScreenY = (villain.y - camY) + Math.sin(villain.animFloat) * 12;
-
-          ctx.save();
           if (Math.random() > 0.2) {
-            particles.push(new Particle(
-              player.x - (villain.distance * (isPortrait ? 6.5 : 8)) - 20, villain.y + 10,
-              -Math.random() * 4 - 2, (Math.random() - 0.5) * 3,
-              '#ff0033', 4, 15
-            ));
+            coins.push({ x: newX + 40 + Math.random() * (w - 80), y: height - h - 50, collected: false });
           }
+        }
 
-          ctx.fillStyle = '#110515';
-          ctx.beginPath();
-          ctx.moveTo(villainScreenX + 35, villainScreenY);
-          ctx.lineTo(villainScreenX - 50, villainScreenY - 24);
-          ctx.lineTo(villainScreenX - 35, villainScreenY);
-          ctx.lineTo(villainScreenX - 50, villainScreenY + 24);
-          ctx.closePath();
-          ctx.fill();
-          ctx.strokeStyle = '#ff0055';
-          ctx.lineWidth = 2.5;
-          ctx.stroke();
+        // Clean offscreen items
+        roofs = roofs.filter(r => r.x + r.w > player.x - 300);
+        coins = coins.filter(c => c.x > player.x - 300 && !c.collected);
 
-          ctx.fillStyle = '#00f0ff';
-          ctx.fillRect(villainScreenX - 45, villainScreenY - 14, 12, 6);
-          ctx.fillRect(villainScreenX - 45, villainScreenY + 8, 12, 6);
+        // Coin Collection
+        coins.forEach(c => {
+          let dist = Math.hypot(player.x - c.x, player.y - c.y);
+          if (dist < player.radius + 15) {
+            c.collected = true;
+            runCoins++;
+            playSound('coin');
+          }
+        });
 
-          ctx.fillStyle = '#20052b';
-          ctx.beginPath();
-          ctx.arc(villainScreenX - 5, villainScreenY - 12, 14, 0, Math.PI * 2);
-          ctx.fill();
+        // Nemesis AI Pursuit
+        nemesis.x += (player.x - 180 - nemesis.x) * 0.05;
+        if (player.x - nemesis.x < 110) {
+          if (invincibilityTimer <= 0) {
+            strikeCount++;
+            invincibilityTimer = 90; // 1.5s invincibility frames
+            playSound('hit');
+            nemesis.x -= 80;
+            if (strikeCount >= 3) {
+              handleDeath();
+            }
+          }
+        }
 
-          ctx.fillStyle = '#ff0033';
-          ctx.shadowColor = '#ff0033';
-          ctx.shadowBlur = 10;
-          ctx.fillRect(villainScreenX + 2, villainScreenY - 15, 8, 4);
+        if (invincibilityTimer > 0) invincibilityTimer--;
 
-          if (villain.distance < 28) {
-            ctx.strokeStyle = '#ff0055';
-            ctx.lineWidth = 3;
+        // HUD Updates
+        document.getElementById('hudDistance').innerText = Math.floor(distance) + 'm';
+        document.getElementById('hudCoins').innerText = '🪙 ' + runCoins;
+        document.getElementById('hudZone').innerText = currentZone.name;
+        
+        let threatEl = document.getElementById('hudThreat');
+        let vignette = document.getElementById('danger-vignette');
+        let gapToNemesis = player.x - nemesis.x;
+        if (gapToNemesis < 180) {
+          threatEl.innerText = 'Threat: CRITICAL ⚠️';
+          vignette.classList.add('active');
+        } else if (gapToNemesis < 280) {
+          threatEl.innerText = 'Threat: WARNING ⚡';
+          vignette.classList.add('active');
+        } else {
+          threatEl.innerText = 'Threat: Safe';
+          vignette.classList.remove('active');
+        }
+      }
+
+      function handleDeath() {
+        gameState = 'GAMEOVER';
+        bankCoins += runCoins;
+        localStorage.setItem('rooftop_bankCoins', bankCoins);
+        if (distance > highDistance) {
+          highDistance = Math.floor(distance);
+          localStorage.setItem('rooftop_highDistance', highDistance);
+        }
+        document.getElementById('hudLayer').style.display = 'none';
+        document.getElementById('finalStats').innerText = `Distance: ${Math.floor(distance)}m | Coins: ${runCoins}`;
+        document.getElementById('gameOverScreen').classList.remove('hidden');
+      }
+
+      function render() {
+        ctx.fillStyle = currentZone.bg;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.save();
+        ctx.translate(-player.x + width * 0.3, 0);
+
+        // Render Roofs
+        roofs.forEach(r => {
+          ctx.fillStyle = '#151026';
+          ctx.fillRect(r.x, r.y, r.w, r.h);
+          ctx.strokeStyle = currentZone.color;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(r.x, r.y, r.w, r.h);
+        });
+
+        // Render Coins
+        coins.forEach(c => {
+          if (!c.collected) {
+            ctx.fillStyle = '#ffd700';
             ctx.beginPath();
-            ctx.moveTo(villainScreenX + 15, villainScreenY - 8);
-            ctx.lineTo(villainScreenX + 45, villainScreenY - 4);
-            ctx.lineTo(villainScreenX + 55, villainScreenY - 12);
-            ctx.moveTo(villainScreenX + 45, villainScreenY - 4);
-            ctx.lineTo(villainScreenX + 55, villainScreenY + 4);
-            ctx.stroke();
-
-            ctx.strokeStyle = 'rgba(255, 0, 50, 0.4)';
+            ctx.arc(c.x, c.y, 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
             ctx.lineWidth = 1.5;
-            ctx.setLineDash([8, 8]);
-            ctx.beginPath();
-            ctx.moveTo(villainScreenX + 45, villainScreenY - 4);
-            ctx.lineTo(screenHeroX, screenHeroY + player.height * 0.5);
             ctx.stroke();
-            ctx.setLineDash([]);
-          }
-
-          ctx.restore();
-          ctx.restore();
-        }
-
-        function loop(timestamp) {
-          const dt = Math.min(32, timestamp - lastTime) / 1000;
-          lastTime = timestamp;
-
-          update(dt);
-          render();
-
-          requestAnimationFrame(loop);
-        }
-
-        function recomputeKeysFromTouches() {
-          let hasSwing = false;
-          let hasJump = false;
-          let hasSlide = false;
-
-          for (let action of touchActionMap.values()) {
-            if (action === 'swing') hasSwing = true;
-            if (action === 'jump') hasJump = true;
-            if (action === 'slide') hasSlide = true;
-          }
-
-          keys.swing = hasSwing;
-          keys.slide = hasSlide;
-          if (hasJump) keys.jump = true;
-
-          btnJump.classList.toggle('active', hasJump);
-          btnSlide.classList.toggle('active', hasSlide);
-          btnSwing.classList.toggle('active', hasSwing);
-        }
-
-        function handleTouchStart(e) {
-          sound.init();
-
-          for (let i = 0; i < e.changedTouches.length; i++) {
-            const t = e.changedTouches[i];
-            const target = document.elementFromPoint(t.clientX, t.clientY);
-
-            if (target && (target.closest('.icon-btn') || target.closest('.game-modal') || target.closest('#btn-start-game') || target.closest('#btn-restart-game') || target.closest('#btn-resume-game') || target.closest('#btn-pause-restart'))) {
-              continue;
-            }
-
-            if (gameState === 'START' || gameState === 'GAMEOVER') {
-              startNewGame();
-              return;
-            }
-
-            if (gameState === 'PAUSED') {
-              return;
-            }
-
-            if (target && (target.id === 'btn-jump' || target.closest('#btn-jump'))) {
-              touchActionMap.set(t.identifier, 'jump');
-            } else if (target && (target.id === 'btn-slide' || target.closest('#btn-slide'))) {
-              touchActionMap.set(t.identifier, 'slide');
-              sound.playSlide();
-            } else {
-              touchActionMap.set(t.identifier, 'swing');
-            }
-          }
-
-          recomputeKeysFromTouches();
-        }
-
-        function handleTouchMove(e) {
-          e.preventDefault();
-        }
-
-        function handleTouchEnd(e) {
-          for (let i = 0; i < e.changedTouches.length; i++) {
-            const t = e.changedTouches[i];
-            touchActionMap.delete(t.identifier);
-          }
-          recomputeKeysFromTouches();
-        }
-
-        window.addEventListener('touchstart', handleTouchStart, { passive: false });
-        window.addEventListener('touchmove', handleTouchMove, { passive: false });
-        window.addEventListener('touchend', handleTouchEnd, { passive: false });
-        window.addEventListener('touchcancel', handleTouchEnd, { passive: false });
-
-        function onKeyDown(e) {
-          sound.init();
-
-          if (e.code === 'KeyP' || e.code === 'Escape') {
-            e.preventDefault();
-            if (gameState === 'PLAYING') {
-              pauseGame();
-            } else if (gameState === 'PAUSED') {
-              resumeGame();
-            }
-            return;
-          }
-
-          if (gameState === 'PAUSED') return;
-
-          if (e.code === 'Space') {
-            e.preventDefault();
-            if (gameState === 'GAMEOVER' || gameState === 'START') {
-              startNewGame();
-              return;
-            }
-            keys.swing = true;
-          } else if (e.code === 'ArrowUp' || e.code === 'KeyW') {
-            e.preventDefault();
-            keys.jump = true;
-          } else if (e.code === 'ArrowDown' || e.code === 'KeyS') {
-            e.preventDefault();
-            keys.slide = true;
-            sound.playSlide();
-          } else if (e.code === 'Enter') {
-            if (gameState === 'GAMEOVER' || gameState === 'START') {
-              startNewGame();
-            }
-          }
-        }
-
-        function onKeyUp(e) {
-          if (gameState === 'PAUSED') return;
-          if (e.code === 'Space') {
-            keys.swing = false;
-          } else if (e.code === 'ArrowUp' || e.code === 'KeyW') {
-            keys.jump = false;
-          } else if (e.code === 'ArrowDown' || e.code === 'KeyS') {
-            keys.slide = false;
-          }
-        }
-
-        window.addEventListener('keydown', onKeyDown);
-        window.addEventListener('keyup', onKeyUp);
-
-        canvas.addEventListener('mousedown', (e) => {
-          sound.init();
-          if (gameState !== 'PLAYING') return;
-          if (e.button === 0) {
-            keys.swing = true;
           }
         });
 
-        window.addEventListener('mouseup', (e) => {
-          if (e.button === 0) {
-            keys.swing = false;
-          }
-        });
-
-        function pauseGame() {
-          if (gameState !== 'PLAYING') return;
-          gameState = 'PAUSED';
-          keys.swing = false;
-          keys.slide = false;
-          keys.jump = false;
-          touchActionMap.clear();
-          recomputeKeysFromTouches();
-          pauseDistance.textContent = Math.floor(gameStats.distance) + ' m';
-          pauseScore.textContent = gameStats.score;
-          modalPause.classList.add('active');
+        // Render Web Rope
+        if (player.isSwinging && player.ropeAnchor) {
+          ctx.strokeStyle = getRopeColor();
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(player.x, player.y);
+          ctx.lineTo(player.ropeAnchor.x, player.ropeAnchor.y);
+          ctx.stroke();
         }
 
-        function resumeGame() {
-          if (gameState !== 'PAUSED') return;
-          modalPause.classList.remove('active');
-          gameState = 'PLAYING';
-          lastTime = performance.now();
-        }
+        // Render Player
+        ctx.fillStyle = invincibilityTimer > 0 && Math.floor(Date.now() / 50) % 2 === 0 ? '#fff' : getSuitColor();
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
 
-        function startNewGame() {
-          sound.init();
-          modalStart.classList.remove('active');
-          modalGameOver.classList.remove('active');
-          modalPause.classList.remove('active');
-          resetGame();
-          gameState = 'PLAYING';
-          lastTime = performance.now();
-        }
+        // Render Nemesis
+        ctx.fillStyle = '#ff0055';
+        ctx.beginPath();
+        ctx.arc(nemesis.x, player.y, 18, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
 
-        btnStart.addEventListener('click', startNewGame);
-        btnRestart.addEventListener('click', startNewGame);
-        btnResume.addEventListener('click', (e) => {
-          e.stopPropagation();
-          sound.init();
-          resumeGame();
-        });
-        btnPauseRestart.addEventListener('click', (e) => {
-          e.stopPropagation();
-          startNewGame();
-        });
+        ctx.restore();
+      }
 
-        btnPause.addEventListener('click', (e) => {
-          e.stopPropagation();
-          sound.init();
-          if (gameState === 'PLAYING') {
-            pauseGame();
-          } else if (gameState === 'PAUSED') {
-            resumeGame();
-          }
-        });
-
-        btnSound.addEventListener('click', (e) => {
-          e.stopPropagation();
-          sound.init();
-          const isMuted = sound.toggleMute();
-          soundIcon.textContent = isMuted ? '🔇' : '🔊';
-        });
-
-        let deferredPrompt = null;
-        const btnInstall = document.getElementById('btn-install');
-        window.addEventListener('beforeinstallprompt', (e) => {
-          e.preventDefault();
-          deferredPrompt = e;
-          if (btnInstall) btnInstall.style.display = 'flex';
-        });
-        if (btnInstall) {
-          btnInstall.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-              btnInstall.style.display = 'none';
-              deferredPrompt = null;
-            }
-          });
-        }
-        window.addEventListener('appinstalled', () => {
-          if (btnInstall) btnInstall.style.display = 'none';
-          deferredPrompt = null;
-        });
-
-        function resizeCanvas() {
-          const w = window.innerWidth;
-          const h = window.innerHeight;
-          isPortrait = h > w;
-
-          if (isPortrait) {
-            V_WIDTH = 720;
-            V_HEIGHT = Math.min(1380, Math.max(920, Math.round(720 * (h / w))));
-          } else {
-            V_HEIGHT = 720;
-            V_WIDTH = Math.min(1440, Math.max(960, Math.round(720 * (w / h))));
-          }
-
-          const dpr = Math.min(window.devicePixelRatio || 1, 2);
-          canvas.width = Math.round(V_WIDTH * dpr);
-          canvas.height = Math.round(V_HEIGHT * dpr);
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-          canvas.style.width = `${w}px`;
-          canvas.style.height = `${h}px`;
-
-          initStars();
-        }
-
-        window.addEventListener('resize', resizeCanvas);
-        window.addEventListener('orientationchange', () => {
-          setTimeout(resizeCanvas, 100);
-        });
-
-        resizeCanvas();
-        resetGame();
+      function loop() {
+        update();
+        render();
         requestAnimationFrame(loop);
-      })();
+      }
+      requestAnimationFrame(loop);
     </script>
   </body>
-  </html>
+</html>
