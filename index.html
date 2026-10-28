@@ -126,6 +126,7 @@
       text-shadow: 0 0 8px rgba(255, 230, 0, 0.5);
     }
 
+    /* Threat Meter & Dynamic Zone Progression */
     .threat-container {
       display: flex;
       flex-direction: column;
@@ -149,454 +150,4646 @@
       white-space: nowrap;
     }
 
-    .zone-badge.zone-1 { background: rgba(0, 240, 255, 0.15); border: 1px solid rgba(0, 240, 255, 0.5); color: #00f0ff; }
-    .zone-badge.zone-2 { background: rgba(255, 0, 85, 0.15); border: 1px solid rgba(255, 0, 85, 0.5); color: #ff0055; }
-    .zone-badge.zone-3 { background: rgba(180, 0, 255, 0.15); border: 1px solid rgba(180, 0, 255, 0.5); color: #c800ff; }
+    .zone-badge.zone-1 {
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid rgba(0, 240, 255, 0.5);
+      color: #00f0ff;
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+    }
+
+    .zone-badge.zone-2 {
+      background: rgba(255, 119, 0, 0.15);
+      border: 1px solid rgba(255, 119, 0, 0.6);
+      color: #ffaa00;
+      box-shadow: 0 0 8px rgba(255, 119, 0, 0.25);
+    }
+
+    .zone-badge.zone-3 {
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid rgba(0, 240, 255, 0.7);
+      color: #38bdf8;
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+      animation: pulseZone3 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseZone3 {
+      0%, 100% { border-color: rgba(0, 240, 255, 0.7); box-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
+      50% { border-color: rgba(168, 85, 247, 0.9); box-shadow: 0 0 14px rgba(168, 85, 247, 0.5); }
+    }
 
     .threat-bar-wrap {
       width: 100%;
-      height: 7px;
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 6px;
+      height: 10px;
+      background: rgba(20, 10, 30, 0.85);
+      border: 1px solid rgba(255, 50, 80, 0.4);
+      border-radius: 5px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
       margin-top: 3px;
     }
 
-    .threat-fill {
+    .threat-bar-fill {
       height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #00f0ff, #ffe600, #ff0055);
-      border-radius: 6px;
-      transition: width 0.2s linear;
+      width: 100%;
+      background: linear-gradient(90deg, #00f0ff, #00ff88);
+      box-shadow: 0 0 10px #00f0ff;
+      transition: width 0.2s ease-out, background 0.3s;
     }
 
-    .hud-controls-top {
+    .threat-status {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      color: #00f0ff;
+      text-shadow: 0 0 6px rgba(0, 240, 255, 0.6);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    /* Active Power-up Indicator in HUD */
+    .hud-powerup-badge {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      margin-top: 4px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      background: rgba(255, 230, 0, 0.15);
+      border: 1px solid #ffe600;
+      color: #ffe600;
+      box-shadow: 0 0 10px rgba(255, 230, 0, 0.3);
+      animation: pulsePowerup 1s infinite alternate;
+    }
+
+    .hud-powerup-badge.active {
+      display: inline-flex;
+    }
+
+    @keyframes pulsePowerup {
+      0% { transform: scale(0.97); }
+      100% { transform: scale(1.03); }
+    }
+
+    /* Top Right Controls */
+    .controls-top {
       display: flex;
-      gap: 6px;
+      gap: 5px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .icon-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: rgba(25, 18, 48, 0.85);
+      background: rgba(20, 15, 35, 0.82);
       border: 1px solid rgba(255, 255, 255, 0.2);
       color: #fff;
+      padding: 6px 9px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: bold;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      pointer-events: auto;
-      font-size: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      transition: transform 0.1s, background 0.2s;
+      gap: 4px;
+      touch-action: manipulation;
     }
 
-    .icon-btn:active {
-      transform: scale(0.92);
-      background: rgba(45, 30, 80, 0.95);
+    .icon-btn:hover, .icon-btn:active {
+      background: rgba(255, 42, 109, 0.3);
+      border-color: #ff2a6d;
     }
 
-    /* On-Screen Touch Controls */
-    .touch-controls {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      pointer-events: auto;
-      padding-bottom: env(safe-area-inset-bottom, 10px);
-    }
-
-    .action-btn {
-      width: 120px;
-      height: 70px;
-      border-radius: 18px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      touch-action: none;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-      transition: transform 0.08s ease, filter 0.08s ease;
-    }
-
-    .action-btn:active, .action-btn.active {
-      transform: scale(0.93);
-      filter: brightness(1.3);
-    }
-
-    .action-btn.jump-btn {
-      background: linear-gradient(135deg, rgba(0, 240, 255, 0.35), rgba(0, 100, 255, 0.45));
-      border-color: #00f0ff;
-    }
-
-    .action-btn.swing-btn {
-      background: linear-gradient(135deg, rgba(255, 0, 85, 0.35), rgba(200, 0, 150, 0.45));
-      border-color: #ff0055;
-    }
-
-    .btn-main-txt {
-      font-size: 17px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .btn-sub-txt {
-      font-size: 9px;
-      opacity: 0.75;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-
-    /* Modals & Overlays */
-    .modal-overlay {
+    /* Danger Vignette Alert */
+    #danger-vignette {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(6, 4, 14, 0.88);
+      pointer-events: none;
+      box-shadow: inset 60px 0 90px -20px rgba(255, 0, 60, 0);
+      transition: box-shadow 0.2s ease-out;
+      z-index: 5;
+    }
+
+    /* Floating Popups */
+    #combo-popup {
+      position: absolute;
+      left: 50%;
+      top: 26%;
+      transform: translate(-50%, -50%) scale(0.5);
+      color: #ffea00;
+      font-size: 26px;
+      font-weight: 900;
+      font-style: italic;
+      text-shadow: 0 0 15px #ff5500, 2px 2px 0 #000;
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+      z-index: 20;
+      white-space: nowrap;
+    }
+
+    #combo-popup.show {
+      transform: translate(-50%, -50%) scale(1.1);
+      opacity: 1;
+    }
+
+    /* Screen Tap Hint */
+    .screen-tap-hint {
+      position: absolute;
+      bottom: 125px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10, 6, 25, 0.75);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #00f0ff;
+      letter-spacing: 0.8px;
+      pointer-events: none;
+      animation: pulseHint 2s infinite ease-in-out;
+      white-space: nowrap;
+      z-index: 15;
+    }
+
+    @keyframes pulseHint {
+      0%, 100% { opacity: 0.45; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 0.9; transform: translateX(-50%) translateY(-4px); }
+    }
+
+    /* Mobile On-Screen Touch Control Buttons */
+    .mobile-touch-bar {
+      position: absolute;
+      bottom: calc(env(safe-area-inset-bottom, 12px) + 16px);
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      padding: 0 18px;
+      pointer-events: none;
+      z-index: 40;
+    }
+
+    .touch-ctrl-group {
+      display: flex;
+      gap: 14px;
+      align-items: flex-end;
+      pointer-events: auto;
+    }
+
+    .touch-btn {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      background: rgba(18, 11, 35, 0.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 2.5px solid rgba(0, 240, 255, 0.6);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 0 12px rgba(0, 240, 255, 0.2);
+      cursor: pointer;
+      touch-action: none;
+      user-select: none;
+      transition: transform 0.1s, background-color 0.1s, border-color 0.1s;
+    }
+
+    .touch-btn .touch-icon {
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    .touch-btn .touch-label {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+
+    .touch-btn .touch-sub {
+      font-size: 8px;
+      opacity: 0.7;
+      font-weight: 700;
+    }
+
+    .touch-btn.jump-btn {
+      border-color: rgba(0, 240, 255, 0.75);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 0 12px rgba(0, 240, 255, 0.25);
+    }
+    .touch-btn.jump-btn .touch-label { color: #00f0ff; }
+    .touch-btn.jump-btn:active, .touch-btn.jump-btn.active {
+      background: rgba(0, 240, 255, 0.65);
+      border-color: #fff;
+      transform: scale(0.92);
+    }
+
+    .touch-btn.swing-btn {
+      border-color: rgba(255, 42, 109, 0.8);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 0 12px rgba(255, 42, 109, 0.3);
+    }
+    .touch-btn.swing-btn .touch-label { color: #ff2a6d; }
+    .touch-btn.swing-btn:active, .touch-btn.swing-btn.active {
+      background: rgba(255, 42, 109, 0.7);
+      border-color: #fff;
+      transform: scale(0.92);
+    }
+
+    /* Modals & Overlays */
+    .modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(5, 3, 10, 0.88);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 100;
       pointer-events: auto;
-      transition: opacity 0.25s ease;
-    }
-
-    .modal-overlay.hidden {
-      display: none;
       opacity: 0;
-      pointer-events: none;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s;
+      z-index: 100;
+      padding: 16px;
     }
 
-    .modal-card {
-      background: linear-gradient(180deg, #18112c 0%, #0d081b 100%);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 20px;
-      padding: 24px 22px;
-      max-width: 480px;
-      width: 92%;
+    .modal-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .game-modal {
+      background: linear-gradient(145deg, #180e2e, #0e071c);
+      border: 2px solid #ff2a6d;
+      box-shadow: 0 0 40px rgba(255, 42, 109, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.1);
+      border-radius: 18px;
+      padding: 22px 24px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
       text-align: center;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.15);
+      transform: scale(0.95);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* Side-to-Side Carousel Navigation for Hero Locker */
-    .carousel-section {
-      margin-bottom: 18px;
+    .modal-backdrop.active .game-modal {
+      transform: scale(1);
     }
 
-    .carousel-header {
+    /* Studio Branding Header Banner */
+    .studio-brand-banner {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
+      background: linear-gradient(90deg, rgba(255, 42, 109, 0.18) 0%, rgba(0, 240, 255, 0.18) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      border-radius: 10px;
+      padding: 6px 12px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .studio-brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .studio-brand-name {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: #00f0ff;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+    }
+
+    .studio-brand-sub {
+      font-size: 9px;
+      color: #d8cdec;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .studio-badge-pill {
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      background: #ffe600;
+      color: #0a0515;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .modal-title {
+      font-size: 32px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: linear-gradient(180deg, #ffffff 20%, #ff2a6d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+
+    .modal-subtitle {
+      color: #05d9e8;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .stat-box .num {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffea00;
+      font-family: 'Courier New', monospace;
+    }
+
+    .stat-box .lbl {
+      font-size: 9px;
+      color: #9d8ec2;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 3px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff2a6d 0%, #9b00e8 100%);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 20px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 6px 20px rgba(255, 42, 109, 0.5);
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary-locker {
+      background: linear-gradient(135deg, #00f0ff 0%, #7928ca 100%) !important;
+      box-shadow: 0 4px 18px rgba(0, 240, 255, 0.35) !important;
+    }
+
+    .btn-tertiary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      color: #c9b9e6;
+    }
+
+    /* Start Screen Instructions */
+    .instruction-section {
+      margin: 10px 0;
+      text-align: left;
+    }
+
+    .instruction-box {
+      background: rgba(10, 6, 25, 0.7);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-radius: 10px;
+      padding: 9px 12px;
       margin-bottom: 8px;
     }
 
-    .carousel-title {
+    .instruction-box.mobile-box {
+      border-color: rgba(255, 42, 109, 0.4);
+      background: rgba(255, 42, 109, 0.05);
+    }
+
+    .instruction-heading {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+
+    .instruction-row {
+      font-size: 11.5px;
+      color: #d8cdec;
+      line-height: 1.45;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .key-tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      padding: 0 5px;
+      font-size: 10px;
+      font-weight: bold;
+      color: #00f0ff;
+      white-space: nowrap;
+    }
+
+    .key-tag.pink {
+      color: #ff2a6d;
+      border-color: rgba(255, 42, 109, 0.4);
+    }
+
+    /* Rewarded Ads */
+    .rewarded-ads-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .btn-rewarded {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(20, 12, 38, 0.85);
+      border: 1.5px solid rgba(0, 240, 255, 0.5);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+      width: 100%;
+    }
+
+    .btn-rewarded:hover:not(:disabled),
+    .btn-rewarded:active:not(:disabled) {
+      transform: scale(0.98);
+      filter: brightness(1.15);
+    }
+
+    .btn-rewarded:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      filter: grayscale(0.6);
+    }
+
+    .btn-rewarded.revive-btn {
+      border-color: #00ff88;
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.15) 0%, rgba(0, 240, 255, 0.08) 100%);
+      box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+    }
+
+    .btn-rewarded.double-btn {
+      border-color: #ffe600;
+      background: linear-gradient(135deg, rgba(255, 230, 0, 0.15) 0%, rgba(255, 120, 0, 0.08) 100%);
+      box-shadow: 0 4px 15px rgba(255, 230, 0, 0.2);
+    }
+
+    .reward-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .reward-content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .reward-title {
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .revive-btn .reward-title { color: #00ff88; }
+    .double-btn .reward-title { color: #ffe600; }
+
+    .reward-sub {
+      font-size: 9.5px;
+      color: #c9b9e6;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Simulated Ad Fallback Modal */
+    #modal-ad-simulated {
+      z-index: 150;
+    }
+
+    .ad-sim-box {
+      background: linear-gradient(145deg, #160a28, #0b0517);
+      border: 2px solid #00f0ff;
+      border-radius: 16px;
+      padding: 24px 20px;
+      max-width: 380px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.4);
+    }
+
+    .ad-timer-circle {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      border: 3px solid #00f0ff;
+      margin: 14px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 900;
+      font-family: 'Courier New', monospace;
+      color: #ffe600;
+      background: rgba(0, 240, 255, 0.08);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+    }
+
+    .ad-progress-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 12px 0 16px 0;
+    }
+
+    .ad-progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00f0ff, #00ff88);
+      transition: width 0.1s linear;
+    }
+
+    .btn-ad-cancel {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #b5a4d4;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: all 0.2s;
+    }
+
+    .btn-ad-cancel:hover {
+      background: rgba(255, 0, 85, 0.2);
+      color: #ff3366;
+      border-color: #ff3366;
+    }
+
+    /* Character Locker Modal with Side-to-Side Carousel Navigation */
+    .locker-modal {
+      max-width: 580px;
+      max-height: 90vh;
+      padding: 20px 22px;
+      border-color: #00f0ff;
+      box-shadow: 0 0 50px rgba(0, 240, 255, 0.4), inset 0 0 25px rgba(0, 240, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .locker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      padding-bottom: 10px;
+      flex-shrink: 0;
+    }
+
+    .locker-orb-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 230, 0, 0.12);
+      border: 1.5px solid #ffe600;
+      border-radius: 20px;
+      padding: 6px 14px;
+      box-shadow: 0 0 15px rgba(255, 230, 0, 0.25);
+      flex-shrink: 0;
+    }
+
+    .locker-orb-badge .orb-icon { font-size: 18px; }
+    .locker-orb-badge .orb-count {
+      font-size: 18px;
+      font-weight: 900;
+      color: #ffe600;
+      font-family: 'Courier New', monospace;
+    }
+    .locker-orb-badge .orb-label {
+      font-size: 10px;
+      font-weight: 800;
+      color: #c9b9e6;
+      letter-spacing: 0.8px;
+    }
+
+    /* Locker Tabs */
+    .locker-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+      flex-shrink: 0;
+    }
+
+    .locker-tab-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #9d8ec2;
       font-size: 13px;
       font-weight: 800;
-      text-transform: uppercase;
       letter-spacing: 1px;
-      color: #9d8ec2;
+      padding: 9px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .locker-tab-btn:hover {
+      background: rgba(0, 240, 255, 0.1);
+      color: #fff;
+    }
+
+    .locker-tab-btn.active {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(121, 40, 202, 0.25) 100%);
+      border-color: #00f0ff;
+      color: #00f0ff;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+    }
+
+    /* Side-to-Side Card Carousel Navigation Bar & Slide Container */
+    .carousel-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(0, 240, 255, 0.22);
+      border-radius: 10px;
+      padding: 6px 12px;
+      flex-shrink: 0;
+    }
+
+    .carousel-nav-btn {
+      background: rgba(0, 240, 255, 0.15);
+      border: 1.5px solid rgba(0, 240, 255, 0.5);
+      color: #00f0ff;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .carousel-nav-btn:hover:not(:disabled),
+    .carousel-nav-btn:active:not(:disabled) {
+      background: rgba(0, 240, 255, 0.35);
+      border-color: #00f0ff;
+      transform: scale(1.04);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+    }
+
+    .carousel-nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      border-color: rgba(255, 255, 255, 0.1);
+      color: #776e8a;
+      transform: none;
+      box-shadow: none;
     }
 
     .carousel-counter {
       font-size: 11px;
-      font-weight: 700;
-      color: #00f0ff;
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      padding: 2px 7px;
-      border-radius: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #ffe600;
+      text-transform: uppercase;
+      font-family: 'Courier New', Courier, monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
     }
 
-    .carousel-container {
+    .carousel-track-wrapper {
       position: relative;
-      display: flex;
-      align-items: center;
-      gap: 6px;
       width: 100%;
-    }
-
-    .carousel-nav-btn {
-      width: 34px;
-      height: 80px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #fff;
-      font-size: 18px;
-      font-weight: 900;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.15s, transform 0.1s;
-      flex-shrink: 0;
-    }
-
-    .carousel-nav-btn:hover {
-      background: rgba(0, 240, 255, 0.2);
-      border-color: #00f0ff;
-    }
-
-    .carousel-nav-btn:active {
-      transform: scale(0.92);
-    }
-
-    .carousel-wrapper {
-      flex: 1;
       overflow: hidden;
       border-radius: 12px;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 6px;
       touch-action: pan-y;
+      flex: 1 1 auto;
+      min-height: 0;
     }
 
-    .carousel-track {
+    .carousel-slide-track {
       display: flex;
-      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      flex-direction: row !important;
+      transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
       width: 100%;
+      height: 100%;
     }
 
-    .card-item {
-      min-width: 100%;
-      flex-shrink: 0;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
+    .carousel-slide-track > .hero-card,
+    .carousel-slide-track > .perk-card {
+      flex: 0 0 100%;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    .locker-tab-content {
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      flex: 1 1 auto;
+      min-height: 0;
+      margin-bottom: 10px;
+    }
+
+    .locker-tab-content.active {
+      display: flex;
+    }
+
+    /* Hero Cards */
+    .hero-card {
+      background: rgba(18, 12, 36, 0.85);
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
       padding: 12px 14px;
       display: flex;
       flex-direction: column;
+      gap: 10px;
+      text-align: left;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .hero-card.equipped {
+      border-color: #00ff88;
+      background: linear-gradient(145deg, rgba(0, 255, 136, 0.1), rgba(18, 12, 36, 0.92));
+      box-shadow: 0 0 18px rgba(0, 255, 136, 0.25);
+    }
+
+    .hero-card.locked {
+      border-color: rgba(255, 255, 255, 0.08);
+      opacity: 0.9;
+    }
+
+    .hero-card-header {
+      display: flex;
       align-items: center;
-      text-align: center;
-      gap: 6px;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    .card-item.selected {
-      border-color: #00f0ff;
-      background: rgba(0, 240, 255, 0.08);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-    }
-
-    .card-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
+    .hero-avatar-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 22px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      border: 2px solid;
+      flex-shrink: 0;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
     }
 
-    .card-name {
+    .hero-info {
+      flex: 1;
+    }
+
+    .hero-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-name {
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 900;
+      letter-spacing: 0.8px;
       color: #fff;
     }
 
-    .card-desc {
-      font-size: 11px;
-      color: #a097ba;
-      line-height: 1.3;
-    }
-
-    .card-action-btn {
-      margin-top: 4px;
-      padding: 6px 16px;
-      border-radius: 8px;
-      font-size: 12px;
+    .hero-tag {
+      font-size: 9px;
       font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
       text-transform: uppercase;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.1s;
+      letter-spacing: 0.5px;
     }
 
-    .card-action-btn.btn-equipped {
-      background: rgba(0, 240, 255, 0.2);
+    .hero-tag.tag-equipped {
+      background: rgba(0, 255, 136, 0.2);
+      color: #00ff88;
+      border: 1px solid #00ff88;
+    }
+
+    .hero-tag.tag-unlocked {
+      background: rgba(0, 240, 255, 0.15);
       color: #00f0ff;
       border: 1px solid #00f0ff;
-      cursor: default;
     }
 
-    .card-action-btn.btn-select {
-      background: #00f0ff;
-      color: #05030a;
+    .hero-tag.tag-locked {
+      background: rgba(255, 230, 0, 0.15);
+      color: #ffe600;
+      border: 1px solid #ffe600;
     }
 
-    .card-action-btn.btn-buy {
-      background: #ffe600;
-      color: #05030a;
+    .hero-desc {
+      font-size: 11px;
+      color: #c9b9e6;
+      margin-top: 2px;
+      line-height: 1.35;
     }
 
-    .brand-pill {
+    .hero-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .stat-item-lbl {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #9d8ec2;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-item-val {
+      color: #00f0ff;
+      font-weight: 900;
+    }
+
+    .stat-bar-track {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .stat-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #00f0ff, #ff2a6d);
+    }
+
+    .hero-special-perk {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #ffe600;
+      background: rgba(255, 230, 0, 0.08);
+      border: 1px dashed rgba(255, 230, 0, 0.4);
+      border-radius: 6px;
+      padding: 5px 8px;
+    }
+
+    .hero-action-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-locker-action {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      padding: 8px 18px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      touch-action: manipulation;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 0, 85, 0.15);
-      border: 1px solid rgba(255, 0, 85, 0.4);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 10px;
-      font-weight: 900;
-      letter-spacing: 1.5px;
-      color: #ff0055;
-      text-transform: uppercase;
-      margin-bottom: 8px;
     }
 
-    .modal-btn-primary {
-      width: 100%;
-      padding: 12px;
+    .btn-locker-action.btn-equip {
+      background: linear-gradient(135deg, #00f0ff, #0066ff);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 240, 255, 0.3);
+    }
+
+    .btn-locker-action.btn-equip:hover { filter: brightness(1.2); }
+
+    .btn-locker-action.btn-equipped {
+      background: rgba(0, 255, 136, 0.15);
+      border: 1.5px solid #00ff88;
+      color: #00ff88;
+      cursor: default;
+    }
+
+    .btn-locker-action.btn-unlock {
+      background: linear-gradient(135deg, #ffe600, #ff7700);
+      color: #110515;
+      box-shadow: 0 2px 10px rgba(255, 230, 0, 0.35);
+    }
+
+    .btn-locker-action.btn-unlock:hover:not(:disabled) {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
+    }
+
+    .btn-locker-action.btn-unlock:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      filter: grayscale(0.7);
+    }
+
+    /* Gear Perk Cards */
+    .perk-card {
+      background: rgba(18, 12, 36, 0.85);
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
       border-radius: 12px;
-      font-size: 15px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      text-align: left;
+    }
+
+    .perk-card.owned {
+      border-color: #00ff88;
+      background: linear-gradient(145deg, rgba(0, 255, 136, 0.1), rgba(18, 12, 36, 0.92));
+    }
+
+    .perk-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .perk-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1.5px solid #00f0ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+      box-shadow: 0 0 14px rgba(0, 240, 255, 0.2);
+    }
+
+    .perk-card.owned .perk-icon-box {
+      border-color: #00ff88;
+      background: rgba(0, 255, 136, 0.12);
+      box-shadow: 0 0 14px rgba(0, 255, 136, 0.2);
+    }
+
+    .perk-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .perk-name {
+      font-size: 14px;
       font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      background: linear-gradient(90deg, #00f0ff, #0077ff);
-      color: #05030a;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0, 240, 255, 0.4);
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    .perk-desc {
+      font-size: 11px;
+      color: #c9b9e6;
+      line-height: 1.35;
+    }
+
+    .locker-footer {
       margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    /* Studio Information Modal */
+    .credits-box {
+      background: rgba(10, 6, 25, 0.7);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-radius: 12px;
+      padding: 14px 16px;
+      text-align: left;
+      margin: 12px 0;
+      line-height: 1.6;
+      font-size: 12px;
+    }
+
+    .credits-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 7px 0;
+    }
+
+    .credits-item:last-child {
+      border-bottom: none;
+    }
+
+    .credits-key {
+      color: #9d8ec2;
+      font-weight: 700;
+    }
+
+    .credits-val {
+      color: #00f0ff;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    @media (max-width: 600px) {
+      .hud-card { padding: 4px 8px; }
+      .stat-value { font-size: 15px; }
+      .threat-container { max-width: 150px; }
+      .touch-btn { width: 68px; height: 68px; }
+      .touch-btn .touch-icon { font-size: 22px; }
+      .game-modal { padding: 18px 20px; }
+      .modal-title { font-size: 26px; }
     }
   </style>
-</head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
   <div id="game-wrapper">
     <canvas id="gameCanvas"></canvas>
+    <div id="danger-vignette"></div>
 
-    <!-- Overlay HUD UI -->
+    <!-- Live Floating Comic Popups -->
+    <div id="combo-popup">PERFECT SWING!</div>
+
+    <!-- Tap anywhere hint -->
+    <div class="screen-tap-hint" id="screen-tap-hint">
+      👆 TAP &amp; HOLD ANYWHERE TO SWING
+    </div>
+
+    <!-- HUD Overlay -->
     <div class="ui-layer">
-      <!-- HUD Header Bar -->
       <div class="hud-header">
+        <!-- Distance and Score -->
         <div class="hud-card">
-          <div class="stat-label">Distance</div>
-          <div class="stat-value score-val" id="hud-score">0m</div>
+          <div class="stat-label">DISTANCE</div>
+          <div class="stat-value" id="hud-distance">0 m</div>
+          <div class="stat-label" style="margin-top: 3px;">SCORE</div>
+          <div class="stat-value score-val" id="hud-score">0</div>
         </div>
 
-        <div class="threat-container">
-          <span class="zone-badge zone-1" id="zone-badge">ZONE 1: NEON ROOFTOPS</span>
+        <!-- Threat Meter, Dynamic Zone Progression & Powerup Tracker -->
+        <div class="hud-card threat-container">
+          <div class="stat-label" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <span class="zone-badge zone-1" id="hud-zone-badge">
+              ZONE 1: NEON CORE
+            </span>
+            <span id="hud-strikes" style="color: #00ff88; font-weight: 900; letter-spacing: 2px;">
+              ⚡⚡⚡
+            </span>
+          </div>
           <div class="threat-bar-wrap">
-            <div class="threat-fill" id="threat-fill"></div>
+            <div class="threat-bar-fill" id="threat-bar"></div>
+          </div>
+          <div class="threat-status" id="threat-status-msg">
+            3 LIVES (SAFE)
+          </div>
+          <!-- Dynamic Powerup Active Badge -->
+          <div class="hud-powerup-badge" id="hud-powerup-pill">
+            <span id="hud-powerup-icon">⚡</span>
+            <span id="hud-powerup-text">NITRO BOOST (5s)</span>
           </div>
         </div>
 
-        <div class="hud-card">
-          <div class="stat-label">Orbs</div>
-          <div class="stat-value" id="hud-orbs">⚡ 0</div>
-        </div>
-
-        <div class="hud-controls-top">
-          <button class="icon-btn" id="btn-audio" aria-label="Toggle Audio">🔊</button>
-          <button class="icon-btn" id="btn-pause" aria-label="Pause Game">⏸️</button>
+        <!-- Record, Bank Orbs & Utility Controls -->
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+          <div class="hud-card" style="text-align: right;">
+            <div class="stat-label">RECORD</div>
+            <div class="stat-value" id="hud-highscore" style="color: #ff00ff; font-size: 15px;">
+              0 m
+            </div>
+            <div class="stat-label" style="margin-top: 2px;">
+              RUN ORBS: <span id="hud-tokens" style="color: #00f0ff;">0</span>
+            </div>
+            <div class="stat-label" style="margin-top: 1px; color: #ffe600;">
+              BANK: <span id="hud-bank-tokens" style="color: #ffe600;">0</span> 🔮
+            </div>
+          </div>
+          <div class="controls-top">
+            <button class="icon-btn" id="btn-locker-hud" title="Hero Locker & Gear Perks" aria-label="Hero Locker">
+              <span>🦸</span> <span>LOCKER</span>
+            </button>
+            <button class="icon-btn" id="btn-bgm" title="Toggle Synthwave Music">
+              <span id="bgm-icon">🎵 BGM</span>
+            </button>
+            <button class="icon-btn" id="btn-sound" title="Toggle Sound">
+              <span id="sound-icon">🔊</span>
+            </button>
+            <button class="icon-btn" id="btn-pause" title="Pause Game (P / Esc)" aria-label="Pause Game">
+              <span id="pause-icon">⏸️</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- Touch Controls -->
-      <div class="touch-controls">
-        <button class="action-btn swing-btn" id="btn-swing">
-          <span class="btn-main-txt">SWING</span>
-          <span class="btn-sub-txt">HOLD WEB</span>
-        </button>
-
-        <button class="action-btn jump-btn" id="btn-jump">
-          <span class="btn-main-txt">JUMP</span>
-          <span class="btn-sub-txt">TAP / DOUBLE</span>
-        </button>
+      <!-- Mobile Touch Controls Bar -->
+      <div class="mobile-touch-bar">
+        <div class="touch-ctrl-group">
+          <button class="touch-btn swing-btn" id="btn-swing" aria-label="Hold to Swing">
+            <div class="touch-icon">🕸️</div>
+            <div class="touch-label">SWING</div>
+            <div class="touch-sub">HOLD</div>
+          </button>
+          <button class="touch-btn jump-btn" id="btn-jump" aria-label="Jump">
+            <div class="touch-icon">⬆️</div>
+            <div class="touch-label">JUMP</div>
+            <div class="touch-sub">LEAP</div>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Hero Locker Modal (Side-to-Side Carousel) -->
-    <div class="modal-overlay hidden" id="locker-modal">
-      <div class="modal-card">
-        <div class="brand-pill">KINGDOMMAX STUDIO</div>
-        <h2 style="font-size: 20px; font-weight: 900; margin-bottom: 2px;">HERO LOCKER</h2>
-        <p style="font-size: 11px; color: #a097ba; margin-bottom: 14px;">Swipe or tap arrows to browse suits and perks</p>
-
-        <!-- Hero Carousel -->
-        <div class="carousel-section">
-          <div class="carousel-header">
-            <span class="carousel-title">Select Hero</span>
-            <span class="carousel-counter" id="hero-carousel-counter">1 / 7</span>
+    <!-- Start Screen Modal -->
+    <div class="modal-backdrop active" id="modal-start">
+      <div class="game-modal">
+        <!-- Studio Brand Header -->
+        <div class="studio-brand-banner">
+          <div style="font-size: 20px;">⚡</div>
+          <div class="studio-brand-text">
+            <span class="studio-brand-name">KINGDOMMAX STUDIO</span>
+            <span class="studio-brand-sub">ORIGINAL PRODUCTION &bull; DEVELOPER: HUSNAIN AJMAL</span>
           </div>
-          <div class="carousel-container">
-            <button class="carousel-nav-btn" id="btn-hero-prev">◀</button>
-            <div class="carousel-wrapper" id="hero-carousel-wrapper">
-              <div class="carousel-track" id="hero-carousel-track"></div>
+          <span class="studio-badge-pill">OFFICIAL</span>
+        </div>
+
+        <div class="modal-title">ROOFTOP ESCAPE</div>
+        <div class="modal-subtitle">ESCAPE THE NEMESIS &bull; DELUXE EDITION</div>
+
+        <div class="instruction-section">
+          <!-- Mobile Touch Controls Card -->
+          <div class="instruction-box mobile-box">
+            <div class="instruction-heading" style="color: #ff2a6d;">
+              <span>📱</span> TOUCHSCREEN CONTROLS
             </div>
-            <button class="carousel-nav-btn" id="btn-hero-next">▶</button>
+            <div class="instruction-row">
+              <span class="key-tag pink">TAP &amp; HOLD</span>
+              <span><strong>Hold anywhere</strong> or tap <strong>SWING</strong> (🕸️) to shoot web. Release to fling!</span>
+            </div>
+            <div class="instruction-row">
+              <span class="key-tag" style="color: #00f0ff;">⬆️ JUMP</span>
+              <span>Tap bottom-right <strong>JUMP</strong> to leap obstacles &amp; gaps (Air Double Jump with Perk!).</span>
+            </div>
+          </div>
+
+          <!-- Desktop Controls Card -->
+          <div class="instruction-box">
+            <div class="instruction-heading" style="color: #00f0ff;">
+              <span>⌨️</span> KEYBOARD &amp; MOUSE
+            </div>
+            <div class="instruction-row">
+              <span class="key-tag">SPACE / CLICK</span>
+              <span>Hold to Swing &bull; <span class="key-tag">W / UP</span> Jump &bull; <span class="key-tag">S / DOWN</span> Slide &bull; <span class="key-tag">P / ESC</span> Pause</span>
+            </div>
           </div>
         </div>
 
-        <!-- Perk Carousel -->
-        <div class="carousel-section">
-          <div class="carousel-header">
-            <span class="carousel-title">Gear Perk</span>
-            <span class="carousel-counter" id="perk-carousel-counter">1 / 5</span>
-          </div>
-          <div class="carousel-container">
-            <button class="carousel-nav-btn" id="btn-perk-prev">◀</button>
-            <div class="carousel-wrapper" id="perk-carousel-wrapper">
-              <div class="carousel-track" id="perk-carousel-track"></div>
-            </div>
-            <button class="carousel-nav-btn" id="btn-perk-next">▶</button>
-          </div>
+        <div style="font-size: 11px; color: #ff3366; margin-bottom: 14px; background: rgba(255, 0, 85, 0.1); border: 1px solid rgba(255, 0, 85, 0.3); border-radius: 8px; padding: 8px 12px; line-height: 1.5; text-align: left;">
+          ⚡ <strong>3-STRIKE NEMESIS &amp; POWER-UP SYSTEM:</strong><br />
+          &bull; <strong>Crash 1 &amp; 2:</strong> Nemesis draws closer. <strong>Crash 3:</strong> Caught!<br />
+          &bull; <strong>Pickups:</strong> 🚀 Nitro Speed Boost, 🧲 Quantum Magnet, 🛡️ Shield Core!<br />
+          &bull; Chain consecutive air swings without landing for <strong>x2 - x5 Combo multipliers!</strong>
         </div>
 
-        <button class="modal-btn-primary" id="btn-close-locker">Equip & Close</button>
-      </div>
-    </div>
-
-    <!-- Pause Modal -->
-    <div class="modal-overlay hidden" id="pause-modal">
-      <div class="modal-card">
-        <div class="brand-pill">KINGDOMMAX STUDIO</div>
-        <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 12px;">GAME PAUSED</h2>
-        <p style="font-size: 12px; color: #a097ba; margin-bottom: 18px;">Property of Husnain Ajmal • KingdomMax Studio</p>
-        <button class="modal-btn-primary" id="btn-resume">Resume Run</button>
-        <button class="modal-btn-primary" style="background: rgba(255, 255, 255, 0.1); color: #fff; margin-top: 8px;" id="btn-open-locker-pause">Hero Locker</button>
+        <div style="display: flex; gap: 8px; width: 100%; flex-wrap: wrap;">
+          <button class="btn-primary" id="btn-start-game" style="flex: 1.3 1 180px;">
+            START RUN
+          </button>
+          <button class="btn-primary btn-secondary-locker" id="btn-open-locker" style="flex: 1 1 140px;">
+            🦸 HERO LOCKER
+          </button>
+          <button class="btn-primary btn-tertiary" id="btn-open-credits" style="flex: 1 1 100%; padding: 8px 14px; font-size: 11px;">
+            🏢 STUDIO &amp; CREDITS
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Game Over Modal -->
-    <div class="modal-overlay hidden" id="game-over-modal">
-      <div class="modal-card">
-        <div class="brand-pill">KINGDOMMAX STUDIO</div>
-        <h2 style="font-size: 24px; font-weight: 900; color: #ff0055; margin-bottom: 8px;">RUN TERMINATED</h2>
-        <p style="font-size: 13px; color: #a097ba;" id="go-reason">Pursuit drone eliminated your signal!</p>
+    <div class="modal-backdrop" id="modal-gameover">
+      <div class="game-modal">
+        <div class="modal-title" style="color: #ff0055;" id="gameover-title">
+          CAUGHT!
+        </div>
+        <div class="modal-subtitle" id="gameover-reason">
+          The Nemesis overtook you on the skyline.
+        </div>
 
-        <div style="display: flex; justify-content: space-around; margin: 16px 0; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 12px;">
-          <div>
-            <div class="stat-label">Distance</div>
-            <div class="stat-value score-val" id="go-score">0m</div>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="num" id="go-distance">0 m</div>
+            <div class="lbl">DISTANCE TRAVELED</div>
           </div>
-          <div>
-            <div class="stat-label">Best Record</div>
-            <div class="stat-value" id="go-best">0m</div>
+          <div class="stat-box">
+            <div class="num" id="go-score">0</div>
+            <div class="lbl">TOTAL SCORE</div>
           </div>
-          <div>
-            <div class="stat-label">Total Orbs</div>
-            <div class="stat-value" id="go-orbs">⚡ 0</div>
+          <div class="stat-box">
+            <div class="num" id="go-tokens">0</div>
+            <div class="lbl">ENERGY ORBS</div>
+          </div>
+          <div class="stat-box">
+            <div class="num" id="go-best">0 m</div>
+            <div class="lbl">BEST RECORD</div>
           </div>
         </div>
 
-        <button class="modal-btn-primary" id="btn-restart">Play Again</button>
-        <button class="modal-btn-primary" style="background: rgba(255, 255, 255, 0.1); color: #fff; margin-top: 8px;" id="btn-open-locker-go">Open Locker</button>
+        <!-- Rewarded Ad Offers -->
+        <div class="rewarded-ads-container">
+          <button class="btn-rewarded revive-btn" id="btn-ad-revive" aria-label="Watch Ad to Revive Once">
+            <span class="reward-icon">⚡</span>
+            <span class="reward-content">
+              <span class="reward-title">REVIVE ONCE</span>
+              <span class="reward-sub">WATCH AD TO CONTINUE RUN (4S SHIELD)</span>
+            </span>
+          </button>
+          <button class="btn-rewarded double-btn" id="btn-ad-double" aria-label="Watch Ad to Double Coins">
+            <span class="reward-icon">💰</span>
+            <span class="reward-content">
+              <span class="reward-title">DOUBLE COINS (2X)</span>
+              <span class="reward-sub">WATCH AD TO DOUBLE ORBS</span>
+            </span>
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 8px; width: 100%; flex-wrap: wrap;">
+          <button class="btn-primary" id="btn-restart-game" style="flex: 1 1 140px;">
+            🔄 PLAY AGAIN
+          </button>
+          <button class="btn-primary btn-secondary-locker" id="btn-open-locker-go" style="flex: 1 1 140px;">
+            🦸 HERO LOCKER
+          </button>
+          <button class="btn-primary btn-tertiary" id="btn-gameover-menu" style="flex: 1 1 100%; padding: 10px 16px; font-size: 12px;">
+            🏠 MAIN MENU
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Character Locker & Perk Armory Modal with Side-to-Side Carousel Navigation -->
+    <div class="modal-backdrop" id="modal-locker">
+      <div class="game-modal locker-modal">
+        <div class="locker-header">
+          <div>
+            <div class="modal-title" style="font-size: 24px; letter-spacing: 2px; text-align: left;">
+              HERO LOCKER
+            </div>
+            <div class="modal-subtitle" style="margin: 2px 0 0 0; text-align: left;">
+              UNLOCK 7 HEROES &amp; 5 GEAR PERKS FOR RUN STAT BOOSTS
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="locker-orb-badge">
+              <span class="orb-icon">🔮</span>
+              <span class="orb-count" id="locker-orb-balance">0</span>
+              <span class="orb-label">ORBS</span>
+            </div>
+            <button id="btn-add-test-orbs" class="icon-btn" style="background: rgba(255, 230, 0, 0.15); border: 1px solid #ffe600; color: #ffe600; font-size: 11px; font-weight: 900; padding: 6px 10px; border-radius: 16px; cursor: pointer; white-space: nowrap;" title="Add +250 Energy Orbs to balance">
+              +250 🔮
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="locker-tabs">
+          <button class="locker-tab-btn active" id="tab-heroes-btn">
+            🦸 HEROES (7)
+          </button>
+          <button class="locker-tab-btn" id="tab-perks-btn">
+            ⚙️ GEAR PERKS (5)
+          </button>
+        </div>
+
+        <!-- Tab Content: Heroes (Side-to-Side Carousel) -->
+        <div class="locker-tab-content active" id="tab-heroes-content">
+          <div class="carousel-nav-bar">
+            <button class="carousel-nav-btn" id="btn-hero-prev" aria-label="Previous Hero">
+              ◀ PREV
+            </button>
+            <div class="carousel-counter" id="hero-carousel-counter">
+              HERO 1 / 7
+            </div>
+            <button class="carousel-nav-btn" id="btn-hero-next" aria-label="Next Hero">
+              NEXT ▶
+            </button>
+          </div>
+          <div class="carousel-track-wrapper" id="hero-carousel-wrapper">
+            <div class="heroes-list carousel-slide-track" id="heroes-list-container"></div>
+          </div>
+        </div>
+
+        <!-- Tab Content: Perks (Side-to-Side Carousel) -->
+        <div class="locker-tab-content" id="tab-perks-content">
+          <div class="carousel-nav-bar">
+            <button class="carousel-nav-btn" id="btn-perk-prev" aria-label="Previous Perk">
+              ◀ PREV
+            </button>
+            <div class="carousel-counter" id="perk-carousel-counter">
+              GEAR PERK 1 / 5
+            </div>
+            <button class="carousel-nav-btn" id="btn-perk-next" aria-label="Next Perk">
+              NEXT ▶
+            </button>
+          </div>
+          <div class="carousel-track-wrapper" id="perk-carousel-wrapper">
+            <div class="perks-list carousel-slide-track" id="perks-list-container"></div>
+          </div>
+        </div>
+
+        <div class="locker-footer">
+          <button class="btn-primary" id="btn-close-locker">
+            EQUIP &amp; RETURN
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Studio Information & Credits Modal -->
+    <div class="modal-backdrop" id="modal-credits">
+      <div class="game-modal" style="border-color: #00f0ff; box-shadow: 0 0 45px rgba(0, 240, 255, 0.4);">
+        <div class="studio-brand-banner">
+          <div style="font-size: 20px;">🎮</div>
+          <div class="studio-brand-text">
+            <span class="studio-brand-name">KINGDOMMAX STUDIO</span>
+            <span class="studio-brand-sub">OFFICIAL OWNERSHIP &bull; GAME CREDITS</span>
+          </div>
+          <span class="studio-badge-pill">VERIFIED</span>
+        </div>
+
+        <div class="modal-title" style="font-size: 24px; background: linear-gradient(180deg, #ffffff 20%, #00f0ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          ROOFTOP ESCAPE
+        </div>
+        <div class="modal-subtitle">
+          DELUXE RUNNER &bull; EDITION 1.6.0
+        </div>
+
+        <div class="credits-box">
+          <div class="credits-item">
+            <span class="credits-key">Game Studio:</span>
+            <span class="credits-val">KINGDOMMAX STUDIO</span>
+          </div>
+          <div class="credits-item">
+            <span class="credits-key">Developer:</span>
+            <span class="credits-val">Husnain Ajmal (KingdomMax)</span>
+          </div>
+          <div class="credits-item">
+            <span class="credits-key">Lead Engineer:</span>
+            <span class="credits-val">Husnain Ajmal</span>
+          </div>
+          <div class="credits-item">
+            <span class="credits-key">Ownership:</span>
+            <span class="credits-val">Property of Husnain Ajmal</span>
+          </div>
+          <div class="credits-item">
+            <span class="credits-key">Contact / Support:</span>
+            <span class="credits-val">husnainajmal100@gmail.com</span>
+          </div>
+          <div class="credits-item">
+            <span class="credits-key">Repository:</span>
+            <span class="credits-val">github.com/husnain-ajmal/rooftop-escape</span>
+          </div>
+          <div class="credits-item">
+            <span class="credits-key">Audio Engine:</span>
+            <span class="credits-val">Procedural Web Audio Synthesizer</span>
+          </div>
+          <div class="credits-item">
+            <span class="credits-key">Key Features:</span>
+            <span class="credits-val">Physics Swinging, 7 Heroes, 5 Perks, In-Run Power-ups, Cyber Synth BGM</span>
+          </div>
+          <div class="credits-item">
+            <span class="credits-key">Copyright:</span>
+            <span class="credits-val">Copyright (c) 2026 KingdomMax. All Rights Reserved.</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn-primary" id="btn-copy-html" style="background: linear-gradient(135deg, #00f0ff 0%, #0066ff 100%); flex: 1.2 1 180px;">
+            📋 COPY STANDALONE HTML
+          </button>
+          <button class="btn-primary" id="btn-close-credits" style="flex: 1 1 120px;">
+            CLOSE &amp; BACK
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Simulated Rewarded Ad Fallback Modal -->
+    <div class="modal-backdrop" id="modal-ad-simulated">
+      <div class="ad-sim-box">
+        <div style="font-size: 13px; font-weight: 900; color: #00f0ff; letter-spacing: 1px;">
+          📺 SPONSOR AD SIMULATION
+        </div>
+        <div style="font-size: 11px; color: #c9b9e6; margin-top: 4px;" id="ad-reward-desc">
+          Watching sponsor message to unlock reward...
+        </div>
+        <div class="ad-timer-circle" id="ad-timer-count">5</div>
+        <div class="ad-progress-bar-wrap">
+          <div class="ad-progress-bar-fill" id="ad-progress-fill"></div>
+        </div>
+        <button class="btn-ad-cancel" id="btn-ad-cancel">
+          CANCEL / SKIP
+        </button>
+      </div>
+    </div>
+
+    <!-- Pause Menu Modal Overlay -->
+    <div class="modal-backdrop" id="modal-pause">
+      <div class="game-modal" style="border-color: #00f0ff; box-shadow: 0 0 40px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(0, 240, 255, 0.1);">
+        <div class="studio-brand-banner">
+          <div style="font-size: 18px;">⚡</div>
+          <div class="studio-brand-text">
+            <span class="studio-brand-name">KINGDOMMAX STUDIO</span>
+            <span class="studio-brand-sub">ROOFTOP ESCAPE &bull; DEVELOPER: HUSNAIN AJMAL</span>
+          </div>
+          <span class="studio-badge-pill">PAUSED</span>
+        </div>
+
+        <div class="modal-title" style="background: linear-gradient(180deg, #ffffff 20%, #00f0ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+          GAME PAUSED
+        </div>
+        <div class="modal-subtitle" style="color: #00f0ff;">
+          SYSTEM SUSPENDED &bull; TAKE A BREATHER
+        </div>
+
+        <div class="stats-grid" style="margin-bottom: 18px;">
+          <div class="stat-box">
+            <div class="num" id="pause-distance">0 m</div>
+            <div class="lbl">CURRENT DISTANCE</div>
+          </div>
+          <div class="stat-box">
+            <div class="num" id="pause-score">0</div>
+            <div class="lbl">CURRENT SCORE</div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button class="btn-primary" id="btn-resume-game" style="background: linear-gradient(135deg, #00f0ff 0%, #0066ff 100%); box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4);">
+            ▶️ RESUME
+          </button>
+          <button class="btn-primary" id="btn-pause-restart" style="background: linear-gradient(135deg, #ff2a6d 0%, #9b00e8 100%); box-shadow: 0 6px 20px rgba(255, 42, 109, 0.4);">
+            🔄 RESTART
+          </button>
+          <button class="btn-primary btn-tertiary" id="btn-pause-credits">
+            🏢 STUDIO &amp; CREDITS
+          </button>
+          <button class="btn-primary btn-tertiary" id="btn-pause-menu">
+            🏠 MAIN MENU
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <script src="/src/main.ts"></script>
+  <script>
+    /*
+      ROOFTOP ESCAPE - HTML5 GAME ENGINE
+      Copyright (c) 2026 KingdomMax. All Rights Reserved.
+      Developer: Husnain Ajmal (KingdomMax)
+    */
+
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.masterGain = null;
+        this.sfxGain = null;
+        this.bgmGain = null;
+        this.muted = false;
+        this.bgmMuted = false;
+        this.isAdOrBlurMuted = false;
+        this.bgmTimer = null;
+        this.bgmStep = 0;
+        this.currentZone = 1;
+
+        try {
+          this.muted = localStorage.getItem('rooftopEscape_muted') === 'true';
+          this.bgmMuted = localStorage.getItem('rooftopEscape_bgmMuted') === 'true';
+        } catch {
+          this.muted = false;
+          this.bgmMuted = false;
+        }
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            this.ctx = new AudioCtx();
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.gain.setValueAtTime(this.muted ? 0 : 0.85, this.ctx.currentTime);
+            this.masterGain.connect(this.ctx.destination);
+
+            this.sfxGain = this.ctx.createGain();
+            this.sfxGain.gain.setValueAtTime(1, this.ctx.currentTime);
+            this.sfxGain.connect(this.masterGain);
+
+            this.bgmGain = this.ctx.createGain();
+            this.bgmGain.gain.setValueAtTime(this.bgmMuted ? 0 : 0.35, this.ctx.currentTime);
+            this.bgmGain.connect(this.masterGain);
+
+            this.startBgmLoop();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+      }
+
+      toggleMute() {
+        this.init();
+        this.muted = !this.muted;
+        try { localStorage.setItem('rooftopEscape_muted', String(this.muted)); } catch {}
+        if (this.masterGain && this.ctx && !this.isAdOrBlurMuted) {
+          this.masterGain.gain.setValueAtTime(this.muted ? 0 : 0.85, this.ctx.currentTime);
+        }
+        if (!this.muted && !this.isAdOrBlurMuted) {
+          this.playChime(784, 0.08);
+        }
+        return this.muted;
+      }
+
+      toggleBgm() {
+        this.init();
+        this.bgmMuted = !this.bgmMuted;
+        try { localStorage.setItem('rooftopEscape_bgmMuted', String(this.bgmMuted)); } catch {}
+        if (this.bgmGain && this.ctx && !this.isAdOrBlurMuted) {
+          this.bgmGain.gain.setValueAtTime(this.bgmMuted ? 0 : 0.35, this.ctx.currentTime);
+        }
+        return !this.bgmMuted;
+      }
+
+      setZone(zoneId) {
+        this.currentZone = zoneId;
+      }
+
+      muteTemporary() {
+        this.isAdOrBlurMuted = true;
+        if (this.masterGain && this.ctx) {
+          this.masterGain.gain.setValueAtTime(0, this.ctx.currentTime);
+        }
+      }
+
+      unmuteTemporary() {
+        this.isAdOrBlurMuted = false;
+        if (this.masterGain && this.ctx) {
+          this.masterGain.gain.setValueAtTime(this.muted ? 0 : 0.85, this.ctx.currentTime);
+        }
+        if (this.bgmGain && this.ctx) {
+          this.bgmGain.gain.setValueAtTime(this.bgmMuted ? 0 : 0.35, this.ctx.currentTime);
+        }
+      }
+
+      getSfxDest() {
+        if (this.muted || this.isAdOrBlurMuted || !this.ctx) return null;
+        return this.sfxGain || this.masterGain || this.ctx.destination;
+      }
+
+      startBgmLoop() {
+        if (this.bgmTimer) return;
+        const tick = () => {
+          this.playBgmBeat();
+          const tempo = this.currentZone === 3 ? 115 : this.currentZone === 2 ? 128 : 140;
+          this.bgmTimer = window.setTimeout(tick, tempo);
+        };
+        this.bgmTimer = window.setTimeout(tick, 140);
+      }
+
+      playBgmBeat() {
+        if (!this.ctx || this.bgmMuted || this.muted || this.isAdOrBlurMuted) return;
+        try {
+          const dest = this.bgmGain;
+          if (!dest) return;
+          const t = this.ctx.currentTime;
+          this.bgmStep = (this.bgmStep + 1) % 16;
+
+          let baseFreq = 73.42;
+          if (this.currentZone === 2) baseFreq = 87.31;
+          if (this.currentZone === 3) baseFreq = 110.0;
+
+          if (this.bgmStep % 2 === 0) {
+            const bassOsc = this.ctx.createOscillator();
+            const bassGain = this.ctx.createGain();
+            bassOsc.type = 'sawtooth';
+            const noteFreq = this.bgmStep === 6 || this.bgmStep === 14 ? baseFreq * 1.33 : baseFreq;
+            bassOsc.frequency.setValueAtTime(noteFreq, t);
+            bassOsc.frequency.exponentialRampToValueAtTime(noteFreq * 0.5, t + 0.12);
+
+            bassGain.gain.setValueAtTime(0.12, t);
+            bassGain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+
+            bassOsc.connect(bassGain);
+            bassGain.connect(dest);
+            bassOsc.start(t);
+            bassOsc.stop(t + 0.13);
+          }
+
+          if (this.bgmStep % 4 === 1 || this.bgmStep % 4 === 3) {
+            const arpOsc = this.ctx.createOscillator();
+            const arpGain = this.ctx.createGain();
+            arpOsc.type = 'triangle';
+            const arpNotes = [baseFreq * 4, baseFreq * 4.8, baseFreq * 6, baseFreq * 7.2];
+            const pitch = arpNotes[this.bgmStep % arpNotes.length];
+            arpOsc.frequency.setValueAtTime(pitch, t);
+            arpGain.gain.setValueAtTime(0.04, t);
+            arpGain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+
+            arpOsc.connect(arpGain);
+            arpGain.connect(dest);
+            arpOsc.start(t);
+            arpOsc.stop(t + 0.09);
+          }
+        } catch {}
+      }
+
+      playChime(freq, duration) {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch {}
+      }
+
+      playThwip() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(420, t);
+          osc.frequency.exponentialRampToValueAtTime(1450, t + 0.09);
+          gain.gain.setValueAtTime(0.24, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.11);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start();
+          osc.stop(t + 0.12);
+
+          const osc2 = this.ctx.createOscillator();
+          const gain2 = this.ctx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(880, t);
+          osc2.frequency.exponentialRampToValueAtTime(300, t + 0.08);
+          gain2.gain.setValueAtTime(0.12, t);
+          gain2.gain.exponentialRampToValueAtTime(0.01, t + 0.09);
+          osc2.connect(gain2);
+          gain2.connect(dest);
+          osc2.start();
+          osc2.stop(t + 0.1);
+        } catch {}
+      }
+
+      playRelease() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(780, t);
+          osc.frequency.exponentialRampToValueAtTime(260, t + 0.15);
+          gain.gain.setValueAtTime(0.22, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.16);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start();
+          osc.stop(t + 0.17);
+        } catch {}
+      }
+
+      playJump() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(260, t);
+          osc.frequency.exponentialRampToValueAtTime(640, t + 0.18);
+          gain.gain.setValueAtTime(0.2, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.19);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start();
+          osc.stop(t + 0.2);
+        } catch {}
+      }
+
+      playSlide() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const bufferSize = Math.floor(this.ctx.sampleRate * 0.14);
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+          }
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = buffer;
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(800, this.ctx.currentTime);
+          filter.frequency.linearRampToValueAtTime(280, this.ctx.currentTime + 0.14);
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(0.14, this.ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.14);
+          noise.connect(filter);
+          filter.connect(gain);
+          gain.connect(dest);
+          noise.start();
+        } catch {}
+      }
+
+      playCoin() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const notes = [987.77, 1318.51];
+          notes.forEach((freq, idx) => {
+            if (!this.ctx || !dest) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.07);
+            gain.gain.setValueAtTime(0.2, this.ctx.currentTime + idx * 0.07);
+            gain.gain.exponentialRampToValueAtTime(0.005, this.ctx.currentTime + idx * 0.07 + 0.18);
+            osc.connect(gain);
+            gain.connect(dest);
+            osc.start(this.ctx.currentTime + idx * 0.07);
+            osc.stop(this.ctx.currentTime + idx * 0.07 + 0.19);
+          });
+        } catch {}
+      }
+
+      playPowerup() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const notes = [440, 554.37, 659.25, 880, 1108.7];
+          notes.forEach((freq, idx) => {
+            if (!this.ctx || !dest) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.05);
+            gain.gain.setValueAtTime(0.24, this.ctx.currentTime + idx * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.005, this.ctx.currentTime + idx * 0.05 + 0.18);
+            osc.connect(gain);
+            gain.connect(dest);
+            osc.start(this.ctx.currentTime + idx * 0.05);
+            osc.stop(this.ctx.currentTime + idx * 0.05 + 0.2);
+          });
+        } catch {}
+      }
+
+      playHit() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(170, t);
+          osc.frequency.exponentialRampToValueAtTime(35, t + 0.24);
+          gain.gain.setValueAtTime(0.35, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.27);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start();
+          osc.stop(t + 0.28);
+        } catch {}
+      }
+
+      playDangerPulse() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(95, t);
+          osc.frequency.exponentialRampToValueAtTime(42, t + 0.22);
+          gain.gain.setValueAtTime(0.24, t);
+          gain.gain.exponentialRampToValueAtTime(0.005, t + 0.24);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start();
+          osc.stop(t + 0.25);
+        } catch {}
+      }
+
+      playGameOver() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const chord = [320, 275, 230, 175];
+          chord.forEach((freq, i) => {
+            if (!this.ctx || !dest) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.11);
+            gain.gain.setValueAtTime(0.22, this.ctx.currentTime + i * 0.11);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + i * 0.11 + 0.35);
+            osc.connect(gain);
+            gain.connect(dest);
+            osc.start(this.ctx.currentTime + i * 0.11);
+            osc.stop(this.ctx.currentTime + i * 0.11 + 0.38);
+          });
+        } catch {}
+      }
+
+      playEquip() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, t);
+          osc.frequency.exponentialRampToValueAtTime(1320, t + 0.12);
+          gain.gain.setValueAtTime(0.2, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.14);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start();
+          osc.stop(t + 0.15);
+        } catch {}
+      }
+
+      playPurchase() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const notes = [523.25, 659.25, 783.99, 1046.5];
+          notes.forEach((freq, i) => {
+            if (!this.ctx || !dest) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + i * 0.08);
+            gain.gain.setValueAtTime(0.25, this.ctx.currentTime + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.005, this.ctx.currentTime + i * 0.08 + 0.22);
+            osc.connect(gain);
+            gain.connect(dest);
+            osc.start(this.ctx.currentTime + i * 0.08);
+            osc.stop(this.ctx.currentTime + i * 0.08 + 0.24);
+          });
+        } catch {}
+      }
+
+      playShieldDeflect() {
+        const dest = this.getSfxDest();
+        if (!dest || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1400, t);
+          osc.frequency.exponentialRampToValueAtTime(380, t + 0.28);
+          gain.gain.setValueAtTime(0.3, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+          osc.connect(gain);
+          gain.connect(dest);
+          osc.start();
+          osc.stop(t + 0.32);
+        } catch {}
+      }
+    }
+
+    class Particle {
+      constructor(x, y, vx, vy, color, size, life, shape = 'rect') {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.color = color;
+        this.size = size;
+        this.maxLife = life;
+        this.life = life;
+        this.shape = shape;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.life--;
+      }
+
+      draw(ctx, camX, camY) {
+        const alpha = Math.max(0, this.life / this.maxLife);
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = this.color;
+        if (this.shape === 'circle') {
+          ctx.beginPath();
+          ctx.arc(this.x - camX, this.y - camY, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillRect(this.x - camX, this.y - camY, this.size, this.size);
+        }
+        ctx.restore();
+      }
+    }
+
+    const HEROES = [
+      {
+        id: 'classic_weaver',
+        name: 'Classic Weaver',
+        title: 'Standard Hero',
+        cost: 0,
+        speedMult: 1.0,
+        jumpMult: 1.0,
+        magnetRadius: 0,
+        initialShield: 0,
+        orbMult: 1,
+        webLaunchMult: 1.0,
+        primaryColor: '#d60036',
+        secondaryColor: '#0055bb',
+        accentColor: '#ffffff',
+        eyeColor: '#ffffff',
+        trailType: 'none',
+        desc: 'Standard speed & jump. Classic Red/Blue suit with balanced agility.',
+        icon: '🕷️',
+      },
+      {
+        id: 'cyber_stealth',
+        name: 'Cyber Stealth',
+        title: 'Shadow Infiltrator',
+        cost: 150,
+        speedMult: 1.1,
+        jumpMult: 1.0,
+        magnetRadius: 95,
+        initialShield: 0,
+        orbMult: 1,
+        webLaunchMult: 1.0,
+        primaryColor: '#1a1a24',
+        secondaryColor: '#d4af37',
+        accentColor: '#ffe066',
+        eyeColor: '#00f0ff',
+        trailType: 'shadow',
+        desc: '+10% Speed & +15% Orb Magnet radius; Matte Black/Gold with shadow trail.',
+        icon: '🥷',
+      },
+      {
+        id: 'neon_surge',
+        name: 'Neon Surge',
+        title: 'Kinetic Dynamo',
+        cost: 350,
+        speedMult: 1.05,
+        jumpMult: 1.15,
+        magnetRadius: 0,
+        initialShield: 0,
+        orbMult: 1,
+        webLaunchMult: 1.4,
+        primaryColor: '#00f0ff',
+        secondaryColor: '#ff007f',
+        accentColor: '#00ffcc',
+        eyeColor: '#ffff00',
+        trailType: 'electric',
+        desc: '+15% Jump Height & boosted web-swing launch momentum; Cyan/Magenta with electric sparks.',
+        icon: '⚡',
+      },
+      {
+        id: 'solar_valkyrie',
+        name: 'Solar Valkyrie',
+        title: 'Dawn Champion',
+        cost: 500,
+        speedMult: 1.12,
+        jumpMult: 1.12,
+        magnetRadius: 80,
+        initialShield: 1,
+        orbMult: 1,
+        webLaunchMult: 1.25,
+        primaryColor: '#ffaa00',
+        secondaryColor: '#ff3300',
+        accentColor: '#ffe600',
+        eyeColor: '#ffffff',
+        trailType: 'solar',
+        desc: 'Starts with +1 Shield & Solar Ember trail; Amber/Crimson flight suit with high leap agility.',
+        icon: '☀️',
+      },
+      {
+        id: 'orbital_vanguard',
+        name: 'Orbital Vanguard',
+        title: 'Aegis Guardian',
+        cost: 650,
+        speedMult: 1.08,
+        jumpMult: 1.05,
+        magnetRadius: 0,
+        initialShield: 1,
+        orbMult: 1,
+        webLaunchMult: 1.1,
+        primaryColor: '#f0f4ff',
+        secondaryColor: '#7928ca',
+        accentColor: '#b794f4',
+        eyeColor: '#00f0ff',
+        trailType: 'forcefield',
+        desc: 'Starts each run with +1 free Hit Shield; White/Purple armor with glowing forcefield.',
+        icon: '🛡️',
+      },
+      {
+        id: 'chrono_specter',
+        name: 'Chrono Specter',
+        title: 'Quantum Phase Master',
+        cost: 850,
+        speedMult: 1.16,
+        jumpMult: 1.16,
+        magnetRadius: 100,
+        initialShield: 1,
+        orbMult: 1.5,
+        webLaunchMult: 1.35,
+        primaryColor: '#00e5ff',
+        secondaryColor: '#12002f',
+        accentColor: '#7000ff',
+        eyeColor: '#00ffc2',
+        trailType: 'quantum',
+        desc: '+1.5X Orb value & Quantum phase warp trail; Hologram Cyan & Deep Violet suit.',
+        icon: '⏳',
+      },
+      {
+        id: 'apex_phantom',
+        name: 'Apex Phantom',
+        title: 'Void Sovereign',
+        cost: 1100,
+        speedMult: 1.22,
+        jumpMult: 1.22,
+        magnetRadius: 120,
+        initialShield: 1,
+        orbMult: 2,
+        webLaunchMult: 1.45,
+        primaryColor: '#ff003c',
+        secondaryColor: '#080410',
+        accentColor: '#ff0055',
+        eyeColor: '#00ffff',
+        trailType: 'void',
+        desc: 'Permanent 2X Orb multiplier & +22% speed/jump stats; Crimson/Void-Black with light-speed aura.',
+        icon: '👑',
+      },
+    ];
+
+    const PERKS = [
+      {
+        id: 'perk_magnet',
+        name: 'Orb Magnet',
+        cost: 120,
+        desc: 'Pulls nearby energy orbs toward player within 120px radius. Stacks with hero magnet stats.',
+        icon: '🧲',
+      },
+      {
+        id: 'perk_shield',
+        name: 'Starter Shield',
+        cost: 200,
+        desc: 'Grants +1 free hit shield absorbing your first obstacle crash without losing a life strike.',
+        icon: '🛡️',
+      },
+      {
+        id: 'perk_thruster',
+        name: 'Web Thruster',
+        cost: 180,
+        desc: '+25% horizontal velocity boost when releasing a web swing to sling farther across rooftops.',
+        icon: '🚀',
+      },
+      {
+        id: 'perk_surge',
+        name: 'Power-Up Surge',
+        cost: 220,
+        desc: '+40% extended duration on all collectible in-run power-ups (Nitro Boost, Magnet, Slow-Mo).',
+        icon: '⚡',
+      },
+      {
+        id: 'perk_airjump',
+        name: 'Air Recovery',
+        cost: 260,
+        desc: 'Unlocks a mid-air double-jump leap allowing you to rescue yourself from near-falls into gaps!',
+        icon: '🪂',
+      },
+    ];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const sound = new SoundEngine();
+      const canvas = document.getElementById('gameCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const hudDistance = document.getElementById('hud-distance');
+      const hudScore = document.getElementById('hud-score');
+      const hudHighscore = document.getElementById('hud-highscore');
+      const hudTokens = document.getElementById('hud-tokens');
+      const hudBankTokens = document.getElementById('hud-bank-tokens');
+      const threatBar = document.getElementById('threat-bar');
+      const threatStatusMsg = document.getElementById('threat-status-msg');
+      const dangerVignette = document.getElementById('danger-vignette');
+      const comboPopup = document.getElementById('combo-popup');
+      const hudPowerupPill = document.getElementById('hud-powerup-pill');
+      const hudPowerupIcon = document.getElementById('hud-powerup-icon');
+      const hudPowerupText = document.getElementById('hud-powerup-text');
+
+      const modalStart = document.getElementById('modal-start');
+      const modalGameOver = document.getElementById('modal-gameover');
+      const modalPause = document.getElementById('modal-pause');
+      const modalLocker = document.getElementById('modal-locker');
+      const modalCredits = document.getElementById('modal-credits');
+
+      const btnStart = document.getElementById('btn-start-game');
+      const btnRestart = document.getElementById('btn-restart-game');
+      const btnResume = document.getElementById('btn-resume-game');
+      const btnPauseRestart = document.getElementById('btn-pause-restart');
+      const btnPauseMenu = document.getElementById('btn-pause-menu');
+      const btnGameOverMenu = document.getElementById('btn-gameover-menu');
+      const btnOpenLocker = document.getElementById('btn-open-locker');
+      const btnOpenLockerGo = document.getElementById('btn-open-locker-go');
+      const btnLockerHud = document.getElementById('btn-locker-hud');
+      const btnCloseLocker = document.getElementById('btn-close-locker');
+      const btnOpenCredits = document.getElementById('btn-open-credits');
+      const btnPauseCredits = document.getElementById('btn-pause-credits');
+      const btnCloseCredits = document.getElementById('btn-close-credits');
+      const btnCopyHtml = document.getElementById('btn-copy-html');
+
+      const lockerOrbBalance = document.getElementById('locker-orb-balance');
+      const btnAddTestOrbs = document.getElementById('btn-add-test-orbs');
+      const tabHeroesBtn = document.getElementById('tab-heroes-btn');
+      const tabPerksBtn = document.getElementById('tab-perks-btn');
+      const tabHeroesContent = document.getElementById('tab-heroes-content');
+      const tabPerksContent = document.getElementById('tab-perks-content');
+      const heroesListContainer = document.getElementById('heroes-list-container');
+      const perksListContainer = document.getElementById('perks-list-container');
+
+      const btnHeroPrev = document.getElementById('btn-hero-prev');
+      const btnHeroNext = document.getElementById('btn-hero-next');
+      const heroCarouselCounter = document.getElementById('hero-carousel-counter');
+      const btnPerkPrev = document.getElementById('btn-perk-prev');
+      const btnPerkNext = document.getElementById('btn-perk-next');
+      const perkCarouselCounter = document.getElementById('perk-carousel-counter');
+      const heroCarouselWrapper = document.getElementById('hero-carousel-wrapper');
+      const perkCarouselWrapper = document.getElementById('perk-carousel-wrapper');
+
+      let currentHeroIndex = 0;
+      let currentPerkIndex = 0;
+
+      function updateHeroCarousel() {
+        if (heroesListContainer) {
+          heroesListContainer.style.transform = `translateX(-${currentHeroIndex * 100}%)`;
+        }
+        if (heroCarouselCounter) {
+          const hero = HEROES[currentHeroIndex] || HEROES[0];
+          heroCarouselCounter.textContent = `HERO ${currentHeroIndex + 1} / ${HEROES.length} • ${hero.name.toUpperCase()}`;
+        }
+        if (btnHeroPrev) btnHeroPrev.disabled = currentHeroIndex === 0;
+        if (btnHeroNext) btnHeroNext.disabled = currentHeroIndex === HEROES.length - 1;
+      }
+
+      function updatePerkCarousel() {
+        if (perksListContainer) {
+          perksListContainer.style.transform = `translateX(-${currentPerkIndex * 100}%)`;
+        }
+        if (perkCarouselCounter) {
+          const perk = PERKS[currentPerkIndex] || PERKS[0];
+          perkCarouselCounter.textContent = `PERK ${currentPerkIndex + 1} / ${PERKS.length} • ${perk.name.toUpperCase()}`;
+        }
+        if (btnPerkPrev) btnPerkPrev.disabled = currentPerkIndex === 0;
+        if (btnPerkNext) btnPerkNext.disabled = currentPerkIndex === PERKS.length - 1;
+      }
+
+      const pauseDistance = document.getElementById('pause-distance');
+      const pauseScore = document.getElementById('pause-score');
+      const btnSound = document.getElementById('btn-sound');
+      const soundIcon = document.getElementById('sound-icon');
+      const btnBgm = document.getElementById('btn-bgm');
+      const bgmIcon = document.getElementById('bgm-icon');
+      const btnPause = document.getElementById('btn-pause');
+      const btnJump = document.getElementById('btn-jump');
+      const btnSwing = document.getElementById('btn-swing');
+      const hudStrikes = document.getElementById('hud-strikes');
+      const hudZoneBadge = document.getElementById('hud-zone-badge');
+
+      const btnAdRevive = document.getElementById('btn-ad-revive');
+      const btnAdDouble = document.getElementById('btn-ad-double');
+      const modalAdSimulated = document.getElementById('modal-ad-simulated');
+      const adRewardDesc = document.getElementById('ad-reward-desc');
+      const adTimerCount = document.getElementById('ad-timer-count');
+      const adProgressFill = document.getElementById('ad-progress-fill');
+      const btnAdCancel = document.getElementById('btn-ad-cancel');
+
+      const goDistance = document.getElementById('go-distance');
+      const goScore = document.getElementById('go-score');
+      const goTokens = document.getElementById('go-tokens');
+      const goBest = document.getElementById('go-best');
+      const goTitle = document.getElementById('gameover-title');
+      const goReason = document.getElementById('gameover-reason');
+
+      const savedTotalOrbs = localStorage.getItem('rooftopEscape_totalOrbs');
+      let totalOrbs = savedTotalOrbs !== null ? parseInt(savedTotalOrbs, 10) : NaN;
+      if (isNaN(totalOrbs)) {
+        totalOrbs = 250;
+        try { localStorage.setItem('rooftopEscape_totalOrbs', String(totalOrbs)); } catch {}
+      }
+
+      let unlockedHeroes = ['classic_weaver'];
+      try {
+        const savedHeroes = localStorage.getItem('rooftopEscape_unlockedHeroes');
+        if (savedHeroes) {
+          const parsed = JSON.parse(savedHeroes);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            unlockedHeroes = parsed;
+            if (!unlockedHeroes.includes('classic_weaver')) unlockedHeroes.push('classic_weaver');
+          }
+        }
+      } catch {
+        unlockedHeroes = ['classic_weaver'];
+      }
+
+      let selectedHeroId = localStorage.getItem('rooftopEscape_selectedHero') || 'classic_weaver';
+      if (!HEROES.some((h) => h.id === selectedHeroId) || !unlockedHeroes.includes(selectedHeroId)) {
+        selectedHeroId = 'classic_weaver';
+      }
+      let activeHero = HEROES.find((h) => h.id === selectedHeroId) || HEROES[0];
+
+      let unlockedPerks = [];
+      try {
+        const savedPerks = localStorage.getItem('rooftopEscape_unlockedPerks');
+        if (savedPerks) {
+          const parsed = JSON.parse(savedPerks);
+          if (Array.isArray(parsed)) unlockedPerks = parsed;
+        }
+      } catch {
+        unlockedPerks = [];
+      }
+
+      let currentRunShields = (activeHero.initialShield || 0) + (unlockedPerks.includes('perk_shield') ? 1 : 0);
+      let lockerReturnState = 'START';
+      let hasRevivedThisRun = false;
+      let isAdActive = false;
+      let simulatedAdTimer = null;
+      let consecutiveAirSwings = 0;
+      let hasUsedAirJump = false;
+      let activePowerup = null;
+
+      let highDistance = parseInt(localStorage.getItem('rooftopEscape_highDist') || '0', 10);
+      if (hudHighscore) hudHighscore.textContent = highDistance + ' m';
+      if (hudBankTokens) hudBankTokens.textContent = String(totalOrbs);
+      if (soundIcon) soundIcon.textContent = sound.muted ? '🔇' : '🔊';
+      if (bgmIcon) bgmIcon.textContent = sound.bgmMuted ? '🎵 BGM OFF' : '🎵 BGM ON';
+
+      let currentZoneId = 1;
+      let V_WIDTH = 1280;
+      let V_HEIGHT = 720;
+      let isPortrait = false;
+      const GRAVITY = 0.42;
+      const BASE_RUN_SPEED = 6.2;
+
+      function getGroundYBase() {
+        return isPortrait ? Math.round(V_HEIGHT * 0.64) : 480;
+      }
+
+      const keys = { swing: false, slide: false, jump: false };
+      let jumpBuffer = 0;
+      let coyoteTime = 0;
+      const touchActionMap = new Map();
+      let screenShake = 0;
+      let popupTimer = null;
+
+      function showPopup(text, color = '#ffea00') {
+        if (!comboPopup) return;
+        comboPopup.textContent = text;
+        comboPopup.style.color = color;
+        comboPopup.classList.add('show');
+        if (popupTimer) window.clearTimeout(popupTimer);
+        popupTimer = window.setTimeout(() => {
+          comboPopup.classList.remove('show');
+        }, 850);
+      }
+
+      let gameState = 'START';
+      let lastTime = performance.now();
+      let dangerPulseTimer = 0;
+
+      const player = {
+        x: 200,
+        y: 450,
+        vx: BASE_RUN_SPEED,
+        vy: 0,
+        width: 32,
+        height: 52,
+        grounded: true,
+        sliding: false,
+        webAttached: false,
+        anchor: { x: 0, y: 0, length: 0 },
+        animTimer: 0,
+        comboCount: 0,
+        invincibleTimer: 0,
+      };
+
+      const villain = {
+        distance: 65,
+        targetDistance: 65,
+        y: 450,
+        animFloat: 0,
+      };
+
+      let playerStrikes = 0;
+      const gameStats = { distance: 0, score: 0, tokens: 0 };
+
+      let buildings = [];
+      let anchors = [];
+      let obstacles = [];
+      let collectibles = [];
+      let particles = [];
+      let stars = [];
+
+      function initStars() {
+        stars = [];
+        for (let i = 0; i < 90; i++) {
+          stars.push({
+            x: Math.random() * 1600,
+            y: Math.random() * (V_HEIGHT * 0.7),
+            size: Math.random() * 2 + 0.5,
+            alpha: Math.random() * 0.8 + 0.2,
+          });
+        }
+      }
+
+      let nextSpawnX = 0;
+
+      function spawnBuilding(width, topY) {
+        let bColor = '#15102a';
+        let trimColor = '#ff2a6d';
+        let winColor1 = 'rgba(0, 240, 255, 0.35)';
+        let winColor2 = 'rgba(255, 230, 0, 0.3)';
+
+        if (gameStats.distance >= 800) {
+          bColor = '#0b1428';
+          trimColor = '#00f0ff';
+          winColor1 = 'rgba(0, 240, 255, 0.45)';
+          winColor2 = 'rgba(168, 85, 247, 0.4)';
+        } else if (gameStats.distance >= 350) {
+          bColor = '#1a0e08';
+          trimColor = '#ff7700';
+          winColor1 = 'rgba(255, 170, 0, 0.35)';
+          winColor2 = 'rgba(255, 51, 85, 0.35)';
+        }
+
+        const b = {
+          x: nextSpawnX,
+          y: topY,
+          width: width,
+          height: Math.max(500, V_HEIGHT - topY + 600),
+          color: bColor,
+          trimColor: trimColor,
+          windows: [],
+        };
+        const rows = Math.floor((b.height - 30) / 36);
+        const cols = Math.floor((b.width - 40) / 32);
+        for (let r = 0; r < Math.min(rows, 20); r++) {
+          for (let c = 0; c < cols; c++) {
+            if (Math.random() > 0.45) {
+              b.windows.push({
+                rx: 20 + c * 32,
+                ry: 30 + r * 36,
+                color: Math.random() > 0.3 ? winColor1 : winColor2,
+              });
+            }
+          }
+        }
+        buildings.push(b);
+        nextSpawnX += width;
+        return b;
+      }
+
+      function generateNextSection() {
+        const runDist = gameStats.distance;
+        const gapGrowth = Math.min(80, (runDist / 1000) * 80);
+        const gap = 85 + Math.random() * (55 + gapGrowth);
+        nextSpawnX += gap;
+        const width = Math.max(380, 520 - Math.min(100, runDist / 12));
+        const baseY = getGroundYBase();
+        const heightVar = Math.min(60, 25 + (runDist / 800) * 35);
+        const topY = Math.max(baseY - 120, Math.min(baseY + 60, baseY + (Math.random() * heightVar * 2 - heightVar)));
+        const building = spawnBuilding(width, topY);
+
+        const anchorX = building.x - gap * 0.5 + (Math.random() * 40 - 20);
+        const minAnchorY = isPortrait ? 120 : 80;
+        const maxAnchorY = isPortrait ? baseY - 260 : baseY - 220;
+        const anchorY = minAnchorY + Math.random() * Math.max(50, maxAnchorY - minAnchorY);
+        anchors.push({
+          x: anchorX,
+          y: anchorY,
+          type: Math.random() > 0.5 ? 'crane' : 'blimp',
+          pulse: 0,
+        });
+
+        if (width > 460) {
+          anchors.push({
+            x: building.x + width * 0.55,
+            y: anchorY + (Math.random() * 30 - 15),
+            type: 'spire',
+            pulse: 0,
+          });
+        }
+
+        if (gap > 110 && Math.random() > 0.4) {
+          collectibles.push({
+            x: building.x - gap * 0.5,
+            y: anchorY + 70,
+            type: 'mega_orb',
+            collected: false,
+            pulse: Math.random() * Math.PI,
+          });
+        }
+
+        if (nextSpawnX > 2200) {
+          const obstacleChance = Math.min(0.55, 0.2 + (runDist / 1400) * 0.35);
+          if (Math.random() < obstacleChance && building.width > 380) {
+            const isHigh = Math.random() > 0.5;
+            const obsX = building.x + building.width * 0.48;
+            if (!isHigh) {
+              obstacles.push({
+                x: obsX,
+                y: building.y - 30,
+                width: 36,
+                height: 30,
+                type: 'low',
+              });
+            } else {
+              obstacles.push({
+                x: obsX,
+                y: building.y - 72,
+                width: 44,
+                height: 46,
+                type: 'high',
+              });
+            }
+          }
+        }
+
+        const orbCount = 2 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < orbCount; i++) {
+          collectibles.push({
+            x: building.x + 60 + i * 45,
+            y: building.y - 45 - Math.sin((i / (orbCount - 1 || 1)) * Math.PI) * 50,
+            type: 'orb',
+            collected: false,
+            pulse: Math.random() * Math.PI * 2,
+          });
+        }
+
+        if (Math.random() < 0.28) {
+          const puTypes = ['powerup_boost', 'powerup_magnet', 'powerup_shield', 'powerup_slowmo'];
+          const chosen = puTypes[Math.floor(Math.random() * puTypes.length)];
+          collectibles.push({
+            x: building.x + building.width * 0.75,
+            y: building.y - 50,
+            type: chosen,
+            collected: false,
+            pulse: 0,
+          });
+        }
+      }
+
+      function isBelowRooftopLevel() {
+        let thresholdY = getGroundYBase();
+        const localBuildings = buildings.filter((b) => b.x + b.width > player.x - 220 && b.x < player.x + 350);
+        if (localBuildings.length > 0) {
+          thresholdY = Math.max(...localBuildings.map((b) => b.y));
+        }
+        return player.y > thresholdY + 12;
+      }
+
+      function resetGame() {
+        const baseY = getGroundYBase();
+        player.x = isPortrait ? 140 : 200;
+        player.y = baseY - 52;
+        player.vx = BASE_RUN_SPEED * activeHero.speedMult;
+        player.vy = 0;
+        player.width = 32;
+        player.height = 52;
+        player.grounded = true;
+        player.sliding = false;
+        player.webAttached = false;
+        player.anchor = { x: 0, y: 0, length: 0 };
+        player.animTimer = 0;
+        player.comboCount = 0;
+        player.invincibleTimer = 0;
+        playerStrikes = 0;
+        consecutiveAirSwings = 0;
+        hasUsedAirJump = false;
+        activePowerup = null;
+
+        currentRunShields = (activeHero.initialShield || 0) + (unlockedPerks.includes('perk_shield') ? 1 : 0);
+        currentZoneId = 1;
+        sound.setZone(1);
+        hasRevivedThisRun = false;
+
+        if (btnAdRevive) {
+          btnAdRevive.disabled = false;
+          const title = btnAdRevive.querySelector('.reward-title');
+          const sub = btnAdRevive.querySelector('.reward-sub');
+          if (title) title.textContent = 'REVIVE ONCE';
+          if (sub) sub.textContent = 'WATCH AD TO CONTINUE RUN (4S SHIELD)';
+        }
+        if (btnAdDouble) {
+          btnAdDouble.disabled = false;
+          const title = btnAdDouble.querySelector('.reward-title');
+          const sub = btnAdDouble.querySelector('.reward-sub');
+          if (title) title.textContent = 'DOUBLE COINS (2X)';
+          if (sub) sub.textContent = 'WATCH AD TO DOUBLE ORBS';
+        }
+
+        villain.distance = 65;
+        villain.targetDistance = 65;
+        villain.y = baseY - 52;
+
+        gameStats.distance = 0;
+        gameStats.score = 0;
+        gameStats.tokens = 0;
+        jumpBuffer = 0;
+        coyoteTime = 0;
+        screenShake = 0;
+
+        buildings = [];
+        anchors = [];
+        obstacles = [];
+        collectibles = [];
+        particles = [];
+        nextSpawnX = -100;
+
+        spawnBuilding(650, baseY);
+        spawnBuilding(600, baseY);
+        spawnBuilding(580, baseY);
+
+        for (let i = 0; i < 8; i++) {
+          generateNextSection();
+        }
+
+        if (dangerVignette) {
+          dangerVignette.style.boxShadow = 'inset 60px 0 90px -20px rgba(255, 0, 60, 0)';
+        }
+        updateHUD();
+      }
+
+      function attemptWebShoot() {
+        if (player.webAttached || isBelowRooftopLevel()) return;
+
+        let bestAnchor = null;
+        let bestDist = 999999;
+        for (const a of anchors) {
+          const dx = a.x - player.x;
+          const dy = a.y - player.y;
+          if (dx > -30 && dx < 460 && dy < -50) {
+            const d = Math.hypot(dx, dy);
+            if (d < bestDist && d > 100 && d < 620) {
+              bestDist = d;
+              bestAnchor = a;
+            }
+          }
+        }
+
+        if (!bestAnchor) {
+          const dynamicX = player.x + (isPortrait ? 150 : 190);
+          const dynamicY = Math.max(60, player.y - (isPortrait ? 300 : 280));
+          bestAnchor = { x: dynamicX, y: dynamicY, type: 'dynamic', pulse: 0 };
+          anchors.push(bestAnchor);
+        }
+
+        player.webAttached = true;
+        player.anchor = {
+          x: bestAnchor.x,
+          y: bestAnchor.y,
+          length: Math.hypot(bestAnchor.x - player.x, bestAnchor.y - player.y),
+        };
+        sound.playThwip();
+
+        for (let i = 0; i < 8; i++) {
+          particles.push(new Particle(bestAnchor.x, bestAnchor.y, (Math.random() - 0.5) * 6, (Math.random() - 0.5) * 6, '#00f0ff', 3, 20, 'circle'));
+        }
+      }
+
+      function releaseWeb() {
+        if (!player.webAttached) return;
+        player.webAttached = false;
+        sound.playRelease();
+
+        for (let i = 0; i < 8; i++) {
+          particles.push(new Particle(player.x, player.y, (Math.random() - 0.5) * 5, (Math.random() - 0.5) * 5, '#ffffff', 2.5, 18, 'circle'));
+        }
+
+        let launchBoost = 2.2 * activeHero.webLaunchMult;
+        if (unlockedPerks.includes('perk_thruster')) {
+          launchBoost *= 1.25;
+        }
+
+        if (player.vy < -3 && player.vx > BASE_RUN_SPEED * 1.05) {
+          player.vx += launchBoost;
+          player.comboCount++;
+          consecutiveAirSwings++;
+          const multiplier = Math.min(5, 1 + consecutiveAirSwings * 0.5);
+          villain.targetDistance = Math.min(80, villain.targetDistance + 6);
+          const points = Math.round(150 * multiplier);
+          gameStats.score += points;
+
+          if (consecutiveAirSwings > 1) {
+            showPopup(`AIR COMBO x${multiplier}! +${points}`, '#ffe600');
+          } else {
+            showPopup(`PERFECT RELEASE! +${points}`, activeHero.accentColor || '#00f0ff');
+          }
+        }
+      }
+
+      function applyPowerup(type) {
+        sound.playPowerup();
+        screenShake = 6;
+        const durationMult = unlockedPerks.includes('perk_surge') ? 1.4 : 1.0;
+
+        if (type === 'shield') {
+          currentRunShields = Math.min(3, currentRunShields + 1);
+          showPopup('+1 SHIELD CORE RESTORED!', '#00ff88');
+          updateHUD();
+          return;
+        }
+
+        const durationFrames = Math.round((type === 'boost' ? 360 : type === 'magnet' ? 480 : 360) * durationMult);
+        const names = {
+          boost: 'NITRO JET BOOST',
+          magnet: 'QUANTUM VACUUM',
+          slowmo: 'CHRONO TIME WARP',
+        };
+        const icons = {
+          boost: '🚀',
+          magnet: '🧲',
+          slowmo: '⏳',
+        };
+
+        activePowerup = {
+          type,
+          remainingFrames: durationFrames,
+          maxFrames: durationFrames,
+          name: names[type],
+          icon: icons[type],
+        };
+
+        showPopup(`${icons[type]} ${names[type]} ACTIVATED!`, '#00f0ff');
+      }
+
+      function update(dt) {
+        if (gameState !== 'PLAYING') return;
+
+        if (activePowerup) {
+          activePowerup.remainingFrames--;
+          if (activePowerup.remainingFrames <= 0) {
+            activePowerup = null;
+          }
+        }
+
+        const isBoostActive = activePowerup?.type === 'boost';
+        const isSlowmoActive = activePowerup?.type === 'slowmo';
+
+        gameStats.distance += player.vx * 0.04;
+        gameStats.score += Math.round(player.vx * (isBoostActive ? 0.4 : 0.2));
+
+        let speedBonus = 0;
+        if (gameStats.distance >= 800) {
+          speedBonus = 4.2 + Math.min(2.4, (gameStats.distance - 800) / 350);
+        } else if (gameStats.distance >= 350) {
+          speedBonus = 2.0 + Math.min(1.8, (gameStats.distance - 350) / 250);
+        } else {
+          speedBonus = Math.min(1.6, gameStats.distance / 250);
+        }
+
+        let currentMaxRunSpeed = (BASE_RUN_SPEED + speedBonus) * activeHero.speedMult;
+        if (isBoostActive) currentMaxRunSpeed *= 1.45;
+
+        if (keys.swing) {
+          attemptWebShoot();
+        } else {
+          releaseWeb();
+        }
+
+        player.sliding = keys.slide && player.grounded;
+        if (player.grounded) {
+          coyoteTime = 8;
+          hasUsedAirJump = false;
+          consecutiveAirSwings = 0;
+        } else if (coyoteTime > 0) {
+          coyoteTime--;
+        }
+
+        if (keys.jump) {
+          jumpBuffer = 10;
+          keys.jump = false;
+        }
+        if (jumpBuffer > 0) jumpBuffer--;
+
+        const canJump = (player.grounded || coyoteTime > 0) && !player.sliding && !player.webAttached;
+        const canAirJump = !player.grounded && coyoteTime === 0 && !player.webAttached && !hasUsedAirJump && unlockedPerks.includes('perk_airjump');
+
+        if (jumpBuffer > 0) {
+          if (canJump) {
+            player.vy = -11.6 * activeHero.jumpMult;
+            player.grounded = false;
+            coyoteTime = 0;
+            jumpBuffer = 0;
+            sound.playJump();
+            for (let i = 0; i < 6; i++) {
+              particles.push(new Particle(player.x, player.y + player.height, (Math.random() - 0.8) * 3, -Math.random() * 2, activeHero.accentColor || '#9d8ec2', 3, 15));
+            }
+          } else if (canAirJump) {
+            hasUsedAirJump = true;
+            player.vy = -10.5 * activeHero.jumpMult;
+            jumpBuffer = 0;
+            sound.playJump();
+            showPopup('AIR RECOVERY LEAP! 🪂', '#00ff88');
+            for (let i = 0; i < 12; i++) {
+              particles.push(new Particle(player.x + player.width * 0.5, player.y + player.height, (Math.random() - 0.5) * 6, Math.random() * 2, '#00ff88', 3, 18, 'circle'));
+            }
+          }
+        }
+
+        player.height = player.sliding ? 24 : 52;
+
+        if (player.webAttached) {
+          player.grounded = false;
+          const ax = player.anchor.x;
+          const ay = player.anchor.y;
+          const dx = player.x - ax;
+          const dy = player.y - ay;
+          const currentDist = Math.hypot(dx, dy);
+
+          player.vy += GRAVITY;
+
+          if (currentDist > player.anchor.length) {
+            const nx = dx / currentDist;
+            const ny = dy / currentDist;
+            const tx = -ny;
+            const ty = nx;
+            const vDotT = player.vx * tx + player.vy * ty;
+            const swingBoost = Math.max(0, -ny) * 0.36;
+
+            player.vx = tx * (vDotT + swingBoost);
+            player.vy = ty * (vDotT + swingBoost);
+            player.x = ax + nx * player.anchor.length;
+            player.y = ay + ny * player.anchor.length;
+          }
+
+          player.vx *= 0.996;
+          player.vy *= 0.996;
+        } else {
+          if (!player.grounded) {
+            player.vy += GRAVITY;
+            if (player.vy > 17) player.vy = 17;
+          } else {
+            if (player.vx < currentMaxRunSpeed) {
+              player.vx += 0.32 * activeHero.speedMult * (isBoostActive ? 1.8 : 1.0);
+            } else if (player.vx > currentMaxRunSpeed) {
+              player.vx *= 0.985;
+            }
+          }
+        }
+
+        player.x += player.vx;
+        player.y += player.vy;
+
+        if (isBoostActive) {
+          particles.push(new Particle(player.x - 5, player.y + Math.random() * player.height, -player.vx * 0.6 + (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 4, Math.random() > 0.5 ? '#ffe600' : '#ff0055', 4.5, 18, 'circle'));
+        }
+
+        if (activeHero.trailType === 'shadow') {
+          if (Math.random() > 0.45) {
+            particles.push(new Particle(player.x, player.y + Math.random() * player.height, -player.vx * 0.35 + (Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 2, Math.random() > 0.5 ? '#d4af37' : '#1a1a24', Math.random() * 3 + 2, 14, 'circle'));
+          }
+        } else if (activeHero.trailType === 'electric') {
+          if (Math.random() > 0.4) {
+            const spark = Math.random() > 0.5 ? '#00f0ff' : '#ff007f';
+            particles.push(new Particle(player.x + (Math.random() - 0.5) * 10, player.y + Math.random() * player.height, -player.vx * 0.2 + (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, spark, 2.5, 10));
+          }
+        } else if (activeHero.trailType === 'solar') {
+          if (Math.random() > 0.35) {
+            particles.push(new Particle(player.x - 2, player.y + Math.random() * player.height, -player.vx * 0.4, (Math.random() - 0.5) * 2, '#ffaa00', 3, 14, 'circle'));
+          }
+        } else if (activeHero.trailType === 'quantum') {
+          if (Math.random() > 0.35) {
+            particles.push(new Particle(player.x - 2, player.y + Math.random() * player.height, -player.vx * 0.3, (Math.random() - 0.5) * 2, '#7000ff', 3.5, 16, 'circle'));
+          }
+        } else if (activeHero.trailType === 'forcefield') {
+          if (Math.random() > 0.5) {
+            particles.push(new Particle(player.x + player.width * 0.5 + (Math.random() - 0.5) * 16, player.y + player.height * 0.5 + (Math.random() - 0.5) * 16, -player.vx * 0.15, (Math.random() - 0.5) * 1.5, '#b794f4', 3, 15, 'circle'));
+          }
+        } else if (activeHero.trailType === 'void') {
+          if (Math.random() > 0.3) {
+            const aura = Math.random() > 0.4 ? '#ff003c' : '#7928ca';
+            particles.push(new Particle(player.x - 2, player.y + Math.random() * player.height, -player.vx * 0.5 + (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2.5, aura, 3.5, 16, 'circle'));
+          }
+        }
+
+        if (player.sliding && player.grounded) {
+          if (Math.random() > 0.3) {
+            particles.push(new Particle(player.x, player.y + player.height, -player.vx * 0.6 + (Math.random() - 0.5) * 2, -Math.random() * 3, activeHero.accentColor || '#ffe600', 3, 14));
+          }
+        }
+
+        const wasGrounded = player.grounded;
+        player.grounded = false;
+        for (const b of buildings) {
+          if (player.x + player.width > b.x && player.x < b.x + b.width) {
+            const currentBottom = player.y + player.height;
+            const prevBottom = player.y - player.vy + player.height;
+            if (prevBottom <= b.y + 18 && currentBottom >= b.y && player.vy >= 0) {
+              player.y = b.y - player.height;
+              player.vy = 0;
+              player.grounded = true;
+              if (!wasGrounded) {
+                player.comboCount = 0;
+                consecutiveAirSwings = 0;
+                for (let i = 0; i < 5; i++) {
+                  particles.push(new Particle(player.x + player.width * 0.5, b.y, (Math.random() - 0.5) * 4, -Math.random() * 2, '#fff', 2, 10));
+                }
+              }
+              break;
+            } else if (currentBottom >= b.y && currentBottom <= b.y + 26 && player.vy >= -3) {
+              player.y = b.y - player.height;
+              player.vy = 0;
+              player.grounded = true;
+              break;
+            } else if (currentBottom > b.y + 26 && player.x + player.width > b.x && player.x < b.x + 18) {
+              player.x = b.x - player.width;
+              player.vx = Math.max(BASE_RUN_SPEED * 0.7, player.vx * 0.75);
+            }
+          }
+        }
+
+        if (isBelowRooftopLevel() || player.y > V_HEIGHT + 80) {
+          if (player.webAttached) {
+            player.webAttached = false;
+            sound.playRelease();
+          }
+          triggerGameOver('FALL', 'Fell below the rooftops into the city gap!');
+          return;
+        }
+
+        if (player.invincibleTimer > 0) {
+          player.invincibleTimer--;
+        } else {
+          for (let i = obstacles.length - 1; i >= 0; i--) {
+            const obs = obstacles[i];
+            if (
+              player.x + player.width > obs.x &&
+              player.x < obs.x + obs.width &&
+              player.y + player.height > obs.y &&
+              player.y < obs.y + obs.height
+            ) {
+              if (isBoostActive) {
+                sound.playShieldDeflect();
+                gameStats.score += 300;
+                showPopup('SMASHED OBSTACLE! +300', '#ffe600');
+                for (let p = 0; p < 15; p++) {
+                  particles.push(new Particle(obs.x + obs.width * 0.5, obs.y + obs.height * 0.5, (Math.random() - 0.5) * 9, (Math.random() - 0.5) * 9, '#ffe600', 4, 25));
+                }
+                obstacles.splice(i, 1);
+                break;
+              }
+
+              if (currentRunShields > 0) {
+                currentRunShields--;
+                sound.playShieldDeflect();
+                screenShake = 10;
+                player.invincibleTimer = 90;
+                player.vy = -3.2;
+                player.x = obs.x + obs.width + 6;
+                showPopup(`SHIELD DEFLECTED HIT! (${currentRunShields} LEFT)`, '#00ff88');
+                for (let p = 0; p < 20; p++) {
+                  particles.push(new Particle(player.x + player.width * 0.5, player.y + player.height * 0.5, (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8, '#00ff88', 3.5, 22, 'circle'));
+                }
+                updateHUD();
+                break;
+              }
+
+              sound.playHit();
+              screenShake = 14;
+              player.invincibleTimer = 90;
+              player.vy = -3.8;
+              player.x = obs.x + obs.width + 6;
+              player.vx = Math.max(BASE_RUN_SPEED * 0.8, player.vx * 0.85);
+              playerStrikes++;
+
+              for (let p = 0; p < 15; p++) {
+                particles.push(new Particle(obs.x + obs.width * 0.5, obs.y + obs.height * 0.5, (Math.random() - 0.5) * 7, (Math.random() - 0.5) * 7, '#ff0055', 4, 25));
+              }
+
+              if (playerStrikes === 1) {
+                villain.targetDistance = 32;
+                sound.playDangerPulse();
+                showPopup('CRASH 1! NEMESIS CLOSING IN (STRIKE 1/3)', '#ffaa00');
+              } else if (playerStrikes === 2) {
+                villain.targetDistance = 14;
+                sound.playDangerPulse();
+                showPopup('CRASH 2! NEMESIS ON YOUR TAIL! (STRIKE 2/3)', '#ff0055');
+              } else if (playerStrikes >= 3) {
+                villain.distance = 0;
+                villain.targetDistance = 0;
+                triggerGameOver('CAUGHT', '3 Strikes! The Nemesis overtook and captured you.');
+                return;
+              }
+              break;
+            }
+          }
+        }
+
+        let effectiveMagnetRadius = (activeHero.magnetRadius || 0) + (unlockedPerks.includes('perk_magnet') ? 120 : 0);
+        if (activePowerup?.type === 'magnet') {
+          effectiveMagnetRadius = 380;
+        }
+
+        if (effectiveMagnetRadius > 0) {
+          const pCenterX = player.x + player.width * 0.5;
+          const pCenterY = player.y + player.height * 0.5;
+          for (const orb of collectibles) {
+            if (!orb.collected) {
+              const dx = pCenterX - orb.x;
+              const dy = pCenterY - orb.y;
+              const dist = Math.hypot(dx, dy);
+              if (dist < effectiveMagnetRadius && dist > 1) {
+                const pullSpeed = Math.min(22, (effectiveMagnetRadius - dist) * 0.2 + 5);
+                orb.x += (dx / dist) * pullSpeed;
+                orb.y += (dy / dist) * pullSpeed;
+              }
+            }
+          }
+        }
+
+        for (const item of collectibles) {
+          if (!item.collected) {
+            const dx = player.x + player.width * 0.5 - item.x;
+            const dy = player.y + player.height * 0.5 - item.y;
+            if (Math.hypot(dx, dy) < 42) {
+              item.collected = true;
+
+              if (item.type === 'orb' || item.type === 'mega_orb') {
+                sound.playCoin();
+                const isMega = item.type === 'mega_orb';
+                const baseGain = isMega ? 5 : 1;
+                const orbMult = activeHero.orbMult || 1;
+                const gained = baseGain * orbMult;
+                gameStats.tokens += gained;
+                totalOrbs += gained;
+                try { localStorage.setItem('rooftopEscape_totalOrbs', String(totalOrbs)); } catch {}
+                gameStats.score += (isMega ? 500 : 100) * orbMult;
+                player.vx += isMega ? 2.0 : 1.0;
+                if (isMega) showPopup(`MEGA ORB! +${gained} 🔮`, '#ffe600');
+                if (hudBankTokens) hudBankTokens.textContent = String(totalOrbs);
+                for (let i = 0; i < (isMega ? 18 : 10); i++) {
+                  particles.push(new Particle(item.x, item.y, (Math.random() - 0.5) * 7, (Math.random() - 0.5) * 7, isMega ? '#ffe600' : '#00f0ff', 4, 22, 'circle'));
+                }
+              } else if (item.type === 'powerup_boost') {
+                applyPowerup('boost');
+              } else if (item.type === 'powerup_magnet') {
+                applyPowerup('magnet');
+              } else if (item.type === 'powerup_shield') {
+                applyPowerup('shield');
+              } else if (item.type === 'powerup_slowmo') {
+                applyPowerup('slowmo');
+              }
+            }
+          }
+        }
+
+        const villainLagRate = isSlowmoActive ? 0.03 : 0.06;
+        villain.distance += (villain.targetDistance - villain.distance) * villainLagRate;
+        villain.y += (player.y - villain.y) * 0.05;
+        villain.animFloat += 0.08;
+
+        if (dangerVignette) {
+          if (villain.distance < 20 || playerStrikes >= 2) {
+            dangerPulseTimer++;
+            if (dangerPulseTimer % 35 === 0) sound.playDangerPulse();
+            dangerVignette.style.boxShadow = 'inset 70px 0 100px -20px rgba(255, 0, 60, 0.75)';
+          } else if (playerStrikes === 1) {
+            dangerVignette.style.boxShadow = 'inset 50px 0 80px -20px rgba(255, 120, 0, 0.4)';
+          } else {
+            dangerVignette.style.boxShadow = 'inset 60px 0 90px -20px rgba(255, 0, 60, 0)';
+          }
+        }
+
+        if (villain.distance <= 2 && playerStrikes >= 3) {
+          triggerGameOver('CAUGHT', 'The Shadow Nemesis intercepted and captured you!');
+          return;
+        }
+
+        const camX = player.x - (isPortrait ? 140 : 220);
+        if (nextSpawnX < camX + V_WIDTH + 600) {
+          generateNextSection();
+        }
+
+        buildings = buildings.filter((b) => b.x + b.width > camX - 400);
+        obstacles = obstacles.filter((o) => o.x + o.width > camX - 400);
+        anchors = anchors.filter((a) => a.x > camX - 500);
+        collectibles = collectibles.filter((c) => c.x > camX - 300);
+
+        particles.forEach((p) => p.update());
+        particles = particles.filter((p) => p.life > 0);
+
+        updateHUD();
+      }
+
+      function updateHUD() {
+        if (hudDistance) hudDistance.textContent = Math.floor(gameStats.distance) + ' m';
+        if (hudScore) hudScore.textContent = String(gameStats.score);
+        if (hudTokens) hudTokens.textContent = String(gameStats.tokens);
+        if (hudBankTokens) hudBankTokens.textContent = String(totalOrbs);
+
+        if (hudPowerupPill && hudPowerupIcon && hudPowerupText) {
+          if (activePowerup) {
+            const secs = Math.ceil(activePowerup.remainingFrames / 60);
+            hudPowerupIcon.textContent = activePowerup.icon;
+            hudPowerupText.textContent = `${activePowerup.name} (${secs}s)`;
+            hudPowerupPill.classList.add('active');
+          } else {
+            hudPowerupPill.classList.remove('active');
+          }
+        }
+
+        let newZoneId = 1;
+        let zoneName = 'ZONE 1: NEON CORE';
+        let zoneClass = 'zone-1';
+
+        if (gameStats.distance >= 800) {
+          newZoneId = 3;
+          zoneName = 'ZONE 3: ORBITAL SPIRES';
+          zoneClass = 'zone-3';
+        } else if (gameStats.distance >= 350) {
+          newZoneId = 2;
+          zoneName = 'ZONE 2: CYBER SLUMS';
+          zoneClass = 'zone-2';
+        }
+
+        if (newZoneId !== currentZoneId) {
+          currentZoneId = newZoneId;
+          sound.setZone(newZoneId);
+          if (newZoneId === 2) {
+            sound.playCoin();
+            showPopup('ZONE 2: CYBER SLUMS! +SPEED', '#ffaa00');
+          } else if (newZoneId === 3) {
+            sound.playCoin();
+            showPopup('ZONE 3: ORBITAL SPIRES! MAX SPEED', '#00f0ff');
+          }
+        }
+
+        if (hudZoneBadge) {
+          hudZoneBadge.textContent = zoneName;
+          hudZoneBadge.className = `zone-badge ${zoneClass}`;
+        }
+
+        const shieldBadge = currentRunShields > 0 ? ` 🛡️x${currentRunShields}` : '';
+
+        if (playerStrikes === 0) {
+          if (hudStrikes) {
+            hudStrikes.textContent = `⚡⚡⚡${shieldBadge}`;
+            hudStrikes.style.color = '#00ff88';
+          }
+          if (threatBar) {
+            threatBar.style.width = '100%';
+            threatBar.style.background = 'linear-gradient(90deg, #00f0ff, #00ff88)';
+          }
+          if (threatStatusMsg) {
+            threatStatusMsg.textContent = `3 LIVES (SAFE)${currentRunShields > 0 ? ' • 🛡️ SHIELD READY' : ''}`;
+            threatStatusMsg.style.color = '#00f0ff';
+          }
+        } else if (playerStrikes === 1) {
+          if (hudStrikes) {
+            hudStrikes.textContent = `⚡⚡⚠️${shieldBadge}`;
+            hudStrikes.style.color = '#ffaa00';
+          }
+          if (threatBar) {
+            threatBar.style.width = '55%';
+            threatBar.style.background = 'linear-gradient(90deg, #ffaa00, #ff7700)';
+          }
+          if (threatStatusMsg) {
+            threatStatusMsg.textContent = `STRIKE 1 / 3: NEMESIS CLOSING IN!${currentRunShields > 0 ? ' • 🛡️ SHIELD READY' : ''}`;
+            threatStatusMsg.style.color = '#ffaa00';
+          }
+        } else if (playerStrikes === 2) {
+          if (hudStrikes) {
+            hudStrikes.textContent = `⚡⚠️⚠️${shieldBadge}`;
+            hudStrikes.style.color = '#ff0055';
+          }
+          if (threatBar) {
+            threatBar.style.width = '20%';
+            threatBar.style.background = 'linear-gradient(90deg, #ff0000, #ff0055)';
+          }
+          if (threatStatusMsg) {
+            threatStatusMsg.textContent = `STRIKE 2 / 3: HIGH ALERT - BEHIND YOU!${currentRunShields > 0 ? ' • 🛡️ SHIELD READY' : ''}`;
+            threatStatusMsg.style.color = '#ff0055';
+          }
+        } else {
+          if (hudStrikes) {
+            hudStrikes.textContent = '💀💀💀';
+            hudStrikes.style.color = '#ff0000';
+          }
+          if (threatBar) threatBar.style.width = '0%';
+          if (threatStatusMsg) {
+            threatStatusMsg.textContent = 'STRIKE 3: CAPTURED!';
+            threatStatusMsg.style.color = '#ff0000';
+          }
+        }
+      }
+
+      function triggerGameOver(type, reason) {
+        gameState = 'GAMEOVER';
+        sound.playGameOver();
+        screenShake = 20;
+
+        if (goTitle) {
+          if (type === 'CAUGHT') {
+            goTitle.textContent = 'CAPTURED!';
+            goTitle.style.color = '#ff0055';
+          } else {
+            goTitle.textContent = 'PLUMMETED!';
+            goTitle.style.color = '#00f0ff';
+          }
+        }
+        if (goReason) goReason.textContent = reason;
+
+        const finalDist = Math.floor(gameStats.distance);
+        if (goDistance) goDistance.textContent = finalDist + ' m';
+        if (goScore) goScore.textContent = String(gameStats.score);
+        if (goTokens) goTokens.textContent = String(gameStats.tokens);
+
+        if (finalDist > highDistance) {
+          highDistance = finalDist;
+          localStorage.setItem('rooftopEscape_highDist', String(highDistance));
+          if (hudHighscore) hudHighscore.textContent = highDistance + ' m';
+        }
+        if (goBest) goBest.textContent = highDistance + ' m';
+
+        if (btnAdRevive) {
+          if (hasRevivedThisRun) {
+            btnAdRevive.disabled = true;
+            const title = btnAdRevive.querySelector('.reward-title');
+            const sub = btnAdRevive.querySelector('.reward-sub');
+            if (title) title.textContent = 'REVIVED (1/1 USED)';
+            if (sub) sub.textContent = 'REVIVE ALREADY CLAIMED THIS RUN';
+          } else {
+            btnAdRevive.disabled = false;
+            const title = btnAdRevive.querySelector('.reward-title');
+            const sub = btnAdRevive.querySelector('.reward-sub');
+            if (title) title.textContent = 'REVIVE ONCE';
+            if (sub) sub.textContent = 'WATCH AD TO CONTINUE RUN (4S SHIELD)';
+          }
+        }
+
+        if (modalPause) modalPause.classList.remove('active');
+        if (modalGameOver) modalGameOver.classList.add('active');
+      }
+
+      function render() {
+        const camX = player.x - (isPortrait ? 150 : 220);
+        let camY = 0;
+        if (isPortrait) {
+          const desiredCamY = player.y - V_HEIGHT * 0.55;
+          camY = Math.max(-100, Math.min(200, desiredCamY));
+        } else {
+          if (player.y < 180) {
+            camY = (player.y - 180) * 0.6;
+          }
+        }
+
+        ctx.save();
+        if (screenShake > 0) {
+          ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
+          screenShake *= 0.88;
+          if (screenShake < 0.5) screenShake = 0;
+        }
+
+        let skyTop = '#0c0720';
+        let skyMid = '#190e38';
+        let skyBot = '#05020a';
+        let moonGlow = 'rgba(255, 42, 109, 0.12)';
+        let moonCore = 'rgba(255, 230, 0, 0.22)';
+        let p1Color = '#0f0a21';
+        let p1Beacon = '#ff0055';
+        let p2Color = '#171030';
+        let p2Win = 'rgba(0, 240, 255, 0.2)';
+
+        if (gameStats.distance >= 800) {
+          skyTop = '#020514';
+          skyMid = '#091b38';
+          skyBot = '#01030a';
+          moonGlow = 'rgba(0, 240, 255, 0.28)';
+          moonCore = 'rgba(168, 85, 247, 0.35)';
+          p1Color = '#050c1c';
+          p1Beacon = '#00f0ff';
+          p2Color = '#0a1733';
+          p2Win = 'rgba(0, 240, 255, 0.35)';
+        } else if (gameStats.distance >= 350) {
+          skyTop = '#1a0904';
+          skyMid = '#301306';
+          skyBot = '#0a0402';
+          moonGlow = 'rgba(255, 85, 0, 0.2)';
+          moonCore = 'rgba(255, 170, 0, 0.3)';
+          p1Color = '#150805';
+          p1Beacon = '#ff5500';
+          p2Color = '#220e06';
+          p2Win = 'rgba(255, 170, 0, 0.25)';
+        }
+
+        const skyGrad = ctx.createLinearGradient(0, 0, 0, V_HEIGHT);
+        skyGrad.addColorStop(0, skyTop);
+        skyGrad.addColorStop(0.5, skyMid);
+        skyGrad.addColorStop(1, skyBot);
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(0, 0, V_WIDTH, V_HEIGHT);
+
+        ctx.save();
+        const moonX = isPortrait ? V_WIDTH * 0.75 : V_WIDTH * 0.82;
+        const moonY = isPortrait ? 140 : 160;
+        ctx.beginPath();
+        ctx.arc(moonX, moonY, 70, 0, Math.PI * 2);
+        ctx.fillStyle = moonGlow;
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(moonX, moonY, 58, 0, Math.PI * 2);
+        ctx.fillStyle = moonCore;
+        ctx.fill();
+        ctx.restore();
+
+        ctx.fillStyle = '#ffffff';
+        for (const s of stars) {
+          ctx.globalAlpha = gameStats.distance >= 800 ? Math.min(1, s.alpha * 1.35) : s.alpha;
+          ctx.fillRect((s.x - camX * 0.05) % V_WIDTH, s.y, s.size, s.size);
+        }
+        ctx.globalAlpha = 1;
+
+        ctx.fillStyle = p1Color;
+        const p1Offset = camX * 0.12;
+        for (let i = -1; i < 16; i++) {
+          const bx = i * 160 - (p1Offset % 160);
+          const bh = (isPortrait ? 400 : 280) + Math.sin(i * 99) * 80;
+          ctx.fillRect(bx, V_HEIGHT - bh - camY * 0.1, 140, bh + 400);
+          ctx.fillStyle = p1Beacon;
+          ctx.fillRect(bx + 68, V_HEIGHT - bh - 8 - camY * 0.1, 4, 8);
+          ctx.fillStyle = p1Color;
+        }
+
+        ctx.fillStyle = p2Color;
+        const p2Offset = camX * 0.35;
+        for (let i = -1; i < 14; i++) {
+          const bx = i * 220 - (p2Offset % 220);
+          const bh = (isPortrait ? 460 : 340) + Math.sin(i * 47) * 110;
+          ctx.fillRect(bx, V_HEIGHT - bh - camY * 0.3, 190, bh + 400);
+          ctx.fillStyle = p2Win;
+          for (let wy = V_HEIGHT - bh + 40 - camY * 0.3; wy < V_HEIGHT - 60; wy += 28) {
+            ctx.fillRect(bx + 20, wy, 8, 12);
+            ctx.fillRect(bx + 60, wy, 8, 12);
+            ctx.fillRect(bx + 110, wy, 8, 12);
+          }
+          ctx.fillStyle = p2Color;
+        }
+
+        for (const b of buildings) {
+          const screenBX = b.x - camX;
+          const screenBY = b.y - camY;
+          if (screenBX + b.width < -100 || screenBX > V_WIDTH + 100) continue;
+          ctx.fillStyle = b.color;
+          ctx.fillRect(screenBX, screenBY, b.width, b.height);
+          ctx.fillStyle = b.trimColor;
+          ctx.fillRect(screenBX, screenBY, b.width, 5);
+          ctx.fillStyle = '#2c1e4a';
+          ctx.fillRect(screenBX, screenBY + 5, b.width, 14);
+          for (const w of b.windows) {
+            ctx.fillStyle = w.color;
+            ctx.fillRect(screenBX + w.rx, screenBY + w.ry, 14, 18);
+          }
+        }
+
+        for (const a of anchors) {
+          const screenAX = a.x - camX;
+          const screenAY = a.y - camY;
+          if (screenAX < -100 || screenAX > V_WIDTH + 100) continue;
+          a.pulse += 0.05;
+          const glow = Math.sin(a.pulse) * 4 + 8;
+          if (a.type === 'crane') {
+            ctx.strokeStyle = '#ff5500';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(screenAX - 40, screenAY - 30);
+            ctx.lineTo(screenAX + 40, screenAY - 30);
+            ctx.moveTo(screenAX, screenAY - 30);
+            ctx.lineTo(screenAX, screenAY);
+            ctx.stroke();
+            ctx.strokeStyle = '#00f0ff';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(screenAX, screenAY, glow, 0, Math.PI * 2);
+            ctx.stroke();
+          } else if (a.type === 'blimp') {
+            ctx.fillStyle = '#221538';
+            ctx.beginPath();
+            ctx.ellipse(screenAX, screenAY - 25, 56, 20, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#00f0ff';
+            ctx.font = 'bold 8.5px monospace';
+            ctx.fillText('KINGDOMMAX', screenAX - 26, screenAY - 22);
+            ctx.strokeStyle = '#ffe600';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(screenAX, screenAY - 3);
+            ctx.lineTo(screenAX, screenAY);
+            ctx.arc(screenAX, screenAY + 6, 6, 0, Math.PI * 2);
+            ctx.stroke();
+          } else {
+            ctx.strokeStyle = '#00f0ff';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(screenAX, screenAY, glow, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        }
+
+        for (const obs of obstacles) {
+          const screenOX = obs.x - camX;
+          const screenOY = obs.y - camY;
+          if (screenOX < -60 || screenOX > V_WIDTH + 60) continue;
+          if (obs.type === 'low') {
+            ctx.fillStyle = '#443266';
+            ctx.fillRect(screenOX, screenOY, obs.width, obs.height);
+            ctx.fillStyle = '#ff0055';
+            ctx.fillRect(screenOX + 4, screenOY + 4, obs.width - 8, 6);
+            ctx.strokeStyle = '#665088';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(screenOX + obs.width * 0.5, screenOY + 20, 9, 0, Math.PI * 2);
+            ctx.stroke();
+          } else {
+            ctx.strokeStyle = '#554477';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(screenOX + 10, screenOY - 80);
+            ctx.lineTo(screenOX + 10, screenOY);
+            ctx.moveTo(screenOX + obs.width - 10, screenOY - 80);
+            ctx.lineTo(screenOX + obs.width - 10, screenOY);
+            ctx.stroke();
+            ctx.fillStyle = '#100a20';
+            ctx.fillRect(screenOX, screenOY, obs.width, obs.height);
+            ctx.strokeStyle = '#ff0055';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(screenOX, screenOY, obs.width, obs.height);
+            ctx.fillStyle = '#ff2a6d';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText('DANGER', screenOX + 2, screenOY + 28);
+          }
+        }
+
+        for (const item of collectibles) {
+          if (item.collected) continue;
+          const screenX = item.x - camX;
+          const screenY = item.y - camY;
+          if (screenX < -50 || screenX > V_WIDTH + 50) continue;
+          item.pulse += 0.08;
+
+          if (item.type === 'orb') {
+            const pulseSize = Math.sin(item.pulse) * 3 + 10;
+            ctx.fillStyle = 'rgba(0, 240, 255, 0.35)';
+            ctx.beginPath();
+            ctx.arc(screenX, screenY, pulseSize + 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#00f0ff';
+            ctx.beginPath();
+            ctx.arc(screenX, screenY, pulseSize, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(screenX - 2, screenY - 2, pulseSize * 0.45, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (item.type === 'mega_orb') {
+            const pulseSize = Math.sin(item.pulse) * 4 + 14;
+            ctx.fillStyle = 'rgba(255, 230, 0, 0.35)';
+            ctx.beginPath();
+            ctx.arc(screenX, screenY, pulseSize + 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffe600';
+            ctx.beginPath();
+            ctx.arc(screenX, screenY, pulseSize, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(screenX - 3, screenY - 3, pulseSize * 0.45, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            const icon =
+              item.type === 'powerup_boost'
+                ? '🚀'
+                : item.type === 'powerup_magnet'
+                ? '🧲'
+                : item.type === 'powerup_shield'
+                ? '🛡️'
+                : '⏳';
+            const ringColor =
+              item.type === 'powerup_boost'
+                ? '#ff0055'
+                : item.type === 'powerup_magnet'
+                ? '#00f0ff'
+                : item.type === 'powerup_shield'
+                ? '#00ff88'
+                : '#ffe600';
+
+            ctx.save();
+            const pulseRadius = 18 + Math.sin(item.pulse) * 3;
+            ctx.strokeStyle = ringColor;
+            ctx.lineWidth = 2.5;
+            ctx.shadowColor = ringColor;
+            ctx.shadowBlur = 12;
+            ctx.beginPath();
+            ctx.arc(screenX, screenY, pulseRadius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.fillStyle = 'rgba(10, 5, 25, 0.85)';
+            ctx.beginPath();
+            ctx.arc(screenX, screenY, pulseRadius - 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.font = '16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(icon, screenX, screenY + 1);
+            ctx.restore();
+          }
+        }
+
+        for (const p of particles) {
+          p.draw(ctx, camX, camY);
+        }
+
+        if (player.webAttached) {
+          const screenPX = player.x - camX + player.width * 0.5;
+          const screenPY = player.y - camY + 12;
+          const screenAX = player.anchor.x - camX;
+          const screenAY = player.anchor.y - camY;
+          ctx.save();
+          ctx.strokeStyle = 'rgba(0, 240, 255, 0.45)';
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.moveTo(screenPX, screenPY);
+          const midX = (screenPX + screenAX) * 0.5 + player.vx * 1.5;
+          const midY = (screenPY + screenAY) * 0.5;
+          ctx.quadraticCurveTo(midX, midY, screenAX, screenAY);
+          ctx.stroke();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(screenPX, screenPY);
+          ctx.quadraticCurveTo(midX, midY, screenAX, screenAY);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        const screenHeroX = player.x - camX;
+        const screenHeroY = player.y - camY;
+        ctx.save();
+
+        if (currentRunShields > 0) {
+          ctx.save();
+          const sCenterX = screenHeroX + player.width * 0.5;
+          const sCenterY = screenHeroY + (player.sliding ? 12 : player.height * 0.5);
+          const shieldPulse = Math.sin(performance.now() * 0.006) * 3;
+          ctx.strokeStyle = '#00ff88';
+          ctx.lineWidth = 2.2;
+          ctx.shadowColor = '#00ff88';
+          ctx.shadowBlur = 10;
+          ctx.beginPath();
+          ctx.arc(sCenterX, sCenterY, 32 + shieldPulse, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(0, 255, 136, 0.14)';
+          ctx.fill();
+          ctx.restore();
+        }
+
+        if (player.invincibleTimer > 0) {
+          const isFlickerOn = Math.floor(player.invincibleTimer / 5) % 2 === 0;
+          ctx.globalAlpha = isFlickerOn ? 0.35 : 0.95;
+
+          ctx.save();
+          const centerX = screenHeroX + player.width * 0.5;
+          const centerY = screenHeroY + player.height * 0.5;
+          const shieldPulse = Math.sin(player.invincibleTimer * 0.25) * 3.5;
+          const shieldRadius = 34 + shieldPulse;
+
+          ctx.strokeStyle = '#00f0ff';
+          ctx.lineWidth = 2.5;
+          ctx.shadowColor = '#00f0ff';
+          ctx.shadowBlur = 12;
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, shieldRadius, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.fillStyle = isFlickerOn ? 'rgba(0, 240, 255, 0.22)' : 'rgba(0, 255, 136, 0.18)';
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, shieldRadius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        const pColor = activeHero.primaryColor;
+        const sColor = activeHero.secondaryColor;
+        const eyeCol = activeHero.eyeColor;
+
+        if (player.sliding) {
+          ctx.fillStyle = pColor;
+          ctx.fillRect(screenHeroX - 8, screenHeroY + 4, 48, 16);
+          ctx.fillStyle = sColor;
+          ctx.fillRect(screenHeroX + 28, screenHeroY + 8, 16, 12);
+          ctx.fillStyle = pColor;
+          ctx.beginPath();
+          ctx.arc(screenHeroX + 38, screenHeroY + 8, 10, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = eyeCol;
+          ctx.fillRect(screenHeroX + 40, screenHeroY + 6, 6, 3);
+        } else if (player.webAttached) {
+          const swingAngle = Math.atan2(player.vy, player.vx);
+          ctx.translate(screenHeroX + player.width * 0.5, screenHeroY + player.height * 0.5);
+          ctx.rotate(swingAngle * 0.6);
+          ctx.fillStyle = pColor;
+          ctx.fillRect(-12, -18, 24, 28);
+          ctx.fillStyle = sColor;
+          ctx.fillRect(-12, -8, 6, 18);
+          ctx.fillRect(6, -8, 6, 18);
+          ctx.fillStyle = pColor;
+          ctx.fillRect(4, -22, 18, 6);
+          ctx.beginPath();
+          ctx.arc(0, -24, 11, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = eyeCol;
+          ctx.beginPath();
+          ctx.moveTo(2, -26);
+          ctx.lineTo(9, -24);
+          ctx.lineTo(3, -22);
+          ctx.fill();
+          ctx.fillStyle = sColor;
+          ctx.fillRect(-16, 10, 10, 22);
+          ctx.fillRect(-6, 12, 10, 18);
+        } else if (!player.grounded) {
+          ctx.translate(screenHeroX + player.width * 0.5, screenHeroY + player.height * 0.5);
+          const airAngle = Math.min(0.5, Math.max(-0.5, player.vy * 0.04));
+          ctx.rotate(airAngle);
+          ctx.fillStyle = pColor;
+          ctx.fillRect(-12, -18, 24, 28);
+          ctx.fillStyle = sColor;
+          ctx.fillRect(-12, -8, 6, 18);
+          ctx.fillRect(6, -8, 6, 18);
+          ctx.beginPath();
+          ctx.arc(0, -24, 11, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = eyeCol;
+          ctx.fillRect(3, -26, 7, 4);
+          ctx.fillStyle = sColor;
+          ctx.fillRect(-10, 10, 8, 16);
+          ctx.fillRect(2, 10, 8, 16);
+        } else {
+          player.animTimer += 0.28;
+          const legOffset = Math.sin(player.animTimer) * 14;
+          ctx.fillStyle = pColor;
+          ctx.beginPath();
+          ctx.arc(screenHeroX + 16, screenHeroY + 11, 11, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = eyeCol;
+          ctx.fillRect(screenHeroX + 20, screenHeroY + 8, 6, 4);
+          ctx.fillStyle = pColor;
+          ctx.fillRect(screenHeroX + 4, screenHeroY + 20, 24, 20);
+          ctx.fillStyle = sColor;
+          ctx.fillRect(screenHeroX + 4, screenHeroY + 26, 6, 14);
+          ctx.fillRect(screenHeroX + 22, screenHeroY + 26, 6, 14);
+          ctx.fillStyle = sColor;
+          ctx.fillRect(screenHeroX + 6 + legOffset * 0.5, screenHeroY + 40, 8, 14);
+          ctx.fillRect(screenHeroX + 16 - legOffset * 0.5, screenHeroY + 40, 8, 14);
+        }
+        ctx.restore();
+
+        const villainScreenX = screenHeroX - villain.distance * (isPortrait ? 6.5 : 8);
+        const villainScreenY = villain.y - camY + Math.sin(villain.animFloat) * 12;
+        ctx.save();
+        if (Math.random() > 0.2) {
+          particles.push(new Particle(player.x - villain.distance * (isPortrait ? 6.5 : 8) - 20, villain.y + 10, -Math.random() * 4 - 2, (Math.random() - 0.5) * 3, '#ff0033', 4, 15));
+        }
+
+        ctx.fillStyle = '#110515';
+        ctx.beginPath();
+        ctx.moveTo(villainScreenX + 35, villainScreenY);
+        ctx.lineTo(villainScreenX - 50, villainScreenY - 24);
+        ctx.lineTo(villainScreenX - 35, villainScreenY);
+        ctx.lineTo(villainScreenX - 50, villainScreenY + 24);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#ff0055';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#00f0ff';
+        ctx.fillRect(villainScreenX - 45, villainScreenY - 14, 12, 6);
+        ctx.fillRect(villainScreenX - 45, villainScreenY + 8, 12, 6);
+
+        ctx.fillStyle = '#20052b';
+        ctx.beginPath();
+        ctx.arc(villainScreenX - 5, villainScreenY - 12, 14, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ff0033';
+        ctx.shadowColor = '#ff0033';
+        ctx.shadowBlur = 10;
+        ctx.fillRect(villainScreenX + 2, villainScreenY - 15, 8, 4);
+
+        if (villain.distance < 28) {
+          ctx.strokeStyle = '#ff0055';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(villainScreenX + 15, villainScreenY - 8);
+          ctx.lineTo(villainScreenX + 45, villainScreenY - 4);
+          ctx.lineTo(villainScreenX + 55, villainScreenY - 12);
+          ctx.moveTo(villainScreenX + 45, villainScreenY - 4);
+          ctx.lineTo(villainScreenX + 55, villainScreenY + 4);
+          ctx.stroke();
+
+          ctx.strokeStyle = 'rgba(255, 0, 50, 0.4)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([8, 8]);
+          ctx.beginPath();
+          ctx.moveTo(villainScreenX + 45, villainScreenY - 4);
+          ctx.lineTo(screenHeroX, screenHeroY + player.height * 0.5);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        ctx.restore();
+        ctx.restore();
+      }
+
+      function loop(timestamp) {
+        const dt = Math.min(32, timestamp - lastTime) / 1000;
+        lastTime = timestamp;
+        update(dt);
+        render();
+        requestAnimationFrame(loop);
+      }
+
+      function recomputeKeysFromTouches() {
+        let hasSwing = false;
+        let hasJump = false;
+        let hasSlide = false;
+        for (const action of touchActionMap.values()) {
+          if (action === 'swing') hasSwing = true;
+          if (action === 'jump') hasJump = true;
+          if (action === 'slide') hasSlide = true;
+        }
+        keys.swing = hasSwing;
+        keys.slide = hasSlide;
+        if (hasJump) keys.jump = true;
+
+        if (btnJump) btnJump.classList.toggle('active', hasJump);
+        if (btnSwing) btnSwing.classList.toggle('active', hasSwing);
+      }
+
+      function handleTouchStart(e) {
+        sound.init();
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          const t = e.changedTouches[i];
+          const target = document.elementFromPoint(t.clientX, t.clientY);
+          if (
+            target &&
+            (target.closest('.icon-btn') ||
+              target.closest('.game-modal') ||
+              target.closest('#btn-start-game') ||
+              target.closest('#btn-restart-game') ||
+              target.closest('#btn-resume-game') ||
+              target.closest('#btn-pause-restart'))
+          ) {
+            continue;
+          }
+
+          if (gameState === 'START' || gameState === 'GAMEOVER') {
+            startNewGame();
+            return;
+          }
+          if (gameState === 'PAUSED') return;
+
+          if (target && (target.id === 'btn-jump' || target.closest('#btn-jump'))) {
+            touchActionMap.set(t.identifier, 'jump');
+          } else {
+            touchActionMap.set(t.identifier, 'swing');
+          }
+        }
+        recomputeKeysFromTouches();
+      }
+
+      function handleTouchMove(e) { e.preventDefault(); }
+
+      function handleTouchEnd(e) {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          const t = e.changedTouches[i];
+          touchActionMap.delete(t.identifier);
+        }
+        recomputeKeysFromTouches();
+      }
+
+      window.addEventListener('touchstart', handleTouchStart, { passive: false });
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+      window.addEventListener('touchend', handleTouchEnd, { passive: false });
+      window.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+
+      function onKeyDown(e) {
+        sound.init();
+        if (e.code === 'KeyP' || e.code === 'Escape') {
+          e.preventDefault();
+          if (gameState === 'PLAYING') pauseGame();
+          else if (gameState === 'PAUSED') resumeGame();
+          return;
+        }
+        if (gameState === 'PAUSED') return;
+
+        if (e.code === 'Space') {
+          e.preventDefault();
+          if (gameState === 'GAMEOVER' || gameState === 'START') {
+            startNewGame();
+            return;
+          }
+          keys.swing = true;
+        } else if (e.code === 'ArrowUp' || e.code === 'KeyW') {
+          e.preventDefault();
+          keys.jump = true;
+        } else if (e.code === 'ArrowDown' || e.code === 'KeyS') {
+          e.preventDefault();
+          keys.slide = true;
+          sound.playSlide();
+        } else if (e.code === 'Enter') {
+          if (gameState === 'GAMEOVER' || gameState === 'START') startNewGame();
+        }
+      }
+
+      function onKeyUp(e) {
+        if (gameState === 'PAUSED') return;
+        if (e.code === 'Space') keys.swing = false;
+        else if (e.code === 'ArrowUp' || e.code === 'KeyW') keys.jump = false;
+        else if (e.code === 'ArrowDown' || e.code === 'KeyS') keys.slide = false;
+      }
+
+      window.addEventListener('keydown', onKeyDown);
+      window.addEventListener('keyup', onKeyUp);
+
+      function onMouseDown(e) {
+        sound.init();
+        if (gameState !== 'PLAYING') return;
+        if (e.button === 0) keys.swing = true;
+      }
+
+      function onMouseUp(e) {
+        if (e.button === 0) keys.swing = false;
+      }
+
+      canvas.addEventListener('mousedown', onMouseDown);
+      window.addEventListener('mouseup', onMouseUp);
+
+      function pauseGame() {
+        if (gameState !== 'PLAYING') return;
+        gameState = 'PAUSED';
+        keys.swing = false;
+        keys.slide = false;
+        keys.jump = false;
+        touchActionMap.clear();
+        recomputeKeysFromTouches();
+        if (pauseDistance) pauseDistance.textContent = Math.floor(gameStats.distance) + ' m';
+        if (pauseScore) pauseScore.textContent = String(gameStats.score);
+        modalPause?.classList.add('active');
+      }
+
+      function resumeGame() {
+        if (gameState !== 'PAUSED') return;
+        modalPause?.classList.remove('active');
+        gameState = 'PLAYING';
+        lastTime = performance.now();
+      }
+
+      function startNewGame() {
+        sound.init();
+        modalStart?.classList.remove('active');
+        modalGameOver?.classList.remove('active');
+        modalPause?.classList.remove('active');
+        modalCredits?.classList.remove('active');
+        resetGame();
+        gameState = 'PLAYING';
+        lastTime = performance.now();
+      }
+
+      function returnToMainMenu() {
+        sound.init();
+        modalGameOver?.classList.remove('active');
+        modalPause?.classList.remove('active');
+        modalLocker?.classList.remove('active');
+        modalCredits?.classList.remove('active');
+        resetGame();
+        gameState = 'START';
+        modalStart?.classList.add('active');
+        updateHUD();
+      }
+
+      function triggerRewardedAd(rewardType, onRewardGranted) {
+        if (isAdActive) return;
+        isAdActive = true;
+        pauseGame();
+        sound.muteTemporary();
+
+        if (window.CrazyGames?.SDK?.ad?.requestAd) {
+          try {
+            window.CrazyGames.SDK.ad.requestAd('rewarded', {
+              adStarted: () => { sound.muteTemporary(); },
+              adFinished: () => {
+                isAdActive = false;
+                sound.unmuteTemporary();
+                onRewardGranted();
+              },
+              adError: (err) => {
+                console.warn('[CrazyGames] Rewarded ad fallback:', err);
+                startSimulatedAd(rewardType, onRewardGranted);
+              },
+            });
+            return;
+          } catch {
+            startSimulatedAd(rewardType, onRewardGranted);
+            return;
+          }
+        }
+
+        if (typeof window.gdsdk?.showAd === 'function') {
+          try {
+            const adPromise = window.gdsdk.showAd(window.gdsdk.AdType?.Rewarded || 'rewarded');
+            if (adPromise && typeof adPromise.then === 'function') {
+              adPromise
+                .then(() => {
+                  isAdActive = false;
+                  sound.unmuteTemporary();
+                  onRewardGranted();
+                })
+                .catch((err) => {
+                  console.warn('[GameDistribution] Ad error, fallback:', err);
+                  startSimulatedAd(rewardType, onRewardGranted);
+                });
+              return;
+            }
+          } catch {
+            startSimulatedAd(rewardType, onRewardGranted);
+            return;
+          }
+        }
+
+        startSimulatedAd(rewardType, onRewardGranted);
+      }
+
+      function startSimulatedAd(rewardType, onRewardGranted) {
+        if (modalAdSimulated) modalAdSimulated.classList.add('active');
+        if (adRewardDesc) {
+          adRewardDesc.textContent =
+            rewardType === 'REVIVE'
+              ? 'Watching sponsor message to Revive Once and continue run...'
+              : 'Watching sponsor message to Double your Energy Orbs (2X)...';
+        }
+
+        if (adTimerCount) adTimerCount.textContent = '5';
+        if (adProgressFill) adProgressFill.style.width = '0%';
+
+        if (simulatedAdTimer) window.clearInterval(simulatedAdTimer);
+
+        const startTime = performance.now();
+        const totalDuration = 5000;
+
+        simulatedAdTimer = window.setInterval(() => {
+          const elapsed = performance.now() - startTime;
+          const remaining = Math.max(0, Math.ceil((totalDuration - elapsed) / 1000));
+          const progress = Math.min(100, (elapsed / totalDuration) * 100);
+
+          if (adTimerCount) adTimerCount.textContent = String(remaining);
+          if (adProgressFill) adProgressFill.style.width = `${progress}%`;
+
+          if (elapsed >= totalDuration) {
+            if (simulatedAdTimer) window.clearInterval(simulatedAdTimer);
+            simulatedAdTimer = null;
+            isAdActive = false;
+            modalAdSimulated?.classList.remove('active');
+            sound.unmuteTemporary();
+            onRewardGranted();
+          }
+        }, 100);
+      }
+
+      function cancelSimulatedAd() {
+        if (simulatedAdTimer) {
+          window.clearInterval(simulatedAdTimer);
+          simulatedAdTimer = null;
+        }
+        isAdActive = false;
+        modalAdSimulated?.classList.remove('active');
+        sound.unmuteTemporary();
+        showPopup('AD CANCELLED: NO REWARD', '#ff0055');
+      }
+
+      function grantReviveReward() {
+        hasRevivedThisRun = true;
+        playerStrikes = 0;
+        villain.distance = 100;
+        villain.targetDistance = 100;
+
+        const upcomingBuildings = buildings
+          .filter((b) => b.x + b.width > player.x - 40)
+          .sort((a, b) => a.x - b.x);
+
+        let targetBuilding = upcomingBuildings.find(
+          (b) => player.x >= b.x && player.x <= b.x + b.width - 35
+        );
+
+        if (!targetBuilding && upcomingBuildings.length > 0) {
+          targetBuilding = upcomingBuildings[0];
+        }
+
+        if (targetBuilding) {
+          player.x = Math.max(targetBuilding.x + 30, Math.min(targetBuilding.x + targetBuilding.width - 40, player.x));
+          player.y = targetBuilding.y - 52;
+        } else {
+          const baseY = getGroundYBase();
+          player.y = baseY - 52;
+        }
+
+        player.vx = BASE_RUN_SPEED;
+        player.vy = 0;
+        player.grounded = true;
+        player.sliding = false;
+        player.webAttached = false;
+        player.height = 52;
+        player.invincibleTimer = 240;
+
+        if (btnAdRevive) {
+          btnAdRevive.disabled = true;
+          const title = btnAdRevive.querySelector('.reward-title');
+          const sub = btnAdRevive.querySelector('.reward-sub');
+          if (title) title.textContent = 'REVIVED (1/1 USED)';
+          if (sub) sub.textContent = 'REVIVE ALREADY CLAIMED THIS RUN';
+        }
+
+        modalGameOver?.classList.remove('active');
+        modalPause?.classList.remove('active');
+        gameState = 'PLAYING';
+        lastTime = performance.now();
+
+        sound.playCoin();
+        showPopup('REVIVED! ⚡ 4s SHIELD ACTIVE!', '#00ff88');
+        updateHUD();
+      }
+
+      function equipHero(heroId) {
+        if (!unlockedHeroes.includes(heroId)) return;
+        selectedHeroId = heroId;
+        activeHero = HEROES.find((h) => h.id === heroId) || HEROES[0];
+        try { localStorage.setItem('rooftopEscape_selectedHero', selectedHeroId); } catch {}
+        if (gameState === 'START' || playerStrikes === 0) {
+          currentRunShields = (activeHero.initialShield || 0) + (unlockedPerks.includes('perk_shield') ? 1 : 0);
+        }
+        sound.playEquip();
+        showPopup(`EQUIPPED ${activeHero.name.toUpperCase()}!`, activeHero.accentColor);
+        renderLockerUI();
+        updateHUD();
+      }
+
+      function unlockHero(heroId) {
+        const hero = HEROES.find((h) => h.id === heroId);
+        if (!hero || unlockedHeroes.includes(heroId)) return;
+        if (totalOrbs < hero.cost) {
+          sound.playHit();
+          showPopup(`NEED ${hero.cost - totalOrbs} MORE ORBS!`, '#ff0055');
+          return;
+        }
+        totalOrbs -= hero.cost;
+        unlockedHeroes.push(heroId);
+        selectedHeroId = heroId;
+        activeHero = hero;
+        try {
+          localStorage.setItem('rooftopEscape_totalOrbs', String(totalOrbs));
+          localStorage.setItem('rooftopEscape_unlockedHeroes', JSON.stringify(unlockedHeroes));
+          localStorage.setItem('rooftopEscape_selectedHero', selectedHeroId);
+        } catch {}
+        if (gameState === 'START' || playerStrikes === 0) {
+          currentRunShields = (activeHero.initialShield || 0) + (unlockedPerks.includes('perk_shield') ? 1 : 0);
+        }
+        sound.playPurchase();
+        showPopup(`UNLOCKED ${hero.name.toUpperCase()}!`, '#ffe600');
+        renderLockerUI();
+        updateHUD();
+      }
+
+      function unlockPerk(perkId) {
+        const perk = PERKS.find((p) => p.id === perkId);
+        if (!perk || unlockedPerks.includes(perkId)) return;
+        if (totalOrbs < perk.cost) {
+          sound.playHit();
+          showPopup(`NEED ${perk.cost - totalOrbs} MORE ORBS!`, '#ff0055');
+          return;
+        }
+        totalOrbs -= perk.cost;
+        unlockedPerks.push(perkId);
+        try {
+          localStorage.setItem('rooftopEscape_totalOrbs', String(totalOrbs));
+          localStorage.setItem('rooftopEscape_unlockedPerks', JSON.stringify(unlockedPerks));
+        } catch {}
+        if (perkId === 'perk_shield' && (gameState === 'START' || playerStrikes === 0)) {
+          currentRunShields = (activeHero.initialShield || 0) + 1;
+        }
+        sound.playPurchase();
+        showPopup(`PERK ACTIVATED: ${perk.name.toUpperCase()}!`, '#00ff88');
+        renderLockerUI();
+        updateHUD();
+      }
+
+      function renderLockerUI() {
+        if (lockerOrbBalance) lockerOrbBalance.textContent = String(totalOrbs);
+        if (hudBankTokens) hudBankTokens.textContent = String(totalOrbs);
+
+        if (heroesListContainer) {
+          heroesListContainer.innerHTML = '';
+          HEROES.forEach((hero) => {
+            const isUnlocked = unlockedHeroes.includes(hero.id);
+            const isEquipped = selectedHeroId === hero.id;
+
+            const card = document.createElement('div');
+            card.className = `hero-card ${isEquipped ? 'equipped' : isUnlocked ? '' : 'locked'}`;
+
+            let tagClass = 'tag-locked';
+            let tagText = `LOCKED (${hero.cost} 🔮)`;
+            if (isEquipped) {
+              tagClass = 'tag-equipped';
+              tagText = 'EQUIPPED';
+            } else if (isUnlocked) {
+              tagClass = 'tag-unlocked';
+              tagText = 'UNLOCKED';
+            }
+
+            const speedPct = Math.round((hero.speedMult - 1) * 100);
+            const jumpPct = Math.round((hero.jumpMult - 1) * 100);
+            const speedText = speedPct > 0 ? `+${speedPct}% Speed` : 'Standard (1.0x)';
+            const jumpText = jumpPct > 0 ? `+${jumpPct}% Jump` : 'Standard (1.0x)';
+            const magnetText = hero.magnetRadius > 0 ? `+${hero.magnetRadius}px Magnet` : 'Base (0)';
+            const shieldText = hero.initialShield > 0 ? `+${hero.initialShield} Hit Shield` : 'None (0)';
+
+            let specialPerkBadge = '';
+            if (hero.id === 'cyber_stealth') {
+              specialPerkBadge = '<div class="hero-special-perk">✨ Shadow Stealth Trail &bull; +15% Orb Magnet Radius</div>';
+            } else if (hero.id === 'neon_surge') {
+              specialPerkBadge = '<div class="hero-special-perk">⚡ Boosted Web-Swing Launch Momentum &bull; Electric Sparks</div>';
+            } else if (hero.id === 'solar_valkyrie') {
+              specialPerkBadge = '<div class="hero-special-perk">☀️ Starts With +1 Shield Barrier &bull; Solar Ember Trail</div>';
+            } else if (hero.id === 'orbital_vanguard') {
+              specialPerkBadge = '<div class="hero-special-perk">🛡️ Starts Each Run with +1 Free Hit Shield Barrier &bull; Hex Forcefield</div>';
+            } else if (hero.id === 'chrono_specter') {
+              specialPerkBadge = '<div class="hero-special-perk">⏳ 1.5X Orb Gain &bull; Quantum Phase Warp Trail</div>';
+            } else if (hero.id === 'apex_phantom') {
+              specialPerkBadge = '<div class="hero-special-perk">👑 PERMANENT 2X ORB MULTIPLIER &bull; Light-Speed Crimson/Void Aura</div>';
+            }
+
+            let actionBtnHtml = '';
+            if (isEquipped) {
+              actionBtnHtml = `<button class="btn-locker-action btn-equipped" disabled>✓ EQUIPPED</button>`;
+            } else if (isUnlocked) {
+              actionBtnHtml = `<button class="btn-locker-action btn-equip" data-equip-hero="${hero.id}">EQUIP HERO</button>`;
+            } else {
+              const canAfford = totalOrbs >= hero.cost;
+              actionBtnHtml = `<button class="btn-locker-action btn-unlock" data-unlock-hero="${hero.id}" ${canAfford ? '' : 'disabled'}>
+                ${canAfford ? '🔓 UNLOCK' : '🔒 NEED'} ${hero.cost} 🔮
+              </button>`;
+            }
+
+            card.innerHTML = `
+              <div class="hero-card-header">
+                <div class="hero-avatar-box" style="background: ${hero.primaryColor}; border-color: ${hero.secondaryColor}; color: ${hero.eyeColor}">
+                  ${hero.icon}
+                </div>
+                <div class="hero-info">
+                  <div class="hero-title-row">
+                    <span class="hero-name" style="color: ${hero.accentColor}">${hero.name}</span>
+                    <span class="hero-tag ${tagClass}">${tagText}</span>
+                  </div>
+                  <div class="hero-desc">${hero.desc}</div>
+                </div>
+              </div>
+
+              <div class="hero-stats-grid">
+                <div class="stat-item">
+                  <div class="stat-item-lbl"><span>SPEED</span><span class="stat-item-val">${speedText}</span></div>
+                  <div class="stat-bar-track"><div class="stat-bar-fill" style="width: ${Math.min(100, (hero.speedMult / 1.25) * 100)}%"></div></div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-item-lbl"><span>JUMP HEIGHT</span><span class="stat-item-val">${jumpText}</span></div>
+                  <div class="stat-bar-track"><div class="stat-bar-fill" style="width: ${Math.min(100, (hero.jumpMult / 1.25) * 100)}%; background: linear-gradient(90deg, #ff007f, #00f0ff)"></div></div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-item-lbl"><span>ORB MAGNET</span><span class="stat-item-val">${magnetText}</span></div>
+                  <div class="stat-bar-track"><div class="stat-bar-fill" style="width: ${hero.magnetRadius > 0 ? 80 : 15}%; background: #ffe600"></div></div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-item-lbl"><span>START SHIELD</span><span class="stat-item-val">${shieldText}</span></div>
+                  <div class="stat-bar-track"><div class="stat-bar-fill" style="width: ${hero.initialShield > 0 ? 100 : 15}%; background: #00ff88"></div></div>
+                </div>
+              </div>
+
+              ${specialPerkBadge}
+
+              <div class="hero-action-row">
+                ${actionBtnHtml}
+              </div>
+            `;
+
+            heroesListContainer.appendChild(card);
+          });
+
+          heroesListContainer.querySelectorAll('[data-equip-hero]').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+              const targetId = e.currentTarget.getAttribute('data-equip-hero');
+              if (targetId) equipHero(targetId);
+            });
+          });
+
+          heroesListContainer.querySelectorAll('[data-unlock-hero]').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+              const targetId = e.currentTarget.getAttribute('data-unlock-hero');
+              if (targetId) unlockHero(targetId);
+            });
+          });
+        }
+
+        if (perksListContainer) {
+          perksListContainer.innerHTML = '';
+          PERKS.forEach((perk) => {
+            const isOwned = unlockedPerks.includes(perk.id);
+            const card = document.createElement('div');
+            card.className = `perk-card ${isOwned ? 'owned' : ''}`;
+
+            let actionHtml = '';
+            if (isOwned) {
+              actionHtml = `<span class="hero-tag tag-equipped" style="font-size: 11px; padding: 6px 12px">✓ ACTIVE IN RUNS</span>`;
+            } else {
+              const canAfford = totalOrbs >= perk.cost;
+              actionHtml = `<button class="btn-locker-action btn-unlock" data-unlock-perk="${perk.id}" ${canAfford ? '' : 'disabled'}>
+                ${canAfford ? '🔓 BUY PERK' : '🔒 NEED'} ${perk.cost} 🔮
+              </button>`;
+            }
+
+            card.innerHTML = `
+              <div class="perk-left">
+                <div class="perk-icon-box">${perk.icon}</div>
+                <div class="perk-details">
+                  <div class="perk-name">${perk.name}</div>
+                  <div class="perk-desc">${perk.desc}</div>
+                </div>
+              </div>
+              <div>
+                ${actionHtml}
+              </div>
+            `;
+
+            perksListContainer.appendChild(card);
+          });
+
+          perksListContainer.querySelectorAll('[data-unlock-perk]').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+              const targetId = e.currentTarget.getAttribute('data-unlock-perk');
+              if (targetId) unlockPerk(targetId);
+            });
+          });
+        }
+
+        updateHeroCarousel();
+        updatePerkCarousel();
+      }
+
+      function openLocker(source) {
+        sound.init();
+        sound.playEquip();
+        if (source === 'START') {
+          lockerReturnState = 'START';
+          modalStart?.classList.remove('active');
+        } else if (source === 'GAMEOVER') {
+          lockerReturnState = 'GAMEOVER';
+          modalGameOver?.classList.remove('active');
+        } else {
+          if (gameState === 'PLAYING') {
+            pauseGame();
+            lockerReturnState = 'PLAYING';
+          } else if (gameState === 'PAUSED') {
+            modalPause?.classList.remove('active');
+            lockerReturnState = 'PAUSE';
+          } else if (gameState === 'GAMEOVER') {
+            modalGameOver?.classList.remove('active');
+            lockerReturnState = 'GAMEOVER';
+          } else {
+            modalStart?.classList.remove('active');
+            lockerReturnState = 'START';
+          }
+        }
+
+        const equippedIdx = HEROES.findIndex((h) => h.id === selectedHeroId);
+        if (equippedIdx >= 0) {
+          currentHeroIndex = equippedIdx;
+        }
+
+        renderLockerUI();
+        modalLocker?.classList.add('active');
+      }
+
+      function closeLocker() {
+        sound.init();
+        modalLocker?.classList.remove('active');
+        if (lockerReturnState === 'START') {
+          modalStart?.classList.add('active');
+        } else if (lockerReturnState === 'GAMEOVER') {
+          modalGameOver?.classList.add('active');
+        } else if (lockerReturnState === 'PAUSE' || lockerReturnState === 'PLAYING') {
+          modalPause?.classList.add('active');
+        }
+      }
+
+      function openCreditsModal() {
+        sound.init();
+        sound.playEquip();
+        modalCredits?.classList.add('active');
+      }
+
+      function closeCreditsModal() {
+        sound.init();
+        modalCredits?.classList.remove('active');
+      }
+
+      btnStart?.addEventListener('click', () => startNewGame());
+      btnRestart?.addEventListener('click', () => startNewGame());
+      btnResume?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        resumeGame();
+      });
+      btnPauseRestart?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        startNewGame();
+      });
+      btnPauseMenu?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        returnToMainMenu();
+      });
+      btnGameOverMenu?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        returnToMainMenu();
+      });
+
+      btnPause?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        if (gameState === 'PLAYING') pauseGame();
+        else if (gameState === 'PAUSED') resumeGame();
+      });
+
+      btnSound?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        const isMuted = sound.toggleMute();
+        if (soundIcon) soundIcon.textContent = isMuted ? '🔇' : '🔊';
+      });
+
+      btnBgm?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        const isBgmOn = sound.toggleBgm();
+        if (bgmIcon) bgmIcon.textContent = isBgmOn ? '🎵 BGM ON' : '🎵 BGM OFF';
+      });
+
+      btnOpenCredits?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openCreditsModal();
+      });
+      btnPauseCredits?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openCreditsModal();
+      });
+      btnCloseCredits?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeCreditsModal();
+      });
+
+      btnCopyHtml?.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        sound.init();
+        try {
+          const resp = await fetch('/rooftop-escape.html');
+          const htmlText = await resp.text();
+          await navigator.clipboard.writeText(htmlText);
+          sound.playCoin();
+          showPopup('STANDALONE HTML COPIED! 📋', '#00ff88');
+        } catch {
+          showPopup('CANNOT ACCESS CLIPBOARD', '#ff0055');
+        }
+      });
+
+      btnAdRevive?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        if (hasRevivedThisRun) return;
+        triggerRewardedAd('REVIVE', grantReviveReward);
+      });
+
+      btnAdDouble?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        triggerRewardedAd('DOUBLE', () => {
+          const originalTokens = gameStats.tokens;
+          gameStats.tokens *= 2;
+          totalOrbs += originalTokens;
+          try { localStorage.setItem('rooftopEscape_totalOrbs', String(totalOrbs)); } catch {}
+          if (hudBankTokens) hudBankTokens.textContent = String(totalOrbs);
+          gameStats.score += originalTokens * 100;
+
+          const finalDist = Math.floor(gameStats.distance);
+          if (finalDist > highDistance) {
+            highDistance = finalDist;
+            localStorage.setItem('rooftopEscape_highDist', String(highDistance));
+            if (hudHighscore) hudHighscore.textContent = highDistance + ' m';
+          }
+
+          if (goTokens) goTokens.textContent = String(gameStats.tokens);
+          if (goScore) goScore.textContent = String(gameStats.score);
+
+          if (btnAdDouble) {
+            btnAdDouble.disabled = true;
+            const title = btnAdDouble.querySelector('.reward-title');
+            const sub = btnAdDouble.querySelector('.reward-sub');
+            if (title) title.textContent = 'DOUBLED (2X)!';
+            if (sub) sub.textContent = 'ENERGY ORBS DOUBLED';
+          }
+
+          sound.playCoin();
+          showPopup('💰 DOUBLE ORBS CLAIMED!', '#ffe600');
+          updateHUD();
+        });
+      });
+
+      btnAdCancel?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        cancelSimulatedAd();
+      });
+
+      btnOpenLocker?.addEventListener('click', (e) => { e.stopPropagation(); openLocker('START'); });
+      btnOpenLockerGo?.addEventListener('click', (e) => { e.stopPropagation(); openLocker('GAMEOVER'); });
+      btnLockerHud?.addEventListener('click', (e) => { e.stopPropagation(); openLocker('HUD'); });
+      btnCloseLocker?.addEventListener('click', (e) => { e.stopPropagation(); closeLocker(); });
+
+      btnAddTestOrbs?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        totalOrbs += 250;
+        try { localStorage.setItem('rooftopEscape_totalOrbs', String(totalOrbs)); } catch {}
+        sound.playCoin();
+        showPopup('+250 ORBS ADDED!', '#ffe600');
+        renderLockerUI();
+        updateHUD();
+      });
+
+      tabHeroesBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        tabHeroesBtn.classList.add('active');
+        tabPerksBtn?.classList.remove('active');
+        tabHeroesContent?.classList.add('active');
+        tabPerksContent?.classList.remove('active');
+        updateHeroCarousel();
+      });
+
+      tabPerksBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        tabPerksBtn.classList.add('active');
+        tabHeroesBtn?.classList.remove('active');
+        tabPerksContent?.classList.add('active');
+        tabHeroesContent?.classList.remove('active');
+        updatePerkCarousel();
+      });
+
+      btnHeroPrev?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        if (currentHeroIndex > 0) {
+          currentHeroIndex--;
+          sound.playEquip();
+          updateHeroCarousel();
+        }
+      });
+
+      btnHeroNext?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        if (currentHeroIndex < HEROES.length - 1) {
+          currentHeroIndex++;
+          sound.playEquip();
+          updateHeroCarousel();
+        }
+      });
+
+      btnPerkPrev?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        if (currentPerkIndex > 0) {
+          currentPerkIndex--;
+          sound.playEquip();
+          updatePerkCarousel();
+        }
+      });
+
+      btnPerkNext?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sound.init();
+        if (currentPerkIndex < PERKS.length - 1) {
+          currentPerkIndex++;
+          sound.playEquip();
+          updatePerkCarousel();
+        }
+      });
+
+      let heroTouchStartX = 0;
+      heroCarouselWrapper?.addEventListener('touchstart', (e) => {
+        heroTouchStartX = e.changedTouches[0].clientX;
+      }, { passive: true });
+
+      heroCarouselWrapper?.addEventListener('touchend', (e) => {
+        const diff = e.changedTouches[0].clientX - heroTouchStartX;
+        if (diff < -35 && currentHeroIndex < HEROES.length - 1) {
+          currentHeroIndex++;
+          sound.playEquip();
+          updateHeroCarousel();
+        } else if (diff > 35 && currentHeroIndex > 0) {
+          currentHeroIndex--;
+          sound.playEquip();
+          updateHeroCarousel();
+        }
+      }, { passive: true });
+
+      let perkTouchStartX = 0;
+      perkCarouselWrapper?.addEventListener('touchstart', (e) => {
+        perkTouchStartX = e.changedTouches[0].clientX;
+      }, { passive: true });
+
+      perkCarouselWrapper?.addEventListener('touchend', (e) => {
+        const diff = e.changedTouches[0].clientX - perkTouchStartX;
+        if (diff < -35 && currentPerkIndex < PERKS.length - 1) {
+          currentPerkIndex++;
+          sound.playEquip();
+          updatePerkCarousel();
+        } else if (diff > 35 && currentPerkIndex > 0) {
+          currentPerkIndex--;
+          sound.playEquip();
+          updatePerkCarousel();
+        }
+      }, { passive: true });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          if (gameState === 'PLAYING') pauseGame();
+          sound.muteTemporary();
+        } else {
+          if (!isAdActive) sound.unmuteTemporary();
+        }
+      });
+
+      window.addEventListener('blur', () => {
+        if (gameState === 'PLAYING') pauseGame();
+        sound.muteTemporary();
+      });
+
+      window.addEventListener('focus', () => {
+        if (!isAdActive) sound.unmuteTemporary();
+      });
+
+      function resizeCanvas() {
+        if (!canvas) return;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        isPortrait = h > w;
+
+        if (isPortrait) {
+          V_WIDTH = 720;
+          V_HEIGHT = Math.min(1380, Math.max(920, Math.round(720 * (h / w))));
+        } else {
+          V_HEIGHT = 720;
+          V_WIDTH = Math.min(1440, Math.max(960, Math.round(720 * (w / h))));
+        }
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(V_WIDTH * dpr);
+        canvas.height = Math.round(V_HEIGHT * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        canvas.style.width = `${w}px`;
+        canvas.style.height = `${h}px`;
+        initStars();
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 100));
+
+      resizeCanvas();
+      resetGame();
+      renderLockerUI();
+      requestAnimationFrame(loop);
+    });
+  </script>
 </body>
-          </html>
+</html>
