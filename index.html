@@ -4672,6 +4672,55 @@
       renderLockerUI();
       requestAnimationFrame(loop);
     });
-  </script>
+  <script>
+      // --- 1. PROFESSIONAL REVIVE AD FUNCTION ---
+      function triggerReviveAd() {
+        // Check if GameDistribution SDK is loaded and available
+        if (typeof gdsdk !== 'undefined' && typeof gdsdk.showAd !== 'undefined') {
+          
+          // Request a rewarded ad from GameDistribution
+          gdsdk.showAd('rewarded')
+            .then(response => {
+              // SUCCESS: The player watched the ad completely without skipping.
+              console.log("Rewarded ad completed. Reviving player!");
+              
+              // Call your game's actual revive logic here (e.g., spawn player with shield)
+              executePlayerRevive();
+            })
+            .catch(error => {
+              // SKIPPED/FAILED: Player closed the ad early or an error occurred.
+              console.log("Rewarded ad was skipped or failed to load:", error);
+              
+              // Do NOT reward the player. Keep them on the game-over screen.
+            });
+
+        } else {
+          // Fallback safeguard if the SDK script is blocked or offline
+          console.warn("GD SDK unavailable. Executing offline fallback.");
+          executePlayerRevive();
+        }
+      }
+
+      // --- 2. PROFESSIONAL DOUBLE COINS AD FUNCTION ---
+      function triggerDoubleCoinsAd() {
+        if (typeof gdsdk !== 'undefined' && typeof gdsdk.showAd !== 'undefined') {
+          
+          gdsdk.showAd('rewarded')
+            .then(response => {
+              // SUCCESS: Watched full ad. Double the earnings!
+              console.log("Double coins ad completed!");
+              
+              executeDoubleCoins();
+            })
+            .catch(error => {
+              // SKIPPED: No reward given.
+              console.log("Double coins ad skipped or failed:", error);
+            });
+
+        } else {
+          executeDoubleCoins();
+        }
+      }
+    </script>
 </body>
 </html>
