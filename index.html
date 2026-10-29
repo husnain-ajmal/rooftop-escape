@@ -1,11 +1,9 @@
-<!--
-===================================================================
+<!--===================================================================
   ROOFTOP ESCAPE - HTML5 GAME
   Copyright (c) 2026 KingdomMax. All Rights Reserved.
   Developer: Husnain Ajmal (KingdomMax)
   Repository: https://github.com/husnain-ajmal/rooftop-escape
-===================================================================
--->
+===================================================================-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,7 +18,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Rooftop Escape" />
-
   <!-- Social & OpenGraph Meta -->
   <meta property="og:title" content="Rooftop Escape | KingdomMax Studio" />
   <meta property="og:description" content="High-octane mobile-responsive rooftop parkour runner game with fluid touch controls, dynamic obstacles, and zone progression. Developer: Husnain Ajmal." />
@@ -28,7 +25,6 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Rooftop Escape | KingdomMax Studio" />
   <meta name="twitter:description" content="Endless 2D runner with dynamic physics-based web-swinging, rooftop obstacles, villain pursuit, and character locker perks." />
-
   <style>
     * {
       box-sizing: border-box;
@@ -38,7 +34,6 @@
       -webkit-user-select: none;
       -webkit-touch-callout: none;
     }
-
     body, html {
       width: 100%;
       height: 100%;
@@ -48,7 +43,6 @@
       color: #fff;
       touch-action: none;
     }
-
     #game-wrapper {
       position: relative;
       width: 100vw;
@@ -60,7 +54,6 @@
       touch-action: none;
       overflow: hidden;
     }
-
     canvas {
       display: block;
       box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
@@ -68,7 +61,6 @@
       cursor: crosshair;
       background: #0d091a;
     }
-
     /* UI Overlay Layer */
     .ui-layer {
       position: absolute;
@@ -83,7 +75,6 @@
       padding: env(safe-area-inset-top, 12px) env(safe-area-inset-right, 14px) env(safe-area-inset-bottom, 12px) env(safe-area-inset-left, 14px);
       z-index: 10;
     }
-
     /* HUD Header */
     .hud-header {
       display: flex;
@@ -93,7 +84,6 @@
       gap: 8px;
       pointer-events: auto;
     }
-
     .hud-card {
       background: rgba(15, 10, 30, 0.85);
       backdrop-filter: blur(8px);
@@ -103,7 +93,6 @@
       padding: 6px 12px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.5);
     }
-
     .stat-label {
       font-size: 10px;
       text-transform: uppercase;
@@ -112,7 +101,6 @@
       font-weight: 700;
       margin-bottom: 1px;
     }
-
     .stat-value {
       font-size: 18px;
       font-weight: 900;
@@ -120,12 +108,10 @@
       color: #00f0ff;
       text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
     }
-
     .stat-value.score-val {
       color: #ffe600;
       text-shadow: 0 0 8px rgba(255, 230, 0, 0.5);
     }
-
     /* Threat Meter & Dynamic Zone Progression */
     .threat-container {
       display: flex;
@@ -135,7 +121,6 @@
       max-width: 270px;
       margin: 0 4px;
     }
-
     .zone-badge {
       display: inline-flex;
       align-items: center;
@@ -149,21 +134,18 @@
       transition: all 0.3s ease;
       white-space: nowrap;
     }
-
     .zone-badge.zone-1 {
       background: rgba(0, 240, 255, 0.12);
       border: 1px solid rgba(0, 240, 255, 0.5);
       color: #00f0ff;
       box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
     }
-
     .zone-badge.zone-2 {
       background: rgba(255, 119, 0, 0.15);
       border: 1px solid rgba(255, 119, 0, 0.6);
       color: #ffaa00;
       box-shadow: 0 0 8px rgba(255, 119, 0, 0.25);
     }
-
     .zone-badge.zone-3 {
       background: rgba(168, 85, 247, 0.2);
       border: 1px solid rgba(0, 240, 255, 0.7);
@@ -171,12 +153,10 @@
       box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
       animation: pulseZone3 2s infinite ease-in-out;
     }
-
     @keyframes pulseZone3 {
       0%, 100% { border-color: rgba(0, 240, 255, 0.7); box-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
       50% { border-color: rgba(168, 85, 247, 0.9); box-shadow: 0 0 14px rgba(168, 85, 247, 0.5); }
     }
-
     .threat-bar-wrap {
       width: 100%;
       height: 10px;
@@ -187,7 +167,6 @@
       position: relative;
       margin-top: 3px;
     }
-
     .threat-bar-fill {
       height: 100%;
       width: 100%;
@@ -195,7 +174,6 @@
       box-shadow: 0 0 10px #00f0ff;
       transition: width 0.2s ease-out, background 0.3s;
     }
-
     .threat-status {
       font-size: 9px;
       font-weight: 800;
@@ -207,7 +185,6 @@
       text-overflow: ellipsis;
       margin-top: 2px;
     }
-
     /* Active Power-up Indicator in HUD */
     .hud-powerup-badge {
       display: none;
@@ -225,16 +202,13 @@
       box-shadow: 0 0 10px rgba(255, 230, 0, 0.3);
       animation: pulsePowerup 1s infinite alternate;
     }
-
     .hud-powerup-badge.active {
       display: inline-flex;
     }
-
     @keyframes pulsePowerup {
       0% { transform: scale(0.97); }
       100% { transform: scale(1.03); }
     }
-
     /* Top Right Controls */
     .controls-top {
       display: flex;
@@ -243,7 +217,6 @@
       flex-wrap: wrap;
       justify-content: flex-end;
     }
-
     .icon-btn {
       background: rgba(20, 15, 35, 0.82);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -259,12 +232,10 @@
       gap: 4px;
       touch-action: manipulation;
     }
-
     .icon-btn:hover, .icon-btn:active {
       background: rgba(255, 42, 109, 0.3);
       border-color: #ff2a6d;
     }
-
     /* Danger Vignette Alert */
     #danger-vignette {
       position: absolute;
@@ -277,7 +248,6 @@
       transition: box-shadow 0.2s ease-out;
       z-index: 5;
     }
-
     /* Floating Popups */
     #combo-popup {
       position: absolute;
@@ -295,12 +265,10 @@
       z-index: 20;
       white-space: nowrap;
     }
-
     #combo-popup.show {
       transform: translate(-50%, -50%) scale(1.1);
       opacity: 1;
     }
-
     /* Screen Tap Hint */
     .screen-tap-hint {
       position: absolute;
@@ -320,16 +288,14 @@
       white-space: nowrap;
       z-index: 15;
     }
-
     @keyframes pulseHint {
       0%, 100% { opacity: 0.45; transform: translateX(-50%) translateY(0); }
       50% { opacity: 0.9; transform: translateX(-50%) translateY(-4px); }
     }
-
     /* Mobile On-Screen Touch Control Buttons */
     .mobile-touch-bar {
       position: absolute;
-      bottom: calc(env(safe-area-inset-bottom, 12px) + 60px);
+      bottom: calc(env(safe-area-inset-bottom, 12px) + 16px);
       left: 0;
       width: 100%;
       display: flex;
@@ -339,14 +305,12 @@
       pointer-events: none;
       z-index: 40;
     }
-
     .touch-ctrl-group {
       display: flex;
       gap: 14px;
       align-items: flex-end;
       pointer-events: auto;
     }
-
     .touch-btn {
       width: 76px;
       height: 76px;
@@ -366,25 +330,21 @@
       user-select: none;
       transition: transform 0.1s, background-color 0.1s, border-color 0.1s;
     }
-
     .touch-btn .touch-icon {
       font-size: 26px;
       line-height: 1;
     }
-
     .touch-btn .touch-label {
       font-size: 10px;
       font-weight: 900;
       letter-spacing: 1px;
       margin-top: 2px;
     }
-
     .touch-btn .touch-sub {
       font-size: 8px;
       opacity: 0.7;
       font-weight: 700;
     }
-
     .touch-btn.jump-btn {
       border-color: rgba(0, 240, 255, 0.75);
       box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 0 12px rgba(0, 240, 255, 0.25);
@@ -395,7 +355,6 @@
       border-color: #fff;
       transform: scale(0.92);
     }
-
     .touch-btn.swing-btn {
       border-color: rgba(255, 42, 109, 0.8);
       box-shadow: 0 6px 20px rgba(0,0,0,0.6), inset 0 0 12px rgba(255, 42, 109, 0.3);
@@ -406,7 +365,6 @@
       border-color: #fff;
       transform: scale(0.92);
     }
-
     /* Modals & Overlays */
     .modal-backdrop {
       position: absolute;
@@ -427,12 +385,10 @@
       z-index: 100;
       padding: 16px;
     }
-
     .modal-backdrop.active {
       opacity: 1;
       visibility: visible;
     }
-
     .game-modal {
       background: linear-gradient(145deg, #180e2e, #0e071c);
       border: 2px solid #ff2a6d;
@@ -447,11 +403,9 @@
       transform: scale(0.95);
       transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-
     .modal-backdrop.active .game-modal {
       transform: scale(1);
     }
-
     /* Studio Branding Header Banner */
     .studio-brand-banner {
       display: flex;
@@ -465,12 +419,10 @@
       margin-bottom: 12px;
       text-align: left;
     }
-
     .studio-brand-text {
       display: flex;
       flex-direction: column;
     }
-
     .studio-brand-name {
       font-size: 11px;
       font-weight: 900;
@@ -479,14 +431,12 @@
       text-transform: uppercase;
       text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
     }
-
     .studio-brand-sub {
       font-size: 9px;
       color: #d8cdec;
       font-weight: 700;
       letter-spacing: 0.5px;
     }
-
     .studio-badge-pill {
       font-size: 8px;
       font-weight: 900;
@@ -498,7 +448,6 @@
       text-transform: uppercase;
       flex-shrink: 0;
     }
-
     .modal-title {
       font-size: 32px;
       font-weight: 900;
@@ -509,35 +458,30 @@
       -webkit-text-fill-color: transparent;
       margin-bottom: 4px;
     }
-
     .modal-subtitle {
       color: #05d9e8;
       font-size: 13px;
       font-weight: 700;
       margin-bottom: 14px;
     }
-
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-bottom: 16px;
     }
-
     .stat-box {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 8px;
       padding: 10px;
     }
-
     .stat-box .num {
       font-size: 20px;
       font-weight: 800;
       color: #ffea00;
       font-family: 'Courier New', monospace;
     }
-
     .stat-box .lbl {
       font-size: 9px;
       color: #9d8ec2;
@@ -545,7 +489,6 @@
       letter-spacing: 0.8px;
       margin-top: 3px;
     }
-
     .btn-primary {
       background: linear-gradient(135deg, #ff2a6d 0%, #9b00e8 100%);
       color: #ffffff;
@@ -562,30 +505,25 @@
       transition: all 0.2s ease;
       touch-action: manipulation;
     }
-
     .btn-primary:active {
       transform: scale(0.97);
       filter: brightness(1.1);
     }
-
     .btn-secondary-locker {
       background: linear-gradient(135deg, #00f0ff 0%, #7928ca 100%) !important;
       box-shadow: 0 4px 18px rgba(0, 240, 255, 0.35) !important;
     }
-
     .btn-tertiary {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.25);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       color: #c9b9e6;
     }
-
     /* Start Screen Instructions */
     .instruction-section {
       margin: 10px 0;
       text-align: left;
     }
-
     .instruction-box {
       background: rgba(10, 6, 25, 0.7);
       border: 1px solid rgba(0, 240, 255, 0.25);
@@ -593,12 +531,10 @@
       padding: 9px 12px;
       margin-bottom: 8px;
     }
-
     .instruction-box.mobile-box {
       border-color: rgba(255, 42, 109, 0.4);
       background: rgba(255, 42, 109, 0.05);
     }
-
     .instruction-heading {
       font-size: 11px;
       font-weight: 900;
@@ -609,7 +545,6 @@
       gap: 6px;
       margin-bottom: 5px;
     }
-
     .instruction-row {
       font-size: 11.5px;
       color: #d8cdec;
@@ -619,7 +554,6 @@
       align-items: baseline;
       gap: 6px;
     }
-
     .key-tag {
       display: inline-block;
       background: rgba(255, 255, 255, 0.15);
@@ -631,12 +565,10 @@
       color: #00f0ff;
       white-space: nowrap;
     }
-
     .key-tag.pink {
       color: #ff2a6d;
       border-color: rgba(255, 42, 109, 0.4);
     }
-
     /* Rewarded Ads */
     .rewarded-ads-container {
       display: flex;
@@ -644,7 +576,6 @@
       gap: 8px;
       margin-bottom: 14px;
     }
-
     .btn-rewarded {
       display: flex;
       align-items: center;
@@ -660,62 +591,51 @@
       touch-action: manipulation;
       width: 100%;
     }
-
     .btn-rewarded:hover:not(:disabled),
     .btn-rewarded:active:not(:disabled) {
       transform: scale(0.98);
       filter: brightness(1.15);
     }
-
     .btn-rewarded:disabled {
       opacity: 0.45;
       cursor: not-allowed;
       filter: grayscale(0.6);
     }
-
     .btn-rewarded.revive-btn {
       border-color: #00ff88;
       background: linear-gradient(135deg, rgba(0, 255, 136, 0.15) 0%, rgba(0, 240, 255, 0.08) 100%);
       box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
     }
-
     .btn-rewarded.double-btn {
       border-color: #ffe600;
       background: linear-gradient(135deg, rgba(255, 230, 0, 0.15) 0%, rgba(255, 120, 0, 0.08) 100%);
       box-shadow: 0 4px 15px rgba(255, 230, 0, 0.2);
     }
-
     .reward-icon {
       font-size: 22px;
       flex-shrink: 0;
     }
-
     .reward-content {
       display: flex;
       flex-direction: column;
     }
-
     .reward-title {
       font-size: 13px;
       font-weight: 900;
       letter-spacing: 1px;
     }
-
     .revive-btn .reward-title { color: #00ff88; }
     .double-btn .reward-title { color: #ffe600; }
-
     .reward-sub {
       font-size: 9.5px;
       color: #c9b9e6;
       font-weight: 600;
       letter-spacing: 0.5px;
     }
-
     /* Simulated Ad Fallback Modal */
     #modal-ad-simulated {
       z-index: 150;
     }
-
     .ad-sim-box {
       background: linear-gradient(145deg, #160a28, #0b0517);
       border: 2px solid #00f0ff;
@@ -726,7 +646,6 @@
       text-align: center;
       box-shadow: 0 0 40px rgba(0, 240, 255, 0.4);
     }
-
     .ad-timer-circle {
       width: 68px;
       height: 68px;
@@ -743,7 +662,6 @@
       background: rgba(0, 240, 255, 0.08);
       box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
     }
-
     .ad-progress-bar-wrap {
       width: 100%;
       height: 8px;
@@ -752,14 +670,12 @@
       overflow: hidden;
       margin: 12px 0 16px 0;
     }
-
     .ad-progress-bar-fill {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #00f0ff, #00ff88);
       transition: width 0.1s linear;
     }
-
     .btn-ad-cancel {
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -773,13 +689,11 @@
       touch-action: manipulation;
       transition: all 0.2s;
     }
-
     .btn-ad-cancel:hover {
       background: rgba(255, 0, 85, 0.2);
       color: #ff3366;
       border-color: #ff3366;
     }
-
     /* Character Locker Modal with Side-to-Side Carousel Navigation */
     .locker-modal {
       max-width: 580px;
@@ -791,7 +705,6 @@
       flex-direction: column;
       overflow: hidden;
     }
-
     .locker-header {
       display: flex;
       justify-content: space-between;
@@ -802,7 +715,6 @@
       padding-bottom: 10px;
       flex-shrink: 0;
     }
-
     .locker-orb-badge {
       display: flex;
       align-items: center;
@@ -814,7 +726,6 @@
       box-shadow: 0 0 15px rgba(255, 230, 0, 0.25);
       flex-shrink: 0;
     }
-
     .locker-orb-badge .orb-icon { font-size: 18px; }
     .locker-orb-badge .orb-count {
       font-size: 18px;
@@ -828,7 +739,6 @@
       color: #c9b9e6;
       letter-spacing: 0.8px;
     }
-
     /* Locker Tabs */
     .locker-tabs {
       display: flex;
@@ -838,7 +748,6 @@
       padding-bottom: 8px;
       flex-shrink: 0;
     }
-
     .locker-tab-btn {
       flex: 1;
       background: rgba(255, 255, 255, 0.06);
@@ -853,19 +762,16 @@
       transition: all 0.2s ease;
       touch-action: manipulation;
     }
-
     .locker-tab-btn:hover {
       background: rgba(0, 240, 255, 0.1);
       color: #fff;
     }
-
     .locker-tab-btn.active {
       background: linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(121, 40, 202, 0.25) 100%);
       border-color: #00f0ff;
       color: #00f0ff;
       box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
     }
-
     /* Side-to-Side Card Carousel Navigation Bar & Slide Container */
     .carousel-nav-bar {
       display: flex;
@@ -879,7 +785,6 @@
       padding: 6px 12px;
       flex-shrink: 0;
     }
-
     .carousel-nav-btn {
       background: rgba(0, 240, 255, 0.15);
       border: 1.5px solid rgba(0, 240, 255, 0.5);
@@ -896,7 +801,6 @@
       transition: all 0.2s ease;
       touch-action: manipulation;
     }
-
     .carousel-nav-btn:hover:not(:disabled),
     .carousel-nav-btn:active:not(:disabled) {
       background: rgba(0, 240, 255, 0.35);
@@ -904,7 +808,6 @@
       transform: scale(1.04);
       box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
     }
-
     .carousel-nav-btn:disabled {
       opacity: 0.35;
       cursor: not-allowed;
@@ -913,7 +816,6 @@
       transform: none;
       box-shadow: none;
     }
-
     .carousel-counter {
       font-size: 11px;
       font-weight: 800;
@@ -926,7 +828,6 @@
       text-overflow: ellipsis;
       max-width: 240px;
     }
-
     .carousel-track-wrapper {
       position: relative;
       width: 100%;
@@ -936,7 +837,6 @@
       flex: 1 1 auto;
       min-height: 0;
     }
-
     .carousel-slide-track {
       display: flex;
       flex-direction: row !important;
@@ -944,7 +844,6 @@
       width: 100%;
       height: 100%;
     }
-
     .carousel-slide-track > .hero-card,
     .carousel-slide-track > .perk-card {
       flex: 0 0 100%;
@@ -953,7 +852,6 @@
       box-sizing: border-box;
       margin: 0;
     }
-
     .locker-tab-content {
       display: none;
       flex-direction: column;
@@ -962,11 +860,9 @@
       min-height: 0;
       margin-bottom: 10px;
     }
-
     .locker-tab-content.active {
       display: flex;
     }
-
     /* Hero Cards */
     .hero-card {
       background: rgba(18, 12, 36, 0.85);
@@ -980,25 +876,21 @@
       transition: all 0.2s ease;
       position: relative;
     }
-
     .hero-card.equipped {
       border-color: #00ff88;
       background: linear-gradient(145deg, rgba(0, 255, 136, 0.1), rgba(18, 12, 36, 0.92));
       box-shadow: 0 0 18px rgba(0, 255, 136, 0.25);
     }
-
     .hero-card.locked {
       border-color: rgba(255, 255, 255, 0.08);
       opacity: 0.9;
     }
-
     .hero-card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
     }
-
     .hero-avatar-box {
       width: 44px;
       height: 44px;
@@ -1011,24 +903,20 @@
       flex-shrink: 0;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
     }
-
     .hero-info {
       flex: 1;
     }
-
     .hero-title-row {
       display: flex;
       align-items: center;
       gap: 8px;
     }
-
     .hero-name {
       font-size: 15px;
       font-weight: 900;
       letter-spacing: 0.8px;
       color: #fff;
     }
-
     .hero-tag {
       font-size: 9px;
       font-weight: 800;
@@ -1037,32 +925,27 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-
     .hero-tag.tag-equipped {
       background: rgba(0, 255, 136, 0.2);
       color: #00ff88;
       border: 1px solid #00ff88;
     }
-
     .hero-tag.tag-unlocked {
       background: rgba(0, 240, 255, 0.15);
       color: #00f0ff;
       border: 1px solid #00f0ff;
     }
-
     .hero-tag.tag-locked {
       background: rgba(255, 230, 0, 0.15);
       color: #ffe600;
       border: 1px solid #ffe600;
     }
-
     .hero-desc {
       font-size: 11px;
       color: #c9b9e6;
       margin-top: 2px;
       line-height: 1.35;
     }
-
     .hero-stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1071,13 +954,11 @@
       border-radius: 8px;
       padding: 8px 10px;
     }
-
     .stat-item {
       display: flex;
       flex-direction: column;
       gap: 3px;
     }
-
     .stat-item-lbl {
       display: flex;
       justify-content: space-between;
@@ -1086,12 +967,10 @@
       color: #9d8ec2;
       letter-spacing: 0.5px;
     }
-
     .stat-item-val {
       color: #00f0ff;
       font-weight: 900;
     }
-
     .stat-bar-track {
       width: 100%;
       height: 5px;
@@ -1099,13 +978,11 @@
       border-radius: 3px;
       overflow: hidden;
     }
-
     .stat-bar-fill {
       height: 100%;
       border-radius: 3px;
       background: linear-gradient(90deg, #00f0ff, #ff2a6d);
     }
-
     .hero-special-perk {
       display: flex;
       align-items: center;
@@ -1118,14 +995,12 @@
       border-radius: 6px;
       padding: 5px 8px;
     }
-
     .hero-action-row {
       display: flex;
       justify-content: flex-end;
       align-items: center;
       gap: 10px;
     }
-
     .btn-locker-action {
       font-size: 12px;
       font-weight: 900;
@@ -1140,39 +1015,32 @@
       align-items: center;
       gap: 6px;
     }
-
     .btn-locker-action.btn-equip {
       background: linear-gradient(135deg, #00f0ff, #0066ff);
       color: #fff;
       box-shadow: 0 2px 10px rgba(0, 240, 255, 0.3);
     }
-
     .btn-locker-action.btn-equip:hover { filter: brightness(1.2); }
-
     .btn-locker-action.btn-equipped {
       background: rgba(0, 255, 136, 0.15);
       border: 1.5px solid #00ff88;
       color: #00ff88;
       cursor: default;
     }
-
     .btn-locker-action.btn-unlock {
       background: linear-gradient(135deg, #ffe600, #ff7700);
       color: #110515;
       box-shadow: 0 2px 10px rgba(255, 230, 0, 0.35);
     }
-
     .btn-locker-action.btn-unlock:hover:not(:disabled) {
       filter: brightness(1.15);
       transform: translateY(-1px);
     }
-
     .btn-locker-action.btn-unlock:disabled {
       opacity: 0.45;
       cursor: not-allowed;
       filter: grayscale(0.7);
     }
-
     /* Gear Perk Cards */
     .perk-card {
       background: rgba(18, 12, 36, 0.85);
@@ -1185,19 +1053,16 @@
       gap: 14px;
       text-align: left;
     }
-
     .perk-card.owned {
       border-color: #00ff88;
       background: linear-gradient(145deg, rgba(0, 255, 136, 0.1), rgba(18, 12, 36, 0.92));
     }
-
     .perk-left {
       display: flex;
       align-items: center;
       gap: 12px;
       flex: 1;
     }
-
     .perk-icon-box {
       width: 48px;
       height: 48px;
@@ -1211,39 +1076,33 @@
       flex-shrink: 0;
       box-shadow: 0 0 14px rgba(0, 240, 255, 0.2);
     }
-
     .perk-card.owned .perk-icon-box {
       border-color: #00ff88;
       background: rgba(0, 255, 136, 0.12);
       box-shadow: 0 0 14px rgba(0, 255, 136, 0.2);
     }
-
     .perk-details {
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
-
     .perk-name {
       font-size: 14px;
       font-weight: 900;
       color: #fff;
       letter-spacing: 0.5px;
     }
-
     .perk-desc {
       font-size: 11px;
       color: #c9b9e6;
       line-height: 1.35;
     }
-
     .locker-footer {
       margin-top: 10px;
       padding-top: 10px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       flex-shrink: 0;
     }
-
     /* Studio Information Modal */
     .credits-box {
       background: rgba(10, 6, 25, 0.7);
@@ -1255,29 +1114,24 @@
       line-height: 1.6;
       font-size: 12px;
     }
-
     .credits-item {
       display: flex;
       justify-content: space-between;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       padding: 7px 0;
     }
-
     .credits-item:last-child {
       border-bottom: none;
     }
-
     .credits-key {
       color: #9d8ec2;
       font-weight: 700;
     }
-
     .credits-val {
       color: #00f0ff;
       font-weight: 900;
       text-align: right;
     }
-
     @media (max-width: 600px) {
       .hud-card { padding: 4px 8px; }
       .stat-value { font-size: 15px; }
@@ -1396,10 +1250,8 @@
           </div>
           <span class="studio-badge-pill">OFFICIAL</span>
         </div>
-
         <div class="modal-title">ROOFTOP ESCAPE</div>
         <div class="modal-subtitle">ESCAPE THE NEMESIS &bull; DELUXE EDITION</div>
-
         <div class="instruction-section">
           <!-- Mobile Touch Controls Card -->
           <div class="instruction-box mobile-box">
@@ -1415,7 +1267,6 @@
               <span>Tap bottom-right <strong>JUMP</strong> to leap obstacles &amp; gaps (Air Double Jump with Perk!).</span>
             </div>
           </div>
-
           <!-- Desktop Controls Card -->
           <div class="instruction-box">
             <div class="instruction-heading" style="color: #00f0ff;">
@@ -1427,14 +1278,12 @@
             </div>
           </div>
         </div>
-
         <div style="font-size: 11px; color: #ff3366; margin-bottom: 14px; background: rgba(255, 0, 85, 0.1); border: 1px solid rgba(255, 0, 85, 0.3); border-radius: 8px; padding: 8px 12px; line-height: 1.5; text-align: left;">
           ⚡ <strong>3-STRIKE NEMESIS &amp; POWER-UP SYSTEM:</strong><br />
           &bull; <strong>Crash 1 &amp; 2:</strong> Nemesis draws closer. <strong>Crash 3:</strong> Caught!<br />
           &bull; <strong>Pickups:</strong> 🚀 Nitro Speed Boost, 🧲 Quantum Magnet, 🛡️ Shield Core!<br />
           &bull; Chain consecutive air swings without landing for <strong>x2 - x5 Combo multipliers!</strong>
         </div>
-
         <div style="display: flex; gap: 8px; width: 100%; flex-wrap: wrap;">
           <button class="btn-primary" id="btn-start-game" style="flex: 1.3 1 180px;">
             START RUN
@@ -1458,7 +1307,6 @@
         <div class="modal-subtitle" id="gameover-reason">
           The Nemesis overtook you on the skyline.
         </div>
-
         <div class="stats-grid">
           <div class="stat-box">
             <div class="num" id="go-distance">0 m</div>
@@ -1477,7 +1325,6 @@
             <div class="lbl">BEST RECORD</div>
           </div>
         </div>
-
         <!-- Rewarded Ad Offers -->
         <div class="rewarded-ads-container">
           <button class="btn-rewarded revive-btn" id="btn-ad-revive" aria-label="Watch Ad to Revive Once">
@@ -1495,7 +1342,6 @@
             </span>
           </button>
         </div>
-
         <div style="display: flex; gap: 8px; width: 100%; flex-wrap: wrap;">
           <button class="btn-primary" id="btn-restart-game" style="flex: 1 1 140px;">
             🔄 PLAY AGAIN
@@ -1599,14 +1445,12 @@
           </div>
           <span class="studio-badge-pill">VERIFIED</span>
         </div>
-
         <div class="modal-title" style="font-size: 24px; background: linear-gradient(180deg, #ffffff 20%, #00f0ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
           ROOFTOP ESCAPE
         </div>
         <div class="modal-subtitle">
           DELUXE RUNNER &bull; EDITION 1.6.0
         </div>
-
         <div class="credits-box">
           <div class="credits-item">
             <span class="credits-key">Game Studio:</span>
@@ -1682,14 +1526,12 @@
           </div>
           <span class="studio-badge-pill">PAUSED</span>
         </div>
-
         <div class="modal-title" style="background: linear-gradient(180deg, #ffffff 20%, #00f0ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
           GAME PAUSED
         </div>
         <div class="modal-subtitle" style="color: #00f0ff;">
           SYSTEM SUSPENDED &bull; TAKE A BREATHER
         </div>
-
         <div class="stats-grid" style="margin-bottom: 18px;">
           <div class="stat-box">
             <div class="num" id="pause-distance">0 m</div>
@@ -1700,16 +1542,12 @@
             <div class="lbl">CURRENT SCORE</div>
           </div>
         </div>
-
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <button class="btn-primary" id="btn-resume-game" style="background: linear-gradient(135deg, #00f0ff 0%, #0066ff 100%); box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4);">
             ▶️ RESUME
           </button>
           <button class="btn-primary" id="btn-pause-restart" style="background: linear-gradient(135deg, #ff2a6d 0%, #9b00e8 100%); box-shadow: 0 6px 20px rgba(255, 42, 109, 0.4);">
             🔄 RESTART
-          </button>
-          <button class="btn-primary btn-tertiary" id="btn-pause-credits">
-            🏢 STUDIO &amp; CREDITS
           </button>
           <button class="btn-primary btn-tertiary" id="btn-pause-menu">
             🏠 MAIN MENU
@@ -1725,7 +1563,6 @@
       Copyright (c) 2026 KingdomMax. All Rights Reserved.
       Developer: Husnain Ajmal (KingdomMax)
     */
-
     class SoundEngine {
       constructor() {
         this.ctx = null;
@@ -1738,7 +1575,6 @@
         this.bgmTimer = null;
         this.bgmStep = 0;
         this.currentZone = 1;
-
         try {
           this.muted = localStorage.getItem('rooftopEscape_muted') === 'true';
           this.bgmMuted = localStorage.getItem('rooftopEscape_bgmMuted') === 'true';
@@ -1747,7 +1583,6 @@
           this.bgmMuted = false;
         }
       }
-
       init() {
         if (!this.ctx) {
           const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -1756,15 +1591,12 @@
             this.masterGain = this.ctx.createGain();
             this.masterGain.gain.setValueAtTime(this.muted ? 0 : 0.85, this.ctx.currentTime);
             this.masterGain.connect(this.ctx.destination);
-
             this.sfxGain = this.ctx.createGain();
             this.sfxGain.gain.setValueAtTime(1, this.ctx.currentTime);
             this.sfxGain.connect(this.masterGain);
-
             this.bgmGain = this.ctx.createGain();
             this.bgmGain.gain.setValueAtTime(this.bgmMuted ? 0 : 0.35, this.ctx.currentTime);
             this.bgmGain.connect(this.masterGain);
-
             this.startBgmLoop();
           }
         }
@@ -1772,7 +1604,6 @@
           this.ctx.resume().catch(() => {});
         }
       }
-
       toggleMute() {
         this.init();
         this.muted = !this.muted;
@@ -1785,7 +1616,6 @@
         }
         return this.muted;
       }
-
       toggleBgm() {
         this.init();
         this.bgmMuted = !this.bgmMuted;
@@ -1795,18 +1625,15 @@
         }
         return !this.bgmMuted;
       }
-
       setZone(zoneId) {
         this.currentZone = zoneId;
       }
-
       muteTemporary() {
         this.isAdOrBlurMuted = true;
         if (this.masterGain && this.ctx) {
           this.masterGain.gain.setValueAtTime(0, this.ctx.currentTime);
         }
       }
-
       unmuteTemporary() {
         this.isAdOrBlurMuted = false;
         if (this.masterGain && this.ctx) {
@@ -1816,12 +1643,10 @@
           this.bgmGain.gain.setValueAtTime(this.bgmMuted ? 0 : 0.35, this.ctx.currentTime);
         }
       }
-
       getSfxDest() {
         if (this.muted || this.isAdOrBlurMuted || !this.ctx) return null;
         return this.sfxGain || this.masterGain || this.ctx.destination;
       }
-
       startBgmLoop() {
         if (this.bgmTimer) return;
         const tick = () => {
@@ -1831,7 +1656,6 @@
         };
         this.bgmTimer = window.setTimeout(tick, 140);
       }
-
       playBgmBeat() {
         if (!this.ctx || this.bgmMuted || this.muted || this.isAdOrBlurMuted) return;
         try {
@@ -1839,11 +1663,9 @@
           if (!dest) return;
           const t = this.ctx.currentTime;
           this.bgmStep = (this.bgmStep + 1) % 16;
-
           let baseFreq = 73.42;
           if (this.currentZone === 2) baseFreq = 87.31;
           if (this.currentZone === 3) baseFreq = 110.0;
-
           if (this.bgmStep % 2 === 0) {
             const bassOsc = this.ctx.createOscillator();
             const bassGain = this.ctx.createGain();
@@ -1851,16 +1673,13 @@
             const noteFreq = this.bgmStep === 6 || this.bgmStep === 14 ? baseFreq * 1.33 : baseFreq;
             bassOsc.frequency.setValueAtTime(noteFreq, t);
             bassOsc.frequency.exponentialRampToValueAtTime(noteFreq * 0.5, t + 0.12);
-
             bassGain.gain.setValueAtTime(0.12, t);
             bassGain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-
             bassOsc.connect(bassGain);
             bassGain.connect(dest);
             bassOsc.start(t);
             bassOsc.stop(t + 0.13);
           }
-
           if (this.bgmStep % 4 === 1 || this.bgmStep % 4 === 3) {
             const arpOsc = this.ctx.createOscillator();
             const arpGain = this.ctx.createGain();
@@ -1870,7 +1689,6 @@
             arpOsc.frequency.setValueAtTime(pitch, t);
             arpGain.gain.setValueAtTime(0.04, t);
             arpGain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-
             arpOsc.connect(arpGain);
             arpGain.connect(dest);
             arpOsc.start(t);
@@ -1878,7 +1696,6 @@
           }
         } catch {}
       }
-
       playChime(freq, duration) {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -1895,7 +1712,6 @@
           osc.stop(this.ctx.currentTime + duration);
         } catch {}
       }
-
       playThwip() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -1912,7 +1728,6 @@
           gain.connect(dest);
           osc.start();
           osc.stop(t + 0.12);
-
           const osc2 = this.ctx.createOscillator();
           const gain2 = this.ctx.createGain();
           osc2.type = 'sine';
@@ -1926,7 +1741,6 @@
           osc2.stop(t + 0.1);
         } catch {}
       }
-
       playRelease() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -1945,7 +1759,6 @@
           osc.stop(t + 0.17);
         } catch {}
       }
-
       playJump() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -1964,7 +1777,6 @@
           osc.stop(t + 0.2);
         } catch {}
       }
-
       playSlide() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -1990,7 +1802,6 @@
           noise.start();
         } catch {}
       }
-
       playCoin() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -2011,7 +1822,6 @@
           });
         } catch {}
       }
-
       playPowerup() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -2032,7 +1842,6 @@
           });
         } catch {}
       }
-
       playHit() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -2051,7 +1860,6 @@
           osc.stop(t + 0.28);
         } catch {}
       }
-
       playDangerPulse() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -2070,7 +1878,6 @@
           osc.stop(t + 0.25);
         } catch {}
       }
-
       playGameOver() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -2091,7 +1898,6 @@
           });
         } catch {}
       }
-
       playEquip() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -2110,7 +1916,6 @@
           osc.stop(t + 0.15);
         } catch {}
       }
-
       playPurchase() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -2131,7 +1936,6 @@
           });
         } catch {}
       }
-
       playShieldDeflect() {
         const dest = this.getSfxDest();
         if (!dest || !this.ctx) return;
@@ -2164,13 +1968,11 @@
         this.life = life;
         this.shape = shape;
       }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.life--;
+      update(dtScale = 1) {
+        this.x += this.vx * dtScale;
+        this.y += this.vy * dtScale;
+        this.life -= dtScale;
       }
-
       draw(ctx, camX, camY) {
         const alpha = Math.max(0, this.life / this.maxLife);
         ctx.save();
@@ -2530,8 +2332,14 @@
       let V_WIDTH = 1280;
       let V_HEIGHT = 720;
       let isPortrait = false;
-      const GRAVITY = 0.42;
-      const BASE_RUN_SPEED = 6.2;
+      const GRAVITY = 0.28;
+      const BASE_RUN_SPEED = 3.5;
+
+      const camera = {
+        x: 0,
+        y: 0,
+        initialized: false,
+      };
 
       function getGroundYBase() {
         return isPortrait ? Math.round(V_HEIGHT * 0.64) : 480;
@@ -2584,7 +2392,6 @@
 
       let playerStrikes = 0;
       const gameStats = { distance: 0, score: 0, tokens: 0 };
-
       let buildings = [];
       let anchors = [];
       let obstacles = [];
@@ -2605,7 +2412,7 @@
       }
 
       let nextSpawnX = 0;
-
+      let lastBuildingY = 480;
       function spawnBuilding(width, topY) {
         let bColor = '#15102a';
         let trimColor = '#ff2a6d';
@@ -2633,6 +2440,7 @@
           trimColor: trimColor,
           windows: [],
         };
+
         const rows = Math.floor((b.height - 30) / 36);
         const cols = Math.floor((b.width - 40) / 32);
         for (let r = 0; r < Math.min(rows, 20); r++) {
@@ -2653,19 +2461,23 @@
 
       function generateNextSection() {
         const runDist = gameStats.distance;
-        const gapGrowth = Math.min(80, (runDist / 1000) * 80);
-        const gap = 85 + Math.random() * (55 + gapGrowth);
+        const gapGrowth = Math.min(30, (runDist / 1200) * 30);
+        const gap = 55 + Math.random() * (35 + gapGrowth);
         nextSpawnX += gap;
-        const width = Math.max(380, 520 - Math.min(100, runDist / 12));
+
+        const width = Math.max(420, 560 - Math.min(80, runDist / 25));
         const baseY = getGroundYBase();
-        const heightVar = Math.min(60, 25 + (runDist / 800) * 35);
-        const topY = Math.max(baseY - 120, Math.min(baseY + 60, baseY + (Math.random() * heightVar * 2 - heightVar)));
+        const maxStep = 20;
+        const heightDelta = (Math.random() - 0.5) * (maxStep * 2);
+        const topY = Math.max(baseY - 75, Math.min(baseY + 45, lastBuildingY + heightDelta));
+        lastBuildingY = topY;
         const building = spawnBuilding(width, topY);
 
         const anchorX = building.x - gap * 0.5 + (Math.random() * 40 - 20);
         const minAnchorY = isPortrait ? 120 : 80;
         const maxAnchorY = isPortrait ? baseY - 260 : baseY - 220;
         const anchorY = minAnchorY + Math.random() * Math.max(50, maxAnchorY - minAnchorY);
+
         anchors.push({
           x: anchorX,
           y: anchorY,
@@ -2765,11 +2577,11 @@
         player.animTimer = 0;
         player.comboCount = 0;
         player.invincibleTimer = 0;
+
         playerStrikes = 0;
         consecutiveAirSwings = 0;
         hasUsedAirJump = false;
         activePowerup = null;
-
         currentRunShields = (activeHero.initialShield || 0) + (unlockedPerks.includes('perk_shield') ? 1 : 0);
         currentZoneId = 1;
         sound.setZone(1);
@@ -2807,8 +2619,13 @@
         collectibles = [];
         particles = [];
         nextSpawnX = -100;
+        lastBuildingY = baseY;
 
-        spawnBuilding(650, baseY);
+        camera.x = player.x - (isPortrait ? 130 : 240);
+        camera.y = 0;
+        camera.initialized = false;
+
+        spawnBuilding(700, baseY);
         spawnBuilding(600, baseY);
         spawnBuilding(580, baseY);
 
@@ -2824,9 +2641,9 @@
 
       function attemptWebShoot() {
         if (player.webAttached || isBelowRooftopLevel()) return;
-
         let bestAnchor = null;
         let bestDist = 999999;
+
         for (const a of anchors) {
           const dx = a.x - player.x;
           const dy = a.y - player.y;
@@ -2868,20 +2685,20 @@
           particles.push(new Particle(player.x, player.y, (Math.random() - 0.5) * 5, (Math.random() - 0.5) * 5, '#ffffff', 2.5, 18, 'circle'));
         }
 
-        let launchBoost = 2.2 * activeHero.webLaunchMult;
+        let launchBoost = 0.75 * activeHero.webLaunchMult;
         if (unlockedPerks.includes('perk_thruster')) {
           launchBoost *= 1.25;
         }
 
-        if (player.vy < -3 && player.vx > BASE_RUN_SPEED * 1.05) {
-          player.vx += launchBoost;
+        if (player.vy < -2.0 && player.vx > BASE_RUN_SPEED * 1.01) {
+          const maxWebLaunchVx = BASE_RUN_SPEED * 1.3 * activeHero.speedMult;
+          player.vx = Math.min(maxWebLaunchVx, player.vx + launchBoost);
           player.comboCount++;
           consecutiveAirSwings++;
           const multiplier = Math.min(5, 1 + consecutiveAirSwings * 0.5);
           villain.targetDistance = Math.min(80, villain.targetDistance + 6);
           const points = Math.round(150 * multiplier);
           gameStats.score += points;
-
           if (consecutiveAirSwings > 1) {
             showPopup(`AIR COMBO x${multiplier}! +${points}`, '#ffe600');
           } else {
@@ -2921,15 +2738,14 @@
           name: names[type],
           icon: icons[type],
         };
-
         showPopup(`${icons[type]} ${names[type]} ACTIVATED!`, '#00f0ff');
       }
 
-      function update(dt) {
+      function update(dtScale) {
         if (gameState !== 'PLAYING') return;
 
         if (activePowerup) {
-          activePowerup.remainingFrames--;
+          activePowerup.remainingFrames -= dtScale;
           if (activePowerup.remainingFrames <= 0) {
             activePowerup = null;
           }
@@ -2938,20 +2754,20 @@
         const isBoostActive = activePowerup?.type === 'boost';
         const isSlowmoActive = activePowerup?.type === 'slowmo';
 
-        gameStats.distance += player.vx * 0.04;
-        gameStats.score += Math.round(player.vx * (isBoostActive ? 0.4 : 0.2));
+        gameStats.distance += player.vx * 0.04 * dtScale;
+        gameStats.score += Math.round(player.vx * (isBoostActive ? 0.4 : 0.2) * dtScale);
 
         let speedBonus = 0;
-        if (gameStats.distance >= 800) {
-          speedBonus = 4.2 + Math.min(2.4, (gameStats.distance - 800) / 350);
-        } else if (gameStats.distance >= 350) {
-          speedBonus = 2.0 + Math.min(1.8, (gameStats.distance - 350) / 250);
+        if (gameStats.distance >= 1000) {
+          speedBonus = 0.8 + Math.min(0.6, (gameStats.distance - 1000) / 800);
+        } else if (gameStats.distance >= 400) {
+          speedBonus = 0.4 + Math.min(0.4, (gameStats.distance - 400) / 600);
         } else {
-          speedBonus = Math.min(1.6, gameStats.distance / 250);
+          speedBonus = Math.min(0.4, gameStats.distance / 400);
         }
 
         let currentMaxRunSpeed = (BASE_RUN_SPEED + speedBonus) * activeHero.speedMult;
-        if (isBoostActive) currentMaxRunSpeed *= 1.45;
+        if (isBoostActive) currentMaxRunSpeed *= 1.3;
 
         if (keys.swing) {
           attemptWebShoot();
@@ -2960,26 +2776,27 @@
         }
 
         player.sliding = keys.slide && player.grounded;
+
         if (player.grounded) {
           coyoteTime = 8;
           hasUsedAirJump = false;
           consecutiveAirSwings = 0;
         } else if (coyoteTime > 0) {
-          coyoteTime--;
+          coyoteTime -= dtScale;
         }
 
         if (keys.jump) {
           jumpBuffer = 10;
           keys.jump = false;
         }
-        if (jumpBuffer > 0) jumpBuffer--;
+        if (jumpBuffer > 0) jumpBuffer -= dtScale;
 
         const canJump = (player.grounded || coyoteTime > 0) && !player.sliding && !player.webAttached;
-        const canAirJump = !player.grounded && coyoteTime === 0 && !player.webAttached && !hasUsedAirJump && unlockedPerks.includes('perk_airjump');
+        const canAirJump = !player.grounded && coyoteTime <= 0 && !player.webAttached && !hasUsedAirJump && unlockedPerks.includes('perk_airjump');
 
         if (jumpBuffer > 0) {
           if (canJump) {
-            player.vy = -11.6 * activeHero.jumpMult;
+            player.vy = -7.8 * activeHero.jumpMult;
             player.grounded = false;
             coyoteTime = 0;
             jumpBuffer = 0;
@@ -2989,7 +2806,7 @@
             }
           } else if (canAirJump) {
             hasUsedAirJump = true;
-            player.vy = -10.5 * activeHero.jumpMult;
+            player.vy = -7.2 * activeHero.jumpMult;
             jumpBuffer = 0;
             sound.playJump();
             showPopup('AIR RECOVERY LEAP! 🪂', '#00ff88');
@@ -3009,7 +2826,7 @@
           const dy = player.y - ay;
           const currentDist = Math.hypot(dx, dy);
 
-          player.vy += GRAVITY;
+          player.vy += GRAVITY * dtScale;
 
           if (currentDist > player.anchor.length) {
             const nx = dx / currentDist;
@@ -3017,31 +2834,34 @@
             const tx = -ny;
             const ty = nx;
             const vDotT = player.vx * tx + player.vy * ty;
-            const swingBoost = Math.max(0, -ny) * 0.36;
-
+            const swingBoost = Math.max(0, -ny) * 0.18;
             player.vx = tx * (vDotT + swingBoost);
             player.vy = ty * (vDotT + swingBoost);
             player.x = ax + nx * player.anchor.length;
             player.y = ay + ny * player.anchor.length;
           }
 
-          player.vx *= 0.996;
-          player.vy *= 0.996;
+          const webDrag = Math.pow(0.994, dtScale);
+          player.vx *= webDrag;
+          player.vy *= webDrag;
         } else {
           if (!player.grounded) {
-            player.vy += GRAVITY;
-            if (player.vy > 17) player.vy = 17;
+            player.vy += GRAVITY * dtScale;
+            if (player.vy > 10.5) player.vy = 10.5;
+            if (player.vx > currentMaxRunSpeed) {
+              player.vx = Math.max(currentMaxRunSpeed, player.vx * Math.pow(0.985, dtScale));
+            }
           } else {
             if (player.vx < currentMaxRunSpeed) {
-              player.vx += 0.32 * activeHero.speedMult * (isBoostActive ? 1.8 : 1.0);
+              player.vx += 0.16 * activeHero.speedMult * (isBoostActive ? 1.4 : 1.0) * dtScale;
             } else if (player.vx > currentMaxRunSpeed) {
-              player.vx *= 0.985;
+              player.vx = Math.max(currentMaxRunSpeed, player.vx * Math.pow(0.97, dtScale));
             }
           }
         }
 
-        player.x += player.vx;
-        player.y += player.vy;
+        player.x += player.vx * dtScale;
+        player.y += player.vy * dtScale;
 
         if (isBoostActive) {
           particles.push(new Particle(player.x - 5, player.y + Math.random() * player.height, -player.vx * 0.6 + (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 4, Math.random() > 0.5 ? '#ffe600' : '#ff0055', 4.5, 18, 'circle'));
@@ -3083,11 +2903,14 @@
 
         const wasGrounded = player.grounded;
         player.grounded = false;
+
         for (const b of buildings) {
           if (player.x + player.width > b.x && player.x < b.x + b.width) {
             const currentBottom = player.y + player.height;
-            const prevBottom = player.y - player.vy + player.height;
-            if (prevBottom <= b.y + 18 && currentBottom >= b.y && player.vy >= 0) {
+            const prevBottom = player.y - player.vy * dtScale + player.height;
+
+            // Standard landing on top of building
+            if (prevBottom <= b.y + 14 && currentBottom >= b.y && player.vy >= 0) {
               player.y = b.y - player.height;
               player.vy = 0;
               player.grounded = true;
@@ -3095,18 +2918,22 @@
                 player.comboCount = 0;
                 consecutiveAirSwings = 0;
                 for (let i = 0; i < 5; i++) {
-                  particles.push(new Particle(player.x + player.width * 0.5, b.y, (Math.random() - 0.5) * 4, -Math.random() * 2, '#fff', 2, 10));
+                  particles.push(new Particle(player.x + player.width * 0.5, b.y, (Math.random() - 0.5) * 3, -Math.random() * 1.5, '#fff', 2, 10));
                 }
               }
               break;
-            } else if (currentBottom >= b.y && currentBottom <= b.y + 26 && player.vy >= -3) {
+            } 
+            // Smooth step-up ledge assistance (prevents getting stuck on small height step-ups)
+            else if (currentBottom >= b.y && currentBottom <= b.y + 20 && player.vy >= -1.5) {
               player.y = b.y - player.height;
               player.vy = 0;
               player.grounded = true;
               break;
-            } else if (currentBottom > b.y + 26 && player.x + player.width > b.x && player.x < b.x + 18) {
+            } 
+            // True deep wall collision (hitting vertical facade more than 22px below ledge when airborne)
+            else if (currentBottom > b.y + 22 && player.x + player.width > b.x && player.x < b.x + 16 && !player.grounded) {
               player.x = b.x - player.width;
-              player.vx = Math.max(BASE_RUN_SPEED * 0.7, player.vx * 0.75);
+              player.vx = Math.max(BASE_RUN_SPEED * 0.7, player.vx * 0.8);
             }
           }
         }
@@ -3121,7 +2948,7 @@
         }
 
         if (player.invincibleTimer > 0) {
-          player.invincibleTimer--;
+          player.invincibleTimer -= dtScale;
         } else {
           for (let i = obstacles.length - 1; i >= 0; i--) {
             const obs = obstacles[i];
@@ -3202,7 +3029,7 @@
               const dy = pCenterY - orb.y;
               const dist = Math.hypot(dx, dy);
               if (dist < effectiveMagnetRadius && dist > 1) {
-                const pullSpeed = Math.min(22, (effectiveMagnetRadius - dist) * 0.2 + 5);
+                const pullSpeed = Math.min(22, (effectiveMagnetRadius - dist) * 0.2 + 5) * dtScale;
                 orb.x += (dx / dist) * pullSpeed;
                 orb.y += (dy / dist) * pullSpeed;
               }
@@ -3216,7 +3043,6 @@
             const dy = player.y + player.height * 0.5 - item.y;
             if (Math.hypot(dx, dy) < 42) {
               item.collected = true;
-
               if (item.type === 'orb' || item.type === 'mega_orb') {
                 sound.playCoin();
                 const isMega = item.type === 'mega_orb';
@@ -3227,7 +3053,9 @@
                 totalOrbs += gained;
                 try { localStorage.setItem('rooftopEscape_totalOrbs', String(totalOrbs)); } catch {}
                 gameStats.score += (isMega ? 500 : 100) * orbMult;
-                player.vx += isMega ? 2.0 : 1.0;
+                if (player.vx < currentMaxRunSpeed) {
+                  player.vx = Math.min(currentMaxRunSpeed, player.vx + (isMega ? 0.25 : 0.1));
+                }
                 if (isMega) showPopup(`MEGA ORB! +${gained} 🔮`, '#ffe600');
                 if (hudBankTokens) hudBankTokens.textContent = String(totalOrbs);
                 for (let i = 0; i < (isMega ? 18 : 10); i++) {
@@ -3247,14 +3075,14 @@
         }
 
         const villainLagRate = isSlowmoActive ? 0.03 : 0.06;
-        villain.distance += (villain.targetDistance - villain.distance) * villainLagRate;
-        villain.y += (player.y - villain.y) * 0.05;
-        villain.animFloat += 0.08;
+        villain.distance += (villain.targetDistance - villain.distance) * villainLagRate * dtScale;
+        villain.y += (player.y - villain.y) * 0.05 * dtScale;
+        villain.animFloat += 0.08 * dtScale;
 
         if (dangerVignette) {
           if (villain.distance < 20 || playerStrikes >= 2) {
-            dangerPulseTimer++;
-            if (dangerPulseTimer % 35 === 0) sound.playDangerPulse();
+            dangerPulseTimer += dtScale;
+            if (Math.floor(dangerPulseTimer) % 35 === 0) sound.playDangerPulse();
             dangerVignette.style.boxShadow = 'inset 70px 0 100px -20px rgba(255, 0, 60, 0.75)';
           } else if (playerStrikes === 1) {
             dangerVignette.style.boxShadow = 'inset 50px 0 80px -20px rgba(255, 120, 0, 0.4)';
@@ -3268,17 +3096,42 @@
           return;
         }
 
-        const camX = player.x - (isPortrait ? 140 : 220);
-        if (nextSpawnX < camX + V_WIDTH + 600) {
+        // Professional smooth cinematic camera tracking with forward lead
+        const targetLead = Math.min(80, Math.max(0, player.vx * 10));
+        const targetCamX = player.x - (isPortrait ? 130 : 240) + targetLead;
+
+        let targetCamY = 0;
+        if (isPortrait) {
+          targetCamY = Math.max(-100, Math.min(160, (player.y - V_HEIGHT * 0.58) * 0.5));
+        } else {
+          if (player.y < 380) {
+            targetCamY = (player.y - 380) * 0.45;
+          } else if (player.y > 540) {
+            targetCamY = (player.y - 540) * 0.35;
+          }
+        }
+
+        if (!camera.initialized) {
+          camera.x = targetCamX;
+          camera.y = targetCamY;
+          camera.initialized = true;
+        } else {
+          const easeX = 1 - Math.pow(0.08, dtScale);
+          const easeY = 1 - Math.pow(0.06, dtScale);
+          camera.x += (targetCamX - camera.x) * easeX;
+          camera.y += (targetCamY - camera.y) * easeY;
+        }
+
+        if (nextSpawnX < camera.x + V_WIDTH + 600) {
           generateNextSection();
         }
 
-        buildings = buildings.filter((b) => b.x + b.width > camX - 400);
-        obstacles = obstacles.filter((o) => o.x + o.width > camX - 400);
-        anchors = anchors.filter((a) => a.x > camX - 500);
-        collectibles = collectibles.filter((c) => c.x > camX - 300);
+        buildings = buildings.filter((b) => b.x + b.width > camera.x - 400);
+        obstacles = obstacles.filter((o) => o.x + o.width > camera.x - 400);
+        anchors = anchors.filter((a) => a.x > camera.x - 500);
+        collectibles = collectibles.filter((c) => c.x > camera.x - 300);
 
-        particles.forEach((p) => p.update());
+        particles.forEach((p) => p.update(dtScale));
         particles = particles.filter((p) => p.life > 0);
 
         updateHUD();
@@ -3400,8 +3253,8 @@
             goTitle.style.color = '#00f0ff';
           }
         }
-        if (goReason) goReason.textContent = reason;
 
+        if (goReason) goReason.textContent = reason;
         const finalDist = Math.floor(gameStats.distance);
         if (goDistance) goDistance.textContent = finalDist + ' m';
         if (goScore) goScore.textContent = String(gameStats.score);
@@ -3434,22 +3287,14 @@
         if (modalGameOver) modalGameOver.classList.add('active');
       }
 
-      function render() {
-        const camX = player.x - (isPortrait ? 150 : 220);
-        let camY = 0;
-        if (isPortrait) {
-          const desiredCamY = player.y - V_HEIGHT * 0.55;
-          camY = Math.max(-100, Math.min(200, desiredCamY));
-        } else {
-          if (player.y < 180) {
-            camY = (player.y - 180) * 0.6;
-          }
-        }
+      function render(dtScale = 1) {
+        const camX = camera.x;
+        const camY = camera.y;
 
         ctx.save();
         if (screenShake > 0) {
           ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
-          screenShake *= 0.88;
+          screenShake *= Math.pow(0.88, dtScale);
           if (screenShake < 0.5) screenShake = 0;
         }
 
@@ -3499,6 +3344,7 @@
         ctx.arc(moonX, moonY, 70, 0, Math.PI * 2);
         ctx.fillStyle = moonGlow;
         ctx.fill();
+
         ctx.beginPath();
         ctx.arc(moonX, moonY, 58, 0, Math.PI * 2);
         ctx.fillStyle = moonCore;
@@ -3542,12 +3388,14 @@
           const screenBX = b.x - camX;
           const screenBY = b.y - camY;
           if (screenBX + b.width < -100 || screenBX > V_WIDTH + 100) continue;
+
           ctx.fillStyle = b.color;
           ctx.fillRect(screenBX, screenBY, b.width, b.height);
           ctx.fillStyle = b.trimColor;
           ctx.fillRect(screenBX, screenBY, b.width, 5);
           ctx.fillStyle = '#2c1e4a';
           ctx.fillRect(screenBX, screenBY + 5, b.width, 14);
+
           for (const w of b.windows) {
             ctx.fillStyle = w.color;
             ctx.fillRect(screenBX + w.rx, screenBY + w.ry, 14, 18);
@@ -3558,8 +3406,10 @@
           const screenAX = a.x - camX;
           const screenAY = a.y - camY;
           if (screenAX < -100 || screenAX > V_WIDTH + 100) continue;
-          a.pulse += 0.05;
+
+          a.pulse += 0.05 * dtScale;
           const glow = Math.sin(a.pulse) * 4 + 8;
+
           if (a.type === 'crane') {
             ctx.strokeStyle = '#ff5500';
             ctx.lineWidth = 4;
@@ -3569,6 +3419,7 @@
             ctx.moveTo(screenAX, screenAY - 30);
             ctx.lineTo(screenAX, screenAY);
             ctx.stroke();
+
             ctx.strokeStyle = '#00f0ff';
             ctx.lineWidth = 3;
             ctx.beginPath();
@@ -3579,13 +3430,15 @@
             ctx.beginPath();
             ctx.ellipse(screenAX, screenAY - 25, 56, 20, 0, 0, Math.PI * 2);
             ctx.fill();
+
             ctx.fillStyle = '#00f0ff';
             ctx.font = 'bold 8.5px monospace';
             ctx.fillText('KINGDOMMAX', screenAX - 26, screenAY - 22);
+
             ctx.strokeStyle = '#ffe600';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.moveTo(screenAX, screenAY - 3);
+            ctx.moveTo(screenAX - 3, screenAY - 3);
             ctx.lineTo(screenAX, screenAY);
             ctx.arc(screenAX, screenAY + 6, 6, 0, Math.PI * 2);
             ctx.stroke();
@@ -3602,6 +3455,7 @@
           const screenOX = obs.x - camX;
           const screenOY = obs.y - camY;
           if (screenOX < -60 || screenOX > V_WIDTH + 60) continue;
+
           if (obs.type === 'low') {
             ctx.fillStyle = '#443266';
             ctx.fillRect(screenOX, screenOY, obs.width, obs.height);
@@ -3621,6 +3475,7 @@
             ctx.moveTo(screenOX + obs.width - 10, screenOY - 80);
             ctx.lineTo(screenOX + obs.width - 10, screenOY);
             ctx.stroke();
+
             ctx.fillStyle = '#100a20';
             ctx.fillRect(screenOX, screenOY, obs.width, obs.height);
             ctx.strokeStyle = '#ff0055';
@@ -3637,7 +3492,8 @@
           const screenX = item.x - camX;
           const screenY = item.y - camY;
           if (screenX < -50 || screenX > V_WIDTH + 50) continue;
-          item.pulse += 0.08;
+
+          item.pulse += 0.08 * dtScale;
 
           if (item.type === 'orb') {
             const pulseSize = Math.sin(item.pulse) * 3 + 10;
@@ -3645,10 +3501,12 @@
             ctx.beginPath();
             ctx.arc(screenX, screenY, pulseSize + 6, 0, Math.PI * 2);
             ctx.fill();
+
             ctx.fillStyle = '#00f0ff';
             ctx.beginPath();
             ctx.arc(screenX, screenY, pulseSize, 0, Math.PI * 2);
             ctx.fill();
+
             ctx.fillStyle = '#ffffff';
             ctx.beginPath();
             ctx.arc(screenX - 2, screenY - 2, pulseSize * 0.45, 0, Math.PI * 2);
@@ -3659,10 +3517,12 @@
             ctx.beginPath();
             ctx.arc(screenX, screenY, pulseSize + 8, 0, Math.PI * 2);
             ctx.fill();
+
             ctx.fillStyle = '#ffe600';
             ctx.beginPath();
             ctx.arc(screenX, screenY, pulseSize, 0, Math.PI * 2);
             ctx.fill();
+
             ctx.fillStyle = '#ffffff';
             ctx.beginPath();
             ctx.arc(screenX - 3, screenY - 3, pulseSize * 0.45, 0, Math.PI * 2);
@@ -3676,6 +3536,7 @@
                 : item.type === 'powerup_shield'
                 ? '🛡️'
                 : '⏳';
+
             const ringColor =
               item.type === 'powerup_boost'
                 ? '#ff0055'
@@ -3717,6 +3578,7 @@
           const screenPY = player.y - camY + 12;
           const screenAX = player.anchor.x - camX;
           const screenAY = player.anchor.y - camY;
+
           ctx.save();
           ctx.strokeStyle = 'rgba(0, 240, 255, 0.45)';
           ctx.lineWidth = 6;
@@ -3726,6 +3588,7 @@
           const midY = (screenPY + screenAY) * 0.5;
           ctx.quadraticCurveTo(midX, midY, screenAX, screenAY);
           ctx.stroke();
+
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 2.5;
           ctx.beginPath();
@@ -3737,8 +3600,8 @@
 
         const screenHeroX = player.x - camX;
         const screenHeroY = player.y - camY;
-        ctx.save();
 
+        ctx.save();
         if (currentRunShields > 0) {
           ctx.save();
           const sCenterX = screenHeroX + player.width * 0.5;
@@ -3800,6 +3663,7 @@
           const swingAngle = Math.atan2(player.vy, player.vx);
           ctx.translate(screenHeroX + player.width * 0.5, screenHeroY + player.height * 0.5);
           ctx.rotate(swingAngle * 0.6);
+
           ctx.fillStyle = pColor;
           ctx.fillRect(-12, -18, 24, 28);
           ctx.fillStyle = sColor;
@@ -3810,12 +3674,14 @@
           ctx.beginPath();
           ctx.arc(0, -24, 11, 0, Math.PI * 2);
           ctx.fill();
+
           ctx.fillStyle = eyeCol;
           ctx.beginPath();
           ctx.moveTo(2, -26);
           ctx.lineTo(9, -24);
           ctx.lineTo(3, -22);
           ctx.fill();
+
           ctx.fillStyle = sColor;
           ctx.fillRect(-16, 10, 10, 22);
           ctx.fillRect(-6, 12, 10, 18);
@@ -3823,6 +3689,7 @@
           ctx.translate(screenHeroX + player.width * 0.5, screenHeroY + player.height * 0.5);
           const airAngle = Math.min(0.5, Math.max(-0.5, player.vy * 0.04));
           ctx.rotate(airAngle);
+
           ctx.fillStyle = pColor;
           ctx.fillRect(-12, -18, 24, 28);
           ctx.fillStyle = sColor;
@@ -3831,25 +3698,31 @@
           ctx.beginPath();
           ctx.arc(0, -24, 11, 0, Math.PI * 2);
           ctx.fill();
+
           ctx.fillStyle = eyeCol;
           ctx.fillRect(3, -26, 7, 4);
           ctx.fillStyle = sColor;
           ctx.fillRect(-10, 10, 8, 16);
           ctx.fillRect(2, 10, 8, 16);
         } else {
-          player.animTimer += 0.28;
+          player.animTimer += 0.28 * dtScale;
           const legOffset = Math.sin(player.animTimer) * 14;
+
           ctx.fillStyle = pColor;
           ctx.beginPath();
           ctx.arc(screenHeroX + 16, screenHeroY + 11, 11, 0, Math.PI * 2);
           ctx.fill();
+
           ctx.fillStyle = eyeCol;
           ctx.fillRect(screenHeroX + 20, screenHeroY + 8, 6, 4);
+
           ctx.fillStyle = pColor;
           ctx.fillRect(screenHeroX + 4, screenHeroY + 20, 24, 20);
+
           ctx.fillStyle = sColor;
           ctx.fillRect(screenHeroX + 4, screenHeroY + 26, 6, 14);
           ctx.fillRect(screenHeroX + 22, screenHeroY + 26, 6, 14);
+
           ctx.fillStyle = sColor;
           ctx.fillRect(screenHeroX + 6 + legOffset * 0.5, screenHeroY + 40, 8, 14);
           ctx.fillRect(screenHeroX + 16 - legOffset * 0.5, screenHeroY + 40, 8, 14);
@@ -3858,6 +3731,7 @@
 
         const villainScreenX = screenHeroX - villain.distance * (isPortrait ? 6.5 : 8);
         const villainScreenY = villain.y - camY + Math.sin(villain.animFloat) * 12;
+
         ctx.save();
         if (Math.random() > 0.2) {
           particles.push(new Particle(player.x - villain.distance * (isPortrait ? 6.5 : 8) - 20, villain.y + 10, -Math.random() * 4 - 2, (Math.random() - 0.5) * 3, '#ff0033', 4, 15));
@@ -3871,6 +3745,7 @@
         ctx.lineTo(villainScreenX - 50, villainScreenY + 24);
         ctx.closePath();
         ctx.fill();
+
         ctx.strokeStyle = '#ff0055';
         ctx.lineWidth = 2.5;
         ctx.stroke();
@@ -3910,14 +3785,21 @@
           ctx.setLineDash([]);
         }
         ctx.restore();
+
         ctx.restore();
       }
 
-      function loop(timestamp) {
-        const dt = Math.min(32, timestamp - lastTime) / 1000;
-        lastTime = timestamp;
-        update(dt);
-        render();
+      function loop() {
+        const now = performance.now();
+        const rawDt = (now - lastTime) / 1000;
+        lastTime = now;
+        // Clamp deltaTime to max 100ms (10 FPS) to prevent physics explosion on background tab switch
+        const dt = Math.min(0.1, Math.max(0.001, rawDt));
+        // Normalized scale factor: exactly 1.0 at 60 FPS, 0.5 at 120 FPS, 0.416 at 144 FPS
+        const dtScale = dt * 60;
+
+        update(dtScale);
+        render(dtScale);
         requestAnimationFrame(loop);
       }
 
@@ -3971,7 +3853,6 @@
       }
 
       function handleTouchMove(e) { e.preventDefault(); }
-
       function handleTouchEnd(e) {
         for (let i = 0; i < e.changedTouches.length; i++) {
           const t = e.changedTouches[i];
@@ -4140,10 +4021,8 @@
               ? 'Watching sponsor message to Revive Once and continue run...'
               : 'Watching sponsor message to Double your Energy Orbs (2X)...';
         }
-
         if (adTimerCount) adTimerCount.textContent = '5';
         if (adProgressFill) adProgressFill.style.width = '0%';
-
         if (simulatedAdTimer) window.clearInterval(simulatedAdTimer);
 
         const startTime = performance.now();
@@ -4192,7 +4071,6 @@
         let targetBuilding = upcomingBuildings.find(
           (b) => player.x >= b.x && player.x <= b.x + b.width - 35
         );
-
         if (!targetBuilding && upcomingBuildings.length > 0) {
           targetBuilding = upcomingBuildings[0];
         }
@@ -4225,7 +4103,6 @@
         modalPause?.classList.remove('active');
         gameState = 'PLAYING';
         lastTime = performance.now();
-
         sound.playCoin();
         showPopup('REVIVED! ⚡ 4s SHIELD ACTIVE!', '#00ff88');
         updateHUD();
@@ -4248,11 +4125,13 @@
       function unlockHero(heroId) {
         const hero = HEROES.find((h) => h.id === heroId);
         if (!hero || unlockedHeroes.includes(heroId)) return;
+
         if (totalOrbs < hero.cost) {
           sound.playHit();
           showPopup(`NEED ${hero.cost - totalOrbs} MORE ORBS!`, '#ff0055');
           return;
         }
+
         totalOrbs -= hero.cost;
         unlockedHeroes.push(heroId);
         selectedHeroId = heroId;
@@ -4274,11 +4153,13 @@
       function unlockPerk(perkId) {
         const perk = PERKS.find((p) => p.id === perkId);
         if (!perk || unlockedPerks.includes(perkId)) return;
+
         if (totalOrbs < perk.cost) {
           sound.playHit();
           showPopup(`NEED ${perk.cost - totalOrbs} MORE ORBS!`, '#ff0055');
           return;
         }
+
         totalOrbs -= perk.cost;
         unlockedPerks.push(perkId);
         try {
@@ -4364,7 +4245,6 @@
                   <div class="hero-desc">${hero.desc}</div>
                 </div>
               </div>
-
               <div class="hero-stats-grid">
                 <div class="stat-item">
                   <div class="stat-item-lbl"><span>SPEED</span><span class="stat-item-val">${speedText}</span></div>
@@ -4383,14 +4263,11 @@
                   <div class="stat-bar-track"><div class="stat-bar-fill" style="width: ${hero.initialShield > 0 ? 100 : 15}%; background: #00ff88"></div></div>
                 </div>
               </div>
-
               ${specialPerkBadge}
-
               <div class="hero-action-row">
                 ${actionBtnHtml}
               </div>
             `;
-
             heroesListContainer.appendChild(card);
           });
 
@@ -4438,7 +4315,6 @@
                 ${actionHtml}
               </div>
             `;
-
             perksListContainer.appendChild(card);
           });
 
@@ -4483,7 +4359,6 @@
         if (equippedIdx >= 0) {
           currentHeroIndex = equippedIdx;
         }
-
         renderLockerUI();
         modalLocker?.classList.add('active');
       }
@@ -4530,28 +4405,24 @@
         e.stopPropagation();
         returnToMainMenu();
       });
-
       btnPause?.addEventListener('click', (e) => {
         e.stopPropagation();
         sound.init();
         if (gameState === 'PLAYING') pauseGame();
         else if (gameState === 'PAUSED') resumeGame();
       });
-
       btnSound?.addEventListener('click', (e) => {
         e.stopPropagation();
         sound.init();
         const isMuted = sound.toggleMute();
         if (soundIcon) soundIcon.textContent = isMuted ? '🔇' : '🔊';
       });
-
       btnBgm?.addEventListener('click', (e) => {
         e.stopPropagation();
         sound.init();
         const isBgmOn = sound.toggleBgm();
         if (bgmIcon) bgmIcon.textContent = isBgmOn ? '🎵 BGM ON' : '🎵 BGM OFF';
       });
-
       btnOpenCredits?.addEventListener('click', (e) => {
         e.stopPropagation();
         openCreditsModal();
@@ -4596,17 +4467,14 @@
           try { localStorage.setItem('rooftopEscape_totalOrbs', String(totalOrbs)); } catch {}
           if (hudBankTokens) hudBankTokens.textContent = String(totalOrbs);
           gameStats.score += originalTokens * 100;
-
           const finalDist = Math.floor(gameStats.distance);
           if (finalDist > highDistance) {
             highDistance = finalDist;
             localStorage.setItem('rooftopEscape_highDist', String(highDistance));
             if (hudHighscore) hudHighscore.textContent = highDistance + ' m';
           }
-
           if (goTokens) goTokens.textContent = String(gameStats.tokens);
           if (goScore) goScore.textContent = String(gameStats.score);
-
           if (btnAdDouble) {
             btnAdDouble.disabled = true;
             const title = btnAdDouble.querySelector('.reward-title');
@@ -4614,7 +4482,6 @@
             if (title) title.textContent = 'DOUBLED (2X)!';
             if (sub) sub.textContent = 'ENERGY ORBS DOUBLED';
           }
-
           sound.playCoin();
           showPopup('💰 DOUBLE ORBS CLAIMED!', '#ffe600');
           updateHUD();
@@ -4704,7 +4571,6 @@
       heroCarouselWrapper?.addEventListener('touchstart', (e) => {
         heroTouchStartX = e.changedTouches[0].clientX;
       }, { passive: true });
-
       heroCarouselWrapper?.addEventListener('touchend', (e) => {
         const diff = e.changedTouches[0].clientX - heroTouchStartX;
         if (diff < -35 && currentHeroIndex < HEROES.length - 1) {
@@ -4722,7 +4588,6 @@
       perkCarouselWrapper?.addEventListener('touchstart', (e) => {
         perkTouchStartX = e.changedTouches[0].clientX;
       }, { passive: true });
-
       perkCarouselWrapper?.addEventListener('touchend', (e) => {
         const diff = e.changedTouches[0].clientX - perkTouchStartX;
         if (diff < -35 && currentPerkIndex < PERKS.length - 1) {
@@ -4759,7 +4624,6 @@
         const w = window.innerWidth;
         const h = window.innerHeight;
         isPortrait = h > w;
-
         if (isPortrait) {
           V_WIDTH = 720;
           V_HEIGHT = Math.min(1380, Math.max(920, Math.round(720 * (h / w))));
@@ -4767,7 +4631,6 @@
           V_HEIGHT = 720;
           V_WIDTH = Math.min(1440, Math.max(960, Math.round(720 * (w / h))));
         }
-
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = Math.round(V_WIDTH * dpr);
         canvas.height = Math.round(V_HEIGHT * dpr);
