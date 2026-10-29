@@ -2796,7 +2796,7 @@
 
         if (jumpBuffer > 0) {
           if (canJump) {
-            player.vy = -7.8 * activeHero.jumpMult;
+            player.vy = -8.8 * activeHero.jumpMult;
             player.grounded = false;
             coyoteTime = 0;
             jumpBuffer = 0;
@@ -2806,7 +2806,7 @@
             }
           } else if (canAirJump) {
             hasUsedAirJump = true;
-            player.vy = -7.2 * activeHero.jumpMult;
+            player.vy = -8.0 * activeHero.jumpMult;
             jumpBuffer = 0;
             sound.playJump();
             showPopup('AIR RECOVERY LEAP! 🪂', '#00ff88');
@@ -3705,7 +3705,7 @@
           ctx.fillRect(-10, 10, 8, 16);
           ctx.fillRect(2, 10, 8, 16);
         } else {
-          player.animTimer += 0.28 * dtScale;
+          player.animTimer += Math.abs(player.vx) * 0.08 * dtScale;
           const legOffset = Math.sin(player.animTimer) * 14;
 
           ctx.fillStyle = pColor;
