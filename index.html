@@ -7,6 +7,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- GameDistribution SDK Integration -->
+  <script>
+    window["GD_OPTIONS"] = {
+      "gameId": "64c96875ae6c44a78f5c4237e1b67f0b",
+      "onEvent": function(event) {
+        switch (event.name) {
+          case "SDK_GAME_START":
+            if (typeof resumeGame === 'function') resumeGame();
+            break;
+          case "SDK_GAME_PAUSE":
+            if (typeof pauseGame === 'function') pauseGame();
+            break;
+          case "SDK_READY":
+            console.log("GameDistribution SDK Ready");
+            break;
+        }
+      },
+    };
+    (function(i,s,o,g,r,a,m){
+      i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)};
+      i[r].l=1*new Date();a=s.createElement(o);m=s.getElementsByTagName(o)[0];
+      a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://html5.api.gamedistribution.com/main.min.js','gdsdk');
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Rooftop Escape | KingdomMax Studio</title>
