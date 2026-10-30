@@ -9,27 +9,29 @@
 <head>
   <!-- GameDistribution SDK Integration -->
   <script>
-    window["GD_OPTIONS"] = {
-      "gameId": "64c96875ae6c44a78f5c4237e1b67f0b",
-      "onEvent": function(event) {
-        switch (event.name) {
-          case "SDK_GAME_START":
-            if (typeof resumeGame === 'function') resumeGame();
-            break;
-          case "SDK_GAME_PAUSE":
-            if (typeof pauseGame === 'function') pauseGame();
-            break;
-          case "SDK_READY":
-            console.log("GameDistribution SDK Ready");
-            break;
-        }
-      },
-    };
-    (function(i,s,o,g,r,a,m){
-      i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)};
-      i[r].l=1*new Date();a=s.createElement(o);m=s.getElementsByTagName(o)[0];
-      a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://html5.api.gamedistribution.com/main.min.js','gdsdk');
+  window["GD_OPTIONS"] = {
+    "gameId": "64c96875ae6c44a78f5c4237e1b67f0b",
+    "onEvent": function(event) {
+      switch (event.name) {
+        case "SDK_GAME_START":
+          if (typeof resumeGame === 'function') resumeGame();
+          break;
+        case "SDK_GAME_PAUSE":
+          if (typeof pauseGame === 'function') pauseGame();
+          break;
+        case "SDK_READY":
+          console.log("GameDistribution SDK Ready");
+          break;
+      }
+    },
+  };
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://html5.api.gamedistribution.com/main.min.js';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'gamedistribution-sdk'));
   </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -178,8 +180,14 @@
       animation: pulseZone3 2s infinite ease-in-out;
     }
     @keyframes pulseZone3 {
-      0%, 100% { border-color: rgba(0, 240, 255, 0.7); box-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
-      50% { border-color: rgba(168, 85, 247, 0.9); box-shadow: 0 0 14px rgba(168, 85, 247, 0.5); }
+  0%, 100% { 
+    border-color: rgba(0, 240, 255, 0.7); 
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.3); 
+  }
+  50% { 
+    border-color: rgba(168, 85, 247, 0.9); 
+    box-shadow: 0 0 14px rgba(168, 85, 247, 0.5); 
+  }
     }
     .threat-bar-wrap {
       width: 100%;
@@ -262,32 +270,41 @@
     }
     /* Danger Vignette Alert */
     #danger-vignette {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      box-shadow: inset 60px 0 90px -20px rgba(255, 0, 60, 0);
-      transition: box-shadow 0.2s ease-out;
-      z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  box-shadow: 
+    inset 60px 0 90px -20px 
+    rgba(255, 0, 60, 0.4);
+  transition: 
+    box-shadow 0.2s ease-out;
+  z-index: 5;
     }
     /* Floating Popups */
     #combo-popup {
-      position: absolute;
-      left: 50%;
-      top: 26%;
-      transform: translate(-50%, -50%) scale(0.5);
-      color: #ffea00;
-      font-size: 26px;
-      font-weight: 900;
-      font-style: italic;
-      text-shadow: 0 0 15px #ff5500, 2px 2px 0 #000;
-      pointer-events: none;
-      opacity: 0;
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
-      z-index: 20;
-      white-space: nowrap;
+  position: absolute;
+  left: 50%;
+  top: 26%;
+  transform: 
+    translate(-50%, -50%) 
+    scale(0.5);
+  color: #ffea00;
+  font-size: 26px;
+  font-weight: 900;
+  font-style: italic;
+  text-shadow: 
+    0 0 15px #ff5500, 
+    2px 2px 0 #000;
+  pointer-events: none;
+  opacity: 0;
+  transition: 
+    transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+    opacity 0.3s ease;
+  z-index: 20;
+  white-space: nowrap;
     }
     #combo-popup.show {
       transform: translate(-50%, -50%) scale(1.1);
@@ -313,8 +330,14 @@
       z-index: 15;
     }
     @keyframes pulseHint {
-      0%, 100% { opacity: 0.45; transform: translateX(-50%) translateY(0); }
-      50% { opacity: 0.9; transform: translateX(-50%) translateY(-4px); }
+  0%, 100% { 
+    opacity: 0.45; 
+    transform: translateX(-50%) translateY(0); 
+  }
+  50% { 
+    opacity: 0.9; 
+    transform: translateX(-50%) translateY(-4px); 
+  }
     }
     /* Mobile On-Screen Touch Control Buttons */
     .mobile-touch-bar {
