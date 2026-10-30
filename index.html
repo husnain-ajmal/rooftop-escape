@@ -7,19 +7,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- GameDistribution SDK Script -->
-    <script>
-    // Local testing auto-start fallback
-    window.addEventListener('load', function() {
-        if (typeof resumeGame === 'function') {
-            resumeGame();
-        }
-    });
-    </script>
-
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Rooftop Escape | KingdomMax Studio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Rooftop Escape | KingdomMax Studio</title>
   <meta name="description" content="High-octane mobile-responsive rooftop parkour runner game with fluid touch controls, dynamic obstacles, and zone progression. Developer: Husnain Ajmal • KingdomMax Studio." />
   <meta name="author" content="Husnain Ajmal" />
   <meta name="copyright" content="KingdomMax" />
@@ -54,50 +44,37 @@
       touch-action: none;
     }
     #game-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at center, #130924 0%, #05030a 100%);
-    touch-action: none;
-    overflow: hidden;
-}
-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
-    touch-action: none;
-    cursor: crosshair;
-    background: #0d091a;
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #130924 0%, #05030a 100%);
+      touch-action: none;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+      touch-action: none;
+      cursor: crosshair;
+      background: #0d091a;
     }
     /* UI Overlay Layer */
     .ui-layer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Lets clicks pass through blank space to the canvas */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: env(safe-area-inset-top, 12px) env(safe-area-inset-right, 14px) env(safe-area-inset-bottom, 12px) env(safe-area-inset-left, 14px);
-    z-index: 10;
-}
-
-/* Force all buttons and interactive cards inside the UI layer to accept taps/clicks */
-.ui-layer button, 
-.ui-layer .btn, 
-.ui-layer [role="button"], 
-.ui-layer div, 
-.ui-layer section {
-    pointer-events: auto;
-}
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: env(safe-area-inset-top, 12px) env(safe-area-inset-right, 14px) env(safe-area-inset-bottom, 12px) env(safe-area-inset-left, 14px);
+      z-index: 10;
+    }
     /* HUD Header */
     .hud-header {
       display: flex;
@@ -177,14 +154,8 @@ canvas {
       animation: pulseZone3 2s infinite ease-in-out;
     }
     @keyframes pulseZone3 {
-  0%, 100% { 
-    border-color: rgba(0, 240, 255, 0.7); 
-    box-shadow: 0 0 8px rgba(0, 240, 255, 0.3); 
-  }
-  50% { 
-    border-color: rgba(168, 85, 247, 0.9); 
-    box-shadow: 0 0 14px rgba(168, 85, 247, 0.5); 
-  }
+      0%, 100% { border-color: rgba(0, 240, 255, 0.7); box-shadow: 0 0 8px rgba(0, 240, 255, 0.3); }
+      50% { border-color: rgba(168, 85, 247, 0.9); box-shadow: 0 0 14px rgba(168, 85, 247, 0.5); }
     }
     .threat-bar-wrap {
       width: 100%;
@@ -267,41 +238,32 @@ canvas {
     }
     /* Danger Vignette Alert */
     #danger-vignette {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  box-shadow: 
-    inset 60px 0 90px -20px 
-    rgba(255, 0, 60, 0.4);
-  transition: 
-    box-shadow 0.2s ease-out;
-  z-index: 5;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      box-shadow: inset 60px 0 90px -20px rgba(255, 0, 60, 0);
+      transition: box-shadow 0.2s ease-out;
+      z-index: 5;
     }
     /* Floating Popups */
     #combo-popup {
-  position: absolute;
-  left: 50%;
-  top: 26%;
-  transform: 
-    translate(-50%, -50%) 
-    scale(0.5);
-  color: #ffea00;
-  font-size: 26px;
-  font-weight: 900;
-  font-style: italic;
-  text-shadow: 
-    0 0 15px #ff5500, 
-    2px 2px 0 #000;
-  pointer-events: none;
-  opacity: 0;
-  transition: 
-    transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-    opacity 0.3s ease;
-  z-index: 20;
-  white-space: nowrap;
+      position: absolute;
+      left: 50%;
+      top: 26%;
+      transform: translate(-50%, -50%) scale(0.5);
+      color: #ffea00;
+      font-size: 26px;
+      font-weight: 900;
+      font-style: italic;
+      text-shadow: 0 0 15px #ff5500, 2px 2px 0 #000;
+      pointer-events: none;
+      opacity: 0;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+      z-index: 20;
+      white-space: nowrap;
     }
     #combo-popup.show {
       transform: translate(-50%, -50%) scale(1.1);
@@ -327,19 +289,13 @@ canvas {
       z-index: 15;
     }
     @keyframes pulseHint {
-  0%, 100% { 
-    opacity: 0.45; 
-    transform: translateX(-50%) translateY(0); 
-  }
-  50% { 
-    opacity: 0.9; 
-    transform: translateX(-50%) translateY(-4px); 
-  }
+      0%, 100% { opacity: 0.45; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 0.9; transform: translateX(-50%) translateY(-4px); }
     }
     /* Mobile On-Screen Touch Control Buttons */
     .mobile-touch-bar {
       position: absolute;
-      bottom: calc(env(safe-area-inset-bottom, 12px) + 65px);
+      bottom: calc(env(safe-area-inset-bottom, 12px) + 16px);
       left: 0;
       width: 100%;
       display: flex;
@@ -1328,16 +1284,16 @@ canvas {
           &bull; <strong>Pickups:</strong> 🚀 Nitro Speed Boost, 🧲 Quantum Magnet, 🛡️ Shield Core!<br />
           &bull; Chain consecutive air swings without landing for <strong>x2 - x5 Combo multipliers!</strong>
         </div>
-        <div style="display: flex; gap: 10px; width: 100%; flex-wrap: wrap; margin-top: 12px;">
-    <button class="btn-primary" id="btn-start-game" style="flex: 1.3 1 180px; padding: 14px 20px; font-size: 16px;">
-        START RUN
-    </button>
-    <button class="btn-primary btn-secondary-locker" id="btn-open-locker" style="flex: 1 1 140px; padding: 14px 16px; font-size: 14px;">
-        🦸 HERO LOCKER
-    </button>
-    <button class="btn-primary btn-tertiary" id="btn-open-credits" style="flex: 1 1 100%; padding: 12px 14px; font-size: 12px;">
-        🏢 STUDIO & CREDITS
-    </button>
+        <div style="display: flex; gap: 8px; width: 100%; flex-wrap: wrap;">
+          <button class="btn-primary" id="btn-start-game" style="flex: 1.3 1 180px;">
+            START RUN
+          </button>
+          <button class="btn-primary btn-secondary-locker" id="btn-open-locker" style="flex: 1 1 140px;">
+            🦸 HERO LOCKER
+          </button>
+          <button class="btn-primary btn-tertiary" id="btn-open-credits" style="flex: 1 1 100%; padding: 8px 14px; font-size: 11px;">
+            🏢 STUDIO &amp; CREDITS
+          </button>
         </div>
       </div>
     </div>
@@ -1533,6 +1489,10 @@ canvas {
             <span class="credits-val">Copyright (c) 2026 KingdomMax. All Rights Reserved.</span>
           </div>
         </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="btn-primary" id="btn-copy-html" style="background: linear-gradient(135deg, #00f0ff 0%, #0066ff 100%); flex: 1.2 1 180px;">
+            📋 COPY STANDALONE HTML
+          </button>
           <button class="btn-primary" id="btn-close-credits" style="flex: 1 1 120px;">
             CLOSE &amp; BACK
           </button>
@@ -1592,6 +1552,9 @@ canvas {
           </button>
           <button class="btn-primary" id="btn-pause-restart" style="background: linear-gradient(135deg, #ff2a6d 0%, #9b00e8 100%); box-shadow: 0 6px 20px rgba(255, 42, 109, 0.4);">
             🔄 RESTART
+          </button>
+          <button class="btn-primary btn-tertiary" id="btn-pause-credits">
+            🏢 STUDIO &amp; CREDITS
           </button>
           <button class="btn-primary btn-tertiary" id="btn-pause-menu">
             🏠 MAIN MENU
@@ -2840,7 +2803,7 @@ canvas {
 
         if (jumpBuffer > 0) {
           if (canJump) {
-            player.vy = -8.8 * activeHero.jumpMult;
+            player.vy = -7.8 * activeHero.jumpMult;
             player.grounded = false;
             coyoteTime = 0;
             jumpBuffer = 0;
@@ -2850,7 +2813,7 @@ canvas {
             }
           } else if (canAirJump) {
             hasUsedAirJump = true;
-            player.vy = -8.0 * activeHero.jumpMult;
+            player.vy = -7.2 * activeHero.jumpMult;
             jumpBuffer = 0;
             sound.playJump();
             showPopup('AIR RECOVERY LEAP! 🪂', '#00ff88');
@@ -3749,7 +3712,7 @@ canvas {
           ctx.fillRect(-10, 10, 8, 16);
           ctx.fillRect(2, 10, 8, 16);
         } else {
-          player.animTimer += Math.abs(player.vx) * 0.08 * dtScale;
+          player.animTimer += 0.28 * dtScale;
           const legOffset = Math.sin(player.animTimer) * 14;
 
           ctx.fillStyle = pColor;
@@ -3863,7 +3826,7 @@ canvas {
         if (btnJump) btnJump.classList.toggle('active', hasJump);
         if (btnSwing) btnSwing.classList.toggle('active', hasSwing);
       }
-      
+
       function handleTouchStart(e) {
         sound.init();
         for (let i = 0; i < e.changedTouches.length; i++) {
@@ -4692,51 +4655,6 @@ canvas {
       renderLockerUI();
       requestAnimationFrame(loop);
     });
-  // --- 1. PROFESSIONAL REVIVE AD FUNCTION ---
-  function triggerReviveAd() {
-    if (typeof gdsdk !== 'undefined' && typeof gdsdk.showAd !== 'undefined') {
-      gdsdk.showAd('rewarded')
-        .then(response => {
-          console.log("Rewarded ad completed. Reviving player!");
-          executePlayerRevive();
-        })
-        .catch(error => {
-          console.log("Rewarded ad was skipped or failed to load:", error);
-        });
-    } else {
-      console.warn("GD SDK unavailable. Executing offline fallback.");
-      executePlayerRevive();
-    }
-  }
-
-  // --- 2. PROFESSIONAL DOUBLE COINS AD FUNCTION ---
-  function triggerDoubleCoinsAd() {
-    if (typeof gdsdk !== 'undefined' && typeof gdsdk.showAd !== 'undefined') {
-      gdsdk.showAd('rewarded')
-        .then(response => {
-          console.log("Double coins ad completed!");
-          executeDoubleCoins();
-        })
-        .catch(error => {
-          console.log("Double coins ad skipped or failed:", error);
-        });
-    } else {
-      executeDoubleCoins();
-    }
-  }
-document.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const id = btn.id;
-        if (id === 'btn-start-game' && typeof startNewGame === 'function')
-            startNewGame();
-        if (id === 'btn-open-locker' && typeof openLocker === 'function')
-            openLocker('START');
-        if (id === 'btn-open-credits' && typeof openCreditsModal === 'function')
-            openCreditsModal();
-        if (id === 'btn-restart-game' && typeof startNewGame === 'function')
-            startNewGame();
-        if (id === 'btn-resume-game' && typeof resumeGame === 'function')
-            resumeGame();
-    }); });
+  </script>
 </body>
 </html>
