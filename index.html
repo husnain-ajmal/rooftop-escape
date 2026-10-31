@@ -859,13 +859,13 @@
       max-width: 240px;
     }
     .carousel-track-wrapper {
-      position: relative;
-      width: 100%;
-      overflow: hidden;
-      border-radius: 12px;
-      touch-action: pan-y;
-      flex: 1 1 auto;
-      min-height: 0;
+    position: relative;
+    width: 100%;
+    overflow-y: auto !important; /* Enables vertical scrolling for hero cards */
+    border-radius: 12px;
+    touch-action: pan-y;
+    flex: 1 1 auto;
+    min-height: 0;
     }
     .carousel-slide-track {
       display: flex;
@@ -883,12 +883,12 @@
       margin: 0;
     }
     .locker-tab-content {
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      flex: 1 1 auto;
-      min-height: 0;
-      margin-bottom: 10px;
+    display: none;
+    flex-direction: column;
+    overflow-y: visible; /* Allows scroll to flow properly through tabs */
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-bottom: 10px;
     }
     .locker-tab-content.active {
       display: flex;
