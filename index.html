@@ -726,14 +726,14 @@
     }
     /* Character Locker Modal with Side-to-Side Carousel Navigation */
     .locker-modal {
-      max-width: 580px;
-      max-height: 90vh;
-      padding: 20px 22px;
-      border-color: #00f0ff;
-      box-shadow: 0 0 50px rgba(0, 240, 255, 0.4), inset 0 0 25px rgba(0, 240, 255, 0.08);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+    max-width: 580px;
+    max-height: 90vh;
+    padding: 20px 22px;
+    border-color: #00f0ff;
+    box-shadow: 0 0 50px rgba(0, 240, 255, 0.4), inset 0 0 25px rgba(0, 240, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Enables smooth vertical scrolling so buttons aren't cut off */
     }
     .locker-header {
       display: flex;
